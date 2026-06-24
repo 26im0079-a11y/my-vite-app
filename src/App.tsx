@@ -19,12 +19,12 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_bug', nameJa: '無病息災・バグ退散札', nameEn: 'Anti-Bug Talisman', nameTw: '驅逐程式錯誤符', nameCn: '驱逐程序错误符', descJa: 'コードの不純物を根こそぎクリアにし、予期せぬ例外をシャットアウトする。', descEn: 'Clears impurities in code and completely blocks unexpected exceptions.', descTw: '將程式碼中的雜質悉數清除，完全杜絕意料之外的異常。', descCn: '将代码中的杂质悉数清除，完全杜绝意料之外的异常。', price: 150, type: 'talisman' },
   { id: 'talisman_match', nameJa: '良縁成就・同期安定守', nameEn: 'Sync Harmony Amulet', nameTw: '同步安定緣結守', nameCn: '同步安定缘结守', descJa: '非同期処理の競合を未然に防ぎ、あらゆる関係性を美しく同期させる。', descEn: 'Prevents race conditions and beautifully synchronizes all relations.', descTw: '未雨綢繆防止非同步處理衝突，使一切因緣關係皆能完美同步。', descCn: '未雨绸缪防止异步处理冲突，使一切因缘关系皆能完美同步。', price: 200, type: 'talisman' },
   { id: 'talisman_spec', nameJa: '急な仕様変更魔除守', nameEn: 'Spec-Change Ward', nameTw: '規格變更魔除守', nameCn: '规格变更魔除守', descJa: '深夜に舞い込む恐ろしい要件定義の書き換えを、見えざる壁で弾き返す。', descEn: 'Repels horrifying late-night requirement changes with an invisible shield.', descTw: '以無形之盾強硬彈回深夜傳來、令人毛骨悚然的規格變更。', descCn: '以无形之盾强硬弹回深夜传来、令人毛骨悚然的规格变更。', price: 300, type: 'talisman' },
-  { id: 'talisman_overtime', nameJa: '定時退社・健康祈願符', nameEn: 'Leave-on-Time Rune', nameTw: '準時下班祈願符', nameCn: '准时下班祈愿符', descJa: '定時が近づくと強制的に作業終了へと導く、労働環境の守護ルーン。', descEn: 'A protective rune that guides you to a clean wrap-up when clock-out time nears.', descTw: '每逢下班時間便強制導向收尾階段，捍衛勞動環境的守護符文。', descCn: '每逢下班时间便强制导向收尾阶段，捍卫劳动环境的守护符文。', price: 350, type: 'talisman' },
+  { id: 'talisman_overtime', nameJa: '定時退社・健康祈願符', nameEn: 'Leave-on-Time Rune', nameTw: '準時下班祈願符', nameCn: '准时下班祈愿符', descJa: '定時が近づくと強制的に作業終了へと導く、労働環境の守護ルーン。', descEn: 'A protective rune that guides you to a clean wrap-up when clock-out time nears.', descTw: '每逢下班時間便強制導向收尾階段，捍衛勞動環境的守護符文。', descCn: '每逢下班时间便强制导向收尾阶段，捍卫劳动环境守护符文。', price: 350, type: 'talisman' },
   { id: 'talisman_infra', nameJa: '高可用性・インフラ安定護符', nameEn: 'Infra Stability Charm', nameTw: '雲端架構安定符', nameCn: '云端架构安定符', descJa: 'クラウドサーバーの負荷を分散し、99.999%の稼働率を約束する最上位の護符。', descEn: 'Distributes cloud server load, guaranteeing 99.999% uptime.', descTw: '分散雲端伺服器負載，確保高達99.999%系統可用性的至高護符。', descCn: '分散云端服务器负载，确保高达99.999%系统可用性的至高护符。', price: 500, type: 'talisman' },
 
   // --- 🪙 1両で買えるお遊びアイテム (3種) ---
   { id: 'talisman_cheap_1', nameJa: '埃をかぶった記憶媒体', nameEn: 'Dusty Storage Medium', nameTw: '落滿灰塵的儲存媒介', nameCn: '落满灰尘的储存媒介', descJa: '不思議な力を感じる。中には大昔の怪文書のようなログが一行だけ刻まれている。', descEn: 'You feel a mysterious force. Inside, a single row of ancient bizarre text remains.', descTw: '散發著神祕的力量。內部僅刻有一行宛如遠古怪文書的日誌。', descCn: '散发着神秘的力量。内部仅刻有一行宛如远古怪文书的日志。', price: 1, type: 'talisman' },
-  { id: 'talisman_cheap_2', nameJa: 'ちぎれた錫線', nameEn: 'Torn Solder Wire', nameTw: '斷裂的錫線', nameCn: '断裂的锡线', descJa: 'ただのゴミに見えるが、時折かすかに16進数の電磁波を放っているような気がする。', descEn: 'Looks like trash, but it seems to emit faint hexadecimal electromagnetic waves.', descTw: '看似只是廢棄物，但總覺得偶爾會釋放出微弱的十六進位電磁波。', descCn: '看似只是废弃物，但总觉得偶尔会释放出微弱的十六进制电磁波。', price: 1, type: 'talisman' },
+  { id: 'talisman_cheap_2', nameJa: 'ちぎれた錫線', nameEn: 'Torn Solder Wire', nameTw: '斷裂的錫線', nameCn: '断裂的锡线', descJa: 'ただのゴミに見えるが、時折かすかに16進数の電磁波を放っているような気がする。', descEn: 'Looks like trash, but it seems to emit faint hexadecimal electromagnetic waves.', descTw: '看似只是廢棄物，但總覺得偶爾會釋放出微弱的十六進位電磁波。', descCn: '看似只是废弃物，总觉得偶尔会释放出微弱的十六进制电磁波。', price: 1, type: 'talisman' },
   { id: 'talisman_cheap_3', nameJa: '古びたキートップ', nameEn: 'Ancient Keycap', nameTw: '古舊的鍵帽', nameCn: '古旧的键帽', descJa: '「Esc」と書かれている。この神社からログアウトするための鍵だったのかもしれない。', descEn: 'Engraved with "Esc". Perhaps it was once a key used to log out of this shrine.', descTw: '刻有「Esc」字樣。這或許曾是逃離這座神社、登出系統的關鍵鑰匙。', descCn: '刻有“Esc”字样。这或许曾是逃离这座神社、登出系统的关键钥匙。', price: 1, type: 'talisman' },
 
   // --- 🌙 夜間限定アイテム (5種) ---
@@ -172,6 +172,9 @@ export default function App() {
   // 🎰 授与所のガチャ陳列データ（5個）
   const [displayedShopItems, setDisplayedShopItems] = useState<ShopItem[]>([]);
 
+  // 📝 所持タブ用ページング管理
+  const [inventoryPage, setInventoryPage] = useState<number>(1);
+
   // 📝 所持タブで選択中のアイテムID
   const [selectedInventoryItem, setSelectedInventoryItem] = useState<ShopItem | null>(null);
 
@@ -243,15 +246,8 @@ export default function App() {
     localStorage.setItem('shrine_last_visit', todayStr);
     setVisitDays(days);
 
-    // 初期化時は料金消費なしで更新
-    const nightActive = (new Date()).getHours() >= 22 || (new Date()).getHours() < 4;
-    const pool = SHOP_ITEMS.filter(item => {
-      if (item.type !== 'talisman') return false;
-      if (item.isNightOnly && !nightActive) return false;
-      return true;
-    });
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    setDisplayedShopItems(shuffled.slice(0, 5));
+    // 初期陳列は無料で実行
+    initializeShopDisplay(shopCategory);
   }, []);
 
   const saveMasterState = (nextHistory: any, nextDates: any, nextWallet: number, nextOwned: string[], nextSkin: string) => {
@@ -265,30 +261,36 @@ export default function App() {
     return hour >= 22 || hour < 4;
   };
 
-  // 🎰 授与所のランダム5件抽選システム
-  const refreshShopItems = (deductFee = true) => {
-    if (deductFee) {
-      if (wallet < 10) return;
-      const nextWallet = wallet - 10;
-      setWallet(nextWallet);
-      saveMasterState(history, lastDates, nextWallet, ownedItems, activeSkin);
-    }
-
+  // 🎰 授与所のアイテムプール取得と陳列生成（共通処理）
+  const initializeShopDisplay = (category: CategoryMode) => {
     const nightActive = isNightTime();
     const pool = SHOP_ITEMS.filter(item => {
-      if (item.type !== shopCategory) return false;
+      if (item.type !== category) return false;
       if (item.isNightOnly && !nightActive) return false;
       return true;
     });
-
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
     setDisplayedShopItems(shuffled.slice(0, 5));
   };
 
-  // カテゴリが変わったら自動で再陳列（無料）
+  // 🔄 手動での「陳列更新（10両）」実行処理
+  const refreshShopItemsManual = () => {
+    if (wallet < 10) return;
+    const nextWallet = wallet - 10;
+    setWallet(nextWallet);
+    saveMasterState(history, lastDates, nextWallet, ownedItems, activeSkin);
+    initializeShopDisplay(shopCategory);
+  };
+
+  // カテゴリが切り替わった時はお金を減らさずに再陳列
   useEffect(() => {
-    refreshShopItems(false);
+    initializeShopDisplay(shopCategory);
   }, [shopCategory]);
+
+  // 所持タブのカテゴリ切り替え時はページを1に戻す
+  useEffect(() => {
+    setInventoryPage(1);
+  }, [inventoryCategory]);
 
   // 🐣 イースターエッグのトリガー
   const handleTitleTap = () => {
@@ -422,7 +424,6 @@ export default function App() {
       setWallet(0); setDisplayWallet(0); setOwnedItems([]); setActiveSkin('default');
       setIsBurning(false); setShowModal(false);
       
-      // ショップ陳列の強制初期化
       const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !item.isNightOnly);
       setDisplayedShopItems(pool.slice(0, 5));
     }, 1800);
@@ -473,6 +474,17 @@ export default function App() {
   };
 
   const isDarkSkin = activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark';
+
+  // 🎒 所持アイテムのフィルタリングとページング算出
+  const currentFilteredOwnedItems = SHOP_ITEMS.filter(item => {
+    return item.type === inventoryCategory && ownedItems.includes(item.id);
+  });
+
+  const ITEMS_PER_PAGE = 5;
+  const totalInventoryPages = Math.max(1, Math.ceil(currentFilteredOwnedItems.length / ITEMS_PER_PAGE));
+  const indexOfLastItem = inventoryPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentPagedOwnedItems = currentFilteredOwnedItems.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className={`min-h-screen flex flex-col items-center justify-start pt-4 pb-24 p-4 select-none relative overflow-x-hidden transition-all duration-700 ${getBackgroundClass()} ${getFontFamilyClass()}`}>
@@ -562,9 +574,9 @@ export default function App() {
               <h2 className="text-lg font-bold text-amber-600 tracking-widest">
                 {lang === 'ja' ? '電脳授与所' : lang === 'en' ? 'Cyber Shop' : '電腦授與所'}
               </h2>
-              {/* 🔄 陳列更新ボタン */}
-              <button onClick={() => refreshShopItems(true)} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center gap-0.5 border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
-                🔄 {lang === 'ja' ? '陳列更新' : 'Refresh'} (10{getCurrencyUnit()})
+              {/* 🔄 陳列更新ボタン (マークを削除) */}
+              <button onClick={refreshShopItemsManual} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
+                {lang === 'ja' ? '陳列更新' : 'Refresh'} (10{getCurrencyUnit()})
               </button>
             </div>
 
@@ -578,7 +590,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* 常に5件のみランダム表示 */}
+            {/* 常に5件のみ表示 */}
             <div className="grid grid-cols-1 gap-2 min-h-[240px] content-start">
               {displayedShopItems.map(item => {
                 const isOwned = ownedItems.includes(item.id);
@@ -621,42 +633,51 @@ export default function App() {
               </button>
             </div>
 
-            <div className="min-h-[240px]">
-              {inventoryCategory === 'talisman' && (
-                <div className="grid grid-cols-1 gap-1.5">
-                  {SHOP_ITEMS.filter(i => i.type === 'talisman').map(item => {
-                    const hasIt = ownedItems.includes(item.id);
-                    if (!hasIt) return null;
-                    return (
+            <div className="min-h-[240px] flex flex-col justify-between">
+              <div className="grid grid-cols-1 gap-1.5">
+                {inventoryCategory === 'talisman' ? (
+                  <>
+                    {currentPagedOwnedItems.map(item => (
                       <button key={item.id} onClick={() => setSelectedInventoryItem(item)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans font-medium transition-transform active:scale-98 flex justify-between items-center ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-slate-200 hover:border-emerald-500' : 'bg-white border-stone-200 hover:bg-emerald-50/30'}`}>
                         <span>{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</span>
-                        <span className="text-[9px] text-emerald-600 bg-emerald-50 px-1 rounded shrink-0">📖 霊視</span>
+                        <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0 font-bold">霊視</span>
                       </button>
-                    );
-                  })}
-                  {ownedItems.filter(id => id.startsWith('talisman_')).length === 0 && (
-                    <p className="text-xs text-stone-400 italic py-8 text-center">{lang === 'ja' ? '所持している御守はありません' : 'No sacred amulets held'}</p>
-                  )}
-                </div>
-              )}
+                    ))}
+                    {currentFilteredOwnedItems.length === 0 && (
+                      <p className="text-xs text-stone-400 italic py-8 text-center">{lang === 'ja' ? '所持している御守はありません' : 'No sacred amulets held'}</p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => equipSkin('default')} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
+                      <span>{lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'}</span>
+                      {activeSkin === 'default' && <span className="text-emerald-600 font-bold">✓</span>}
+                    </button>
+                    {currentPagedOwnedItems.map(item => {
+                      const isActive = activeSkin === item.id;
+                      return (
+                        <button key={item.id} onClick={() => equipSkin(item.id)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${isActive ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200 hover:bg-stone-50'}`}>
+                          <span>{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</span>
+                          {isActive && <span className="text-emerald-600 font-bold">✓</span>}
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
 
-              {inventoryCategory === 'skin' && (
-                <div className="grid grid-cols-1 gap-1.5">
-                  <button onClick={() => equipSkin('default')} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
-                    <span>{lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'}</span>
-                    {activeSkin === 'default' && <span className="text-emerald-600 font-bold">✓</span>}
+              {/* 5個ずつのページ切り替えコントローラー */}
+              {currentFilteredOwnedItems.length > ITEMS_PER_PAGE && (
+                <div className="flex justify-between items-center pt-4 mt-2 border-t border-dashed border-stone-200 font-sans text-xs">
+                  <button onClick={() => setInventoryPage(prev => Math.max(1, prev - 1))} disabled={inventoryPage === 1} className="px-3 py-1 bg-stone-200 rounded text-stone-700 disabled:opacity-40 font-bold">
+                    {lang === 'ja' ? '前へ' : 'Prev'}
                   </button>
-                  {SHOP_ITEMS.filter(i => i.type === 'skin').map(item => {
-                    const hasIt = ownedItems.includes(item.id);
-                    const isActive = activeSkin === item.id;
-                    if (!hasIt) return null;
-                    return (
-                      <button key={item.id} onClick={() => equipSkin(item.id)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${isActive ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200 hover:bg-stone-50'}`}>
-                        <span>{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</span>
-                        {isActive && <span className="text-emerald-600 font-bold">✓</span>}
-                      </button>
-                    );
-                  })}
+                  <span className="text-stone-500">
+                    {inventoryPage} / {totalInventoryPages}
+                  </span>
+                  <button onClick={() => setInventoryPage(prev => Math.min(totalInventoryPages, prev + 1))} disabled={inventoryPage === totalInventoryPages} className="px-3 py-1 bg-stone-200 rounded text-stone-700 disabled:opacity-40 font-bold">
+                    {lang === 'ja' ? '次へ' : 'Next'}
+                  </button>
                 </div>
               )}
             </div>
