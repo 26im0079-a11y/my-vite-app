@@ -1,9 +1,10 @@
 import { useState } from 'react';
 
-// 11の運勢と、それぞれに紐づく複数のお告げ（計60パターン）
+// 11の運勢と、それぞれに紐づくお告げ
 const LUCK_DATA = [
   {
     fortune: '大吉',
+    weight: 5,
     comments: [
       '運気大いに盛んにして、何をなすにも好機なり。日々の感謝を忘れねば、さらに幸い至らん。',
       '暗闇に一筋の光明が差す如く、すべての迷いが消え去る日。自信を持って前へ進むべし。',
@@ -14,6 +15,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '吉',
+    weight: 15,
     comments: [
       '誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。',
       '地道なる歩みが実を結ぶ日なり。派手さはなくとも、確実な一歩が将来の吉を呼ぶ。',
@@ -24,6 +26,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '中吉',
+    weight: 12,
     comments: [
       '平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。',
       '日常の中に小さな奇跡が隠されている日。空の美しさや風の心地よさに目を向けるが吉。',
@@ -34,6 +37,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '小吉',
+    weight: 10,
     comments: [
       '小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。',
       '物事、腹八分目で満足するのが良い日。欲を張りすぎねば、穏やかな幸福が持続せん。',
@@ -44,6 +48,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '末吉',
+    weight: 8,
     comments: [
       '今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。',
       '物事の始まりは遅けれど、後から徐々に良くなる運気。焦りは禁物、時をじっくり待て。',
@@ -54,6 +59,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '接続大吉',
+    weight: 6,
     comments: [
       '通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。',
       '遮るものなき高速回線の如く、滞っていた作業が一気に片付く。集中力みなぎる日なり。',
@@ -65,6 +71,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '通信吉',
+    weight: 15,
     comments: [
       '電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。',
       '通知音が心地よく響く日。有益な情報や、心が温まるメッセージが舞い込む予感。',
@@ -76,6 +83,7 @@ const LUCK_DATA = [
   },
   {
     fortune: '再起動',
+    weight: 7,
     comments: [
       '頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。',
       '不要な記憶（キャッシュ）を捨てる時。古いこだわりを一度手放せば、新しい福が入り込む。',
@@ -87,17 +95,19 @@ const LUCK_DATA = [
   },
   {
     fortune: '大吉持',
+    weight: 5,
     comments: [
       '今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。',
       '種が地中でじっと芽吹くのを待つ如き時。焦らずに水をやり続ければ、やがて大輪の花が開かん。',
       '朝のうちは冴えねど、日が昇るにつれて運気うなぎ登り。夕方以降の行動に大いなる吉あり。',
-      '隠れた才能が少しずつ表に現れる兆し。新しい趣味や勉強を始めるなら、今日が最高の转換点。',
+      '隠れた才能が少しずつ表に現れる兆し。新しい趣味や勉強を始めるなら、今日が最高の転換点。',
       '他人の成功を羨む必要なし。あなたの運のピークはこれから。じっくりと実力を磨くべし。',
       '今受けている小さな苦労は、将来の大きな幸運の「前払い」なり。前を向いて歩むべし。'
     ]
   },
   {
     fortune: '平',
+    weight: 5,
     comments: [
       '良くも悪くもなく、波風の立たない平穏な日。普通であることの有り難さを噛み締めるべし。',
       '過度な期待はせず、淡々と日常をこなすのが吉。いつも通りのご飯が美味しく感じられる日。',
@@ -109,58 +119,152 @@ const LUCK_DATA = [
   },
   {
     fortune: '恐',
+    weight: 2,
     comments: [
       '少し慎重になるべき日。新しいことには手を染めず、いつものルーティンを淡々とこなすのが賢明なり。',
       '暗い夜道を歩む如く、一歩一歩を慎重に。言葉選び一つで、余計な摩擦を回避できる日なり。',
       '注意力が散漫になりやすい兆し。大事な書類の確認や、パスワードの管理は念入りに行うべし。',
       '他人の揉め事には首を突っ込まぬが吉。今日は静かに自分の作業に没頭し、早めに帰路につけ。',
       '心がざわついたら、温かい飲み物を一杯飲むべし。焦りから生まれるミスを未然に防ぐ知恵なり。',
-      '運気は一時的に低迷するも、明けない夜はなし。嵐が過ぎ去るのを待つ微く、じっと耐えるが勝ち。'
+      '運気は一時的に低迷するも、明けない夜はなし。嵐が過ぎ去るのを待つ如く、じっと耐えるが勝ち。'
     ]
   }
 ];
 
+// 🎨 吉兆の色：読み仮名を削り、すっきりした漢字のみに変更
+const LUCKY_COLORS = [
+  '漆黒', '朱赤', '琥珀色', '常盤色', '白磁', '瑠璃色', '黄金色', '茜色', 
+  '浅葱色', '藤紫', '桜色', '萌黄', '山吹色', '空色', '胡桃色', '群青', 
+  '葡萄鼠', '藍生鼠', '銀鼠', '生成色', 'ダークモードの黒', 'サイバーネオンブルー', 
+  'バグのない緑', '警告のRGBレッド', 'ピクセルゴールド', '液晶のバックライト白', 
+  'ターミナルのフォント緑', '通知バッジの赤', 'ハイパーリンクの青', '初期設定のグレー'
+];
+
+// 💻 吉兆の物：扇子などの読みも削り、洗練された表記に統一
+const LUCKY_ITEMS = [
+  'LANケーブル', 'ノイズキャンセリングヘッドホン', '温かい緑茶', '最新のガジェット', 
+  'バックアップデータ', 'キーボードクリーナー', 'お気に入りのブックマーク', '二段階認証コード', 
+  '余らせたポイント', 'ダークモードの設定', '整理されたデスクトップ', '新しいパスワード', 
+  '予備の充電器', 'ブルーライトカット眼鏡', 'クラウドストレージの空き', '静音マウス', 
+  '和紙のノート', 'お守り袋', '水引のストラップ', '木彫りの熊', 
+  '扇子', 'お気に入りの湯呑み', 'お香', '招き猫の置物', 
+  '風呂敷', 'だるまの絵画', '数珠', '絵馬', 
+  '神棚のお札', '打ち水'
+];
+
 export default function App() {
-  const [result, setResult] = useState<{ fortune: string; comment: string } | null>(null);
+  const [result, setResult] = useState<{ fortune: string; comment: string; color: string; item: string } | null>(null);
   const [isRolling, setIsRolling] = useState(false);
+  const [visitDate, setVisitDate] = useState<string>('');
+
+  const playSound = (type: 'roll' | 'success') => {
+    try {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'roll') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(150, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } else {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.6);
+      }
+    } catch (e) {
+      console.log('Audio error:', e);
+    }
+  };
 
   const drawOmikuji = () => {
     setIsRolling(true);
+    playSound('roll');
     
+    const today = new Date();
+    const jstYear = today.getFullYear();
+    const reiwaYear = jstYear - 2018;
+    const dateStr = `令和${reiwaYear}年${today.getMonth() + 1}月${today.getDate()}日`;
+    setVisitDate(dateStr);
+
     setTimeout(() => {
-      // 1. まず11種類の中から運勢をランダムに選ぶ
-      const randomGroup = LUCK_DATA[Math.floor(Math.random() * LUCK_DATA.length)];
-      // 2. 選んだ運勢のコメント配列（comments）の中から、さらにお告げをランダムに選ぶ
-      const randomComment = randomGroup.comments[Math.floor(Math.random() * randomGroup.comments.length)];
+      const totalWeight = LUCK_DATA.reduce((sum, item) => sum + item.weight, 0);
+      let randomNum = Math.floor(Math.random() * totalWeight);
+      
+      let selectedGroup = LUCK_DATA[0];
+      for (const group of LUCK_DATA) {
+        if (randomNum < group.weight) {
+          selectedGroup = group;
+          break;
+        }
+        randomNum -= group.weight;
+      }
+
+      const randomComment = selectedGroup.comments[Math.floor(Math.random() * selectedGroup.comments.length)];
+      const randomColor = LUCKY_COLORS[Math.floor(Math.random() * LUCKY_COLORS.length)];
+      const randomItem = LUCKY_ITEMS[Math.floor(Math.random() * LUCKY_ITEMS.length)];
       
       setResult({
-        fortune: randomGroup.fortune,
-        comment: randomComment
+        fortune: selectedGroup.fortune,
+        comment: randomComment,
+        color: randomColor,
+        item: randomItem
       });
+      
       setIsRolling(false);
+      playSound('success');
     }, 600);
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-4 text-stone-900">
+    <div 
+      className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-4 text-stone-900 select-none"
+      style={{
+        backgroundImage: 'linear-gradient(rgba(139, 92, 26, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 92, 26, 0.03) 1px, transparent 1px)',
+        backgroundSize: '20px 20px'
+      }}
+    >
       <div className="max-w-md w-full bg-stone-50 rounded-lg shadow-2xl p-8 border-4 border-red-700 text-center relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-3 bg-red-700"></div>
         
+        {visitDate && (
+          <div className="text-[11px] text-stone-500 font-serif tracking-widest absolute top-5 right-6 animate-fade-in">
+            {visitDate} 参拝
+          </div>
+        )}
+
         <h1 className="text-4xl font-bold text-red-800 my-6 font-serif tracking-widest">御神籤</h1>
 
-        <div className="min-h-[160px] flex flex-col items-center justify-center bg-stone-100 rounded border border-stone-300 p-6 mb-8 shadow-inner">
+        <div className="min-h-[220px] flex flex-col items-center justify-center bg-stone-100 rounded border border-stone-300 p-6 mb-8 shadow-inner">
           {isRolling ? (
             <div className="text-lg font-medium text-red-700 animate-pulse tracking-widest font-serif">
               御神意を伺っております...
             </div>
           ) : result ? (
-            <div className="animate-fade-in font-serif">
+            <div className="animate-fade-in font-serif w-full">
               <div className="text-4xl sm:text-5xl font-black text-red-700 mb-4 tracking-widest border-b-2 border-red-700/20 pb-2 px-6 inline-block">
                 {result.fortune}
               </div>
-              <p className="text-stone-700 text-sm leading-relaxed text-left px-2 font-sans tracking-wide">
+              <p className="text-stone-700 text-sm leading-relaxed text-left px-2 font-sans tracking-wide mb-4">
                 {result.comment}
               </p>
+              
+              <div className="border-t border-dashed border-stone-300 pt-3 mt-2 text-xs font-serif text-stone-600 bg-stone-50/50 py-3 rounded flex flex-col gap-1 px-4 text-left">
+                <div><span className="text-red-700 font-bold">吉兆の色：</span>{result.color}</div>
+                <div><span className="text-red-700 font-bold">吉兆の物：</span>{result.item}</div>
+              </div>
             </div>
           ) : (
             <div className="text-stone-400 text-sm tracking-wider font-serif">
