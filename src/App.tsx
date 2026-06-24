@@ -25,7 +25,7 @@ const SHOP_ITEMS: ShopItem[] = [
   // --- 🪙 1両で買えるお遊びアイテム (3種) ---
   { id: 'talisman_cheap_1', nameJa: '埃をかぶった記憶媒体', nameEn: 'Dusty Storage Medium', nameTw: '落滿灰塵的儲存媒介', nameCn: '落满灰尘的储存媒介', descJa: '不思議な力を感じる。中には大昔の怪文書のようなログが一行だけ刻まれている。', descEn: 'You feel a mysterious force. Inside, a single row of ancient bizarre text remains.', descTw: '散發著神祕的力量。內部僅刻有一行宛如遠古怪文書的日誌。', descCn: '散发着神秘的力量。内部仅刻有一行宛如远古怪文书的日志。', price: 1, type: 'talisman' },
   { id: 'talisman_cheap_2', nameJa: 'ちぎれた錫線', nameEn: 'Torn Solder Wire', nameTw: '斷裂的錫線', nameCn: '断裂的锡线', descJa: 'ただのゴミに見えるが、時折かすかに16進数の電磁波を放っているような気がする。', descEn: 'Looks like trash, but it seems to emit faint hexadecimal electromagnetic waves.', descTw: '看似只是廢棄物，但總覺得偶爾會釋放出微弱的十六進位電磁波。', descCn: '看似只是废弃物，总觉得偶尔会释放出微弱的十六进制电磁波。', price: 1, type: 'talisman' },
-  { id: 'talisman_cheap_3', nameJa: '古びたキートップ', nameEn: 'Ancient Keycap', nameTw: '古舊的鍵帽', nameCn: '古旧的键帽', descJa: '「Esc」と書かれている。この神社からログアウトするための鍵だったのかもしれない。', descEn: 'Engraved with "Esc". Perhaps it was once a key used to log out of this shrine.', descTw: '刻有「Esc」字樣。這或許曾是逃離這座神社、登出系統的關鍵鑰匙。', descCn: '刻有“Esc”字样。这或许曾是逃离这座神社、登出系统的关键钥匙。', price: 1, type: 'talisman' },
+  { id: 'talisman_cheap_3', nameJa: '古びたキートップ', nameEn: 'Ancient Keycap', nameTw: '古舊的鍵帽', nameCn: '古旧的键帽', descJa: '「Esc」と書かれている。この神社からログアウトするための鍵だったのかもしれない。', descEn: 'Engraved with "Esc". Perhaps it was once a key used to log out of this shrine.', descTw: '刻有「Esc」字樣。這或許曾是逃離這座神社、登出系統的關鍵鑰匙。', descCn: '刻有“Esc”字样。这或许曾逃离这座神社、登出系统的关键钥匙。', price: 1, type: 'talisman' },
 
   // --- 🌙 夜間限定アイテム (5種) ---
   { id: 'talisman_night_1', nameJa: '常夜の電脳黒魔術骨董', nameEn: 'Nocturnal Cyber Relic', nameTw: '常夜電腦黑魔法古董', nameCn: '常夜电脑黑魔法古董', descJa: '【夜間限定】丑三つ時にのみ製造可能とされる、ダークネットの禁忌の塊。', descEn: '【Night Only】A taboo package from the darknet, craftable only during the witching hour.', descTw: '【夜間限定】據傳僅能在丑時三刻製造、源自暗網的禁忌之物。', descCn: '【夜间限定】据传仅能在丑时三刻制造、源自暗网的禁忌之物。', price: 666, type: 'talisman', isNightOnly: true },
@@ -54,7 +54,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_17', nameJa: 'ダークモード調和の眼帯', nameEn: 'Darkmode Harmony Eyepatch', nameTw: '深色模式調和眼罩', nameCn: '深色模式调和眼罩', descJa: '過酷なブルーライトの光芒から、あなたの網膜と精神の平穏を守る。', descEn: 'Shields your retina and inner peace from harsh blue light emissions.', descTw: '從殘酷的藍光光芒中，守護您的視網膜與精神防線。', descCn: '从残酷的蓝光光芒中，守护您的视网膜与精神防线。', price: 190, type: 'talisman' },
   { id: 'talisman_gen_18', nameJa: 'レスポンシブ自在の折り紙', nameEn: 'Fluid Responsive Origami', nameTw: '響應式變幻自在折紙', nameCn: '响应式变幻自在折纸', descJa: 'どんな狭い世界（画面幅）に押し込められても、美しく形を変えて適応する。', descEn: 'Beautifully adapts and shapes itself to any cramped viewport.', descTw: '不論被塞進多麼狹窄的世界（螢幕寬度），皆能優美變形完美適應。', descCn: '不论被塞进多么狭窄的世界（屏幕宽度），皆能优美变形完美适应。', price: 210, type: 'talisman' },
   { id: 'talisman_gen_19', nameJa: 'CSSレガシー打破の熊手', nameEn: 'Legacy CSS Breaker', nameTw: 'CSS舊代遺產打破熊手', nameCn: 'CSS旧代遗产打破熊手', descJa: '太古のブラウザ仕様による表示崩れを、力強くかき集めて成敗する。', descEn: 'Aggressively sweeps away layout breakages caused by ancient browsers.', descTw: '強力掃除並懲治因太古瀏覽器規格所導致的排版崩壞。', descCn: '强力清除并惩治因太古浏览器规格所导致的排版崩坏。', price: 240, type: 'talisman' },
-  { id: 'talisman_gen_20', nameJa: 'アセット圧縮・軽量化の瓢箪', nameEn: 'Asset Compression Gourd', nameTw: '資產壓縮・輕量化葫蘆', nameCn: '资产压缩・轻量化葫芦', descJa: '肥大化したカルマ（ファイルサイズ）を吸い込み、限界まで凝縮して軽快にする。', descEn: 'Sucks in bloated karma file sizes, compressing them to lightweight forms.', descTw: '吸入肥大化的因果業報（檔案體積），極限凝聚使其重獲輕盈。', descCn: '吸入肥大化的因果业报（文件体积），极限凝聚使其重获轻盈。', price: 170, type: 'talisman' },
+  { id: 'talisman_gen_20', nameJa: 'アasset圧縮・軽量化の瓢箪', nameEn: 'Asset Compression Gourd', nameTw: '資產壓縮・輕量化葫蘆', nameCn: '资产压缩・轻量化葫芦', descJa: '肥大化したカルマ（ファイルサイズ）を吸い込み、限界まで凝縮して軽快にする。', descEn: 'Sucks in bloated karma file sizes, compressing them to lightweight forms.', descTw: '吸入肥大化的因果業報（檔案體積），極限凝聚使其重獲輕盈。', descCn: '吸入肥大化的因果业报（文件体积），极限凝聚使其重获轻盈。', price: 170, type: 'talisman' },
   { id: 'talisman_gen_21', nameJa: '進捗百発百中勾玉', nameEn: '100% Progress Magatama', nameTw: '進度百發百中勾玉', nameCn: '进度百发百中勾玉', descJa: '予定通りのマイルストーンを刻み、遅延の悪霊を徹底的に寄せ付けない。', descEn: 'Marks milestones as scheduled, permanently dynamic against delay specters.', descTw: '精準刻劃如期規劃的里程碑，澈底杜絕拖延惡靈近身。', descCn: '精准刻划如期规划的里程碑，澈底杜绝拖延恶灵近身。', price: 400, type: 'talisman' },
   { id: 'talisman_gen_22', nameJa: '定例会議短縮化のお札', nameEn: 'Meeting Shortener Stamp', nameTw: '例行會議縮短神符', nameCn: '例行会议缩短神符', descJa: '形骸化した儀式（不毛な会議）の時間を神速で消化し、実作業の時を捻出する。', descEn: 'Consumes ceremonial wasted hours at godspeed, creating true dev hours.', descTw: '以神速消化流於形式的儀式（枯燥會議），爭取真正實作的寶貴時間。', descCn: '以神速消化流于形式的仪式（枯燥会议），争取真正实作的宝贵时间。', price: 150, type: 'talisman' },
   { id: 'talisman_gen_23', nameJa: '見積もり過小評価魔除守', nameEn: 'Estimation Safety Charm', nameTw: '時程低估防範魔除守', nameCn: '时程低估防范魔除守', descJa: '人間の楽観が生み出す「1日で終わります」という呪いを打ち砕き、安全圏を確保。', descEn: 'Crushes the human optimistic curse: "It takes just 1 day," securing buffers.', descTw: '粉碎人類盲目樂觀所產生的「一天內就能搞定」魔咒，確保安全緩衝。', descCn: '粉碎人类盲目乐观所产生的“一天内就能搞定”魔咒，确保安全缓冲。', price: 320, type: 'talisman' },
@@ -64,9 +64,9 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_27', nameJa: 'ガリガリ稼働・冷却扇子', nameEn: 'Cooling Engine Fan', nameTw: '瘋狂運轉・冷卻扇子', nameCn: '疯狂运转・冷却扇子', descJa: '演算によって熱を帯びた脳髄（CPU）へ涼風を送り、熱暴走を抑える。', descEn: 'Blows cool wind into computing-heated CPUs to suppress thermal runaways.', descTw: '為因高速運算而發熱的腦髓（CPU）送去涼風，抑制熱暴走。', descCn: '为因高速运算而发热的脑髓（CPU）送去凉风，抑制热暴走。', price: 160, type: 'talisman' },
   { id: 'talisman_gen_28', nameJa: 'テストカバレッジ上昇の幣束', nameEn: 'Coverage Expansion Wand', nameTw: '測試覆蓋率上升幣束', nameCn: '测试覆盖率上升币束', descJa: '振るうことで、テストの網の目が広がり、あらゆるバグの侵入を許さない。', descEn: 'Waving it widens the test net, preventing any bugs from slipping through.', descTw: '揮舞此幣束能擴大測試防護網，絕不容許任何漏洞隱瞞。', descCn: '挥舞此币束能扩大测试防护网，绝不容许任何漏洞隐瞒。', price: 390, type: 'talisman' },
   { id: 'talisman_gen_29', nameJa: 'デバッガ追跡の探知灯', nameEn: 'Debugger Searchlight', nameTw: '偵錯追蹤探照燈', nameCn: '侦错追踪探照灯', descJa: '深い闇に潜むバグの潜伏場所を特定し、スタックトレースを明瞭に照らし出す。', descEn: 'Locates deep-seated bugs, brightly illuminating stack traces.', descTw: '精準鎖定潛藏於深邃暗處的程式錯誤，將堆疊追蹤照得一清二楚。', descCn: '精准锁定潜藏于深邃暗处的程序错误，将堆栈追踪照得一清二楚。', price: 230, type: 'talisman' },
-  { id: 'talisman_gen_30', nameJa: 'ステータスコード200の祝詞', nameEn: 'HTTP 200 Blessing', nameTw: '狀態碼200神聖祝詞', nameCn: '状态码200神圣祝词', descJa: '全てが正常であり、世界が調和に満ちていることを宣言するお祓いの言葉。', descEn: 'Declares that everything is normal and the world is in perfect harmony.', descTw: '宣告一切正常運作、世界充滿和諧的淨化神聖祝詞。', descCn: '宣告一切正常运作、世界充满和谐的净化神圣祝词。', price: 500, type: 'talisman' },
+  { id: 'talisman_gen_30', nameJa: 'ステータスコード200の祝詞', nameEn: 'HTTP 200 Blessing', nameTw: '狀態碼200神聖祝詞', nameCn: '状态码200神圣祝词', descJa: '全てが正常であり、世界が調和に満ちていることを宣言するお祓いの言葉。', descEn: 'Declares that everything is normal and the world is in perfect harmony.', descTw: '宣告一切正常運作、世界充滿和諧的淨化神聖祝詞。', descCn: '宣告一切正常运作、世界充满和谐的净化神圣词。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_31', nameJa: 'クロスドメイン突破の通行手形', nameEn: 'CORS Freedom Pass', nameTw: '跨網域突破通行手形', nameCn: '跨网域突破通行手形', descJa: 'ブラウザが課す厳しい境界線をすり抜け、自由なデータ交信を許可する。', descEn: 'Slips through strict browser boundaries to allow free cross-domain talk.', descTw: '穿透瀏覽器施加的嚴格邊界鐵幕，允許自由進行跨網域數據通信。', descCn: '穿透浏览器施加的严格边界铁幕，允许自由进行跨网域数据通信。', price: 220, type: 'talisman' },
-  { id: 'talisman_gen_32', nameJa: '環境変数秘匿のお守り', nameEn: 'Env Secret Keeper', nameTw: '環境變數秘匿御守', nameCn: '环境变量秘匿御守', descJa: '漏洩してはならない鍵（パスワード）を、胸の奥深くに隠して守る。', descEn: 'Hides critical passwords deep in its chest, preventing credential leaks.', descTw: '將端不可外洩的金鑰（密碼）深藏於胸中內核，嚴加防護。', descCn: '将绝不可外泄的金钥（密码）深藏于胸中内核，严加防护。', price: 350, type: 'talisman' },
+  { id: 'talisman_gen_32', nameJa: '環境変数秘匿のお守り', nameEn: 'Env Secret Keeper', nameTw: '環境變數秘匿御守', nameCn: '环境变量秘匿御守', descJa: '漏洩してはならない鍵（パスワード）を、胸の奥深くに隠して守る。', descEn: 'Hides critical passwords deep in its chest, preventing credential leaks.', descTw: '將關鍵不可外洩的金鑰（密碼）深藏於胸中內核，嚴加防護。', descCn: '将关键不可外泄的金钥（密码）深藏于胸中内核，严加防护。', price: 350, type: 'talisman' },
   { id: 'talisman_gen_33', nameJa: 'スクレイピング円滑化の潤滑油', nameEn: 'Smooth Scraping Oil', nameTw: '網頁爬蟲圓滑潤滑油', nameCn: '网页爬虫圆滑润滑油', descJa: 'ブロックされることなく、情報の海から必要な真実だけをスムーズに掬い取る。', descEn: 'Smoothly scoops facts from information seas without triggering blocks.', descTw: '在免於被封鎖的前提下，從資訊汪洋中流暢撈取所需的真相。', descCn: '在免于被封锁的前提下，从资讯汪洋中流畅捞取所需的真相。', price: 180, type: 'talisman' },
   { id: 'talisman_gen_34', nameJa: 'Webhook即時着荷の飛脚鳥', nameEn: 'Webhook Instant Bird', nameTw: 'Webhook即時著陸飛腳鳥', nameCn: 'Webhook即时着陆飞脚鸟', descJa: 'イベントの発生を1ミリ秒の遅れもなく、目的の場所へと届ける伝書鳥。', descEn: 'An event messenger bird that delivers updates with zero milliseconds delay.', descTw: '不帶一毫秒延遲、將事件發生動態精準送達目的地的傳書飛鳥。', descCn: '不带一毫秒延迟、将事件发生动态精准送达目的地的传书飞鸟。', price: 260, type: 'talisman' },
   { id: 'talisman_gen_35', nameJa: '依存パッケージ安定の楔', nameEn: 'Dependency Lock Wedge', nameTw: '依賴套件安定之楔', nameCn: '依赖套件安定之楔', descJa: '他人の作った土台（ライブラリ）の突然の破壊的変更から、我が身を固定して守る。', descEn: 'Locks your feet to guard against sudden breaks in third-party libraries.', descTw: '當他人構建的基石（函式庫）發生突發性破壞變更時，牢牢固定自我免受衝擊。', descCn: '当他人构建的基石（函数库）发生突发性破坏变更时，牢牢固定自我免受冲击。', price: 300, type: 'talisman' },
@@ -74,7 +74,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_37', nameJa: 'ダークウェブ流入防御の結界', nameEn: 'Darkweb Border Barrier', nameTw: '暗網流入防禦結界', nameCn: '暗网流入防御结界', descJa: '悪意に満ちた闇の世界から差し込まれる触手を、光の壁で遮断する。', descEn: 'Blocks malicious tentacles reaching out from deep internet underworlds.', descTw: '以光之壁障徹底阻絕自充滿惡意的暗黑世界延伸而來的觸手。', descCn: '以光之壁障彻底阻绝自充满恶意的暗黑世界延伸而来的触手。', price: 470, type: 'talisman' },
   { id: 'talisman_gen_38', nameJa: '正規表現一発的中の一線', nameEn: 'Regex Perfect Match Line', nameTw: '正規表示式一擊命中線', nameCn: '正则表达式一击命中线', descJa: 'どれだけ複雑に入り組んだ文字列の迷宮からも、意図した獲物を一瞬で見つけ出す。', descEn: 'Finds target text in complex string string-mazes instantly.', descTw: '不論多麼複雜交錯的字串迷宮，皆能在一瞬間精確揪出目標獵物。', descCn: '不论多么复杂交错的字符串迷宫，皆能在一瞬间精确揪出目标猎物。', price: 200, type: 'talisman' },
   { id: 'talisman_gen_39', nameJa: 'ローカルホスト繁盛の盛り塩', nameEn: 'Localhost Prosperity Salt', nameTw: '本地主機繁榮盛り塩', nameCn: '本地主机繁荣盛り盐', descJa: '自分の開発領域（127.0.0.1）を清め、最高のひらめきをもたらす聖なる塩。', descEn: 'Purifies your dev space (127.0.0.1), bringing supreme inspirations.', descTw: '淨化屬於自己的開發聖域（127.0.0.1），招來絕佳靈感的純潔之鹽。', descCn: '净化属于自己的开发圣域（127.0.0.1），招来绝佳灵感的纯洁之盐。', price: 110, type: 'talisman' },
-  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平静、悄然融入和谐。', price: 500, type: 'talisman' },
+  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平浪静、悄然融入和谐。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_41', nameJa: '神隠しパケット回収の網', nameEn: 'Lost Packet Fishing Net', nameTw: '神隱封包回收漁網', nameCn: '神隐封包回收渔网', descJa: '回線の狭間で神隠しに遭った迷子のパケットたちを漏らさず救い出す。', descEn: 'Rescues orphan packets that went missing in network rifts.', descTw: '將在網路裂縫間遭遇神隱、流離失所的迷途封包悉數搜救歸隊。', descCn: '将在网络裂缝间遭遇神隐、流离失所的迷途封包悉数搜救归队。', price: 230, type: 'talisman' },
   { id: 'talisman_gen_42', nameJa: 'AIプロンプト意思疎通のパイプ', nameEn: 'Prompt Telepathy Pipe', nameTw: 'AI提示詞心靈感應菸斗', nameCn: 'AI提示词心灵感应烟斗', descJa: '人工知能との魂のシンクロ率を高め、一言で完璧な成果物を出力させる。', descEn: 'Boosts soul sync with AI, achieving absolute output with one phrase.', descTw: '提升與人工智慧之間的靈魂同步率，僅憑片言隻字便能引導出完美成果。', descCn: '提升与人工智能之间的灵魂同步率，仅凭片言只字便能引导出完美成果。', price: 310, type: 'talisman' },
 
@@ -192,7 +192,7 @@ export default function App() {
   const [recentScores, setRecentScores] = useState<number[]>([]);
   const [isBurning, setIsBurning] = useState(false);
 
-  // 📈 ウォレットカウントアニメーション
+  // 👑 ウォレットカウントアニメーション
   const [wallet, setWallet] = useState<number>(0);
   const [displayWallet, setDisplayWallet] = useState<number>(0);
 
@@ -246,8 +246,11 @@ export default function App() {
     localStorage.setItem('shrine_last_visit', todayStr);
     setVisitDays(days);
 
-    // 初期陳列は無料で実行
-    initializeShopDisplay(shopCategory);
+    // 初期陳列は御守プールから5件無料で取得
+    const nightActive = (new Date().getHours() >= 22 || new Date().getHours() < 4);
+    const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !(item.isNightOnly && !nightActive));
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    setDisplayedShopItems(shuffled.slice(0, 5));
   }, []);
 
   const saveMasterState = (nextHistory: any, nextDates: any, nextWallet: number, nextOwned: string[], nextSkin: string) => {
@@ -261,31 +264,18 @@ export default function App() {
     return hour >= 22 || hour < 4;
   };
 
-  // 🎰 授与所のアイテムプール取得と陳列生成（共通処理）
-  const initializeShopDisplay = (category: CategoryMode) => {
-    const nightActive = isNightTime();
-    const pool = SHOP_ITEMS.filter(item => {
-      if (item.type !== category) return false;
-      if (item.isNightOnly && !nightActive) return false;
-      return true;
-    });
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    setDisplayedShopItems(shuffled.slice(0, 5));
-  };
-
-  // 🔄 手動での「陳列更新（10両）」実行処理
+  // 🔄 手動での「陳列更新（10両）」実行処理（御守プールのみを5件シャッフル更新）
   const refreshShopItemsManual = () => {
     if (wallet < 10) return;
     const nextWallet = wallet - 10;
     setWallet(nextWallet);
     saveMasterState(history, lastDates, nextWallet, ownedItems, activeSkin);
-    initializeShopDisplay(shopCategory);
+    
+    const nightActive = isNightTime();
+    const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !(item.isNightOnly && !nightActive));
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    setDisplayedShopItems(shuffled.slice(0, 5));
   };
-
-  // カテゴリが切り替わった時はお金を減らさずに再陳列
-  useEffect(() => {
-    initializeShopDisplay(shopCategory);
-  }, [shopCategory]);
 
   // 所持タブのカテゴリ切り替え時はページを1に戻す
   useEffect(() => {
@@ -486,6 +476,11 @@ export default function App() {
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentPagedOwnedItems = currentFilteredOwnedItems.slice(indexOfFirstItem, indexOfLastItem);
 
+  // 🎰 授与所の表示用データ定義（御守ならシャッフル済みの5件、背景なら全5件をそのまま表示）
+  const currentShopItems = shopCategory === 'talisman' 
+    ? displayedShopItems 
+    : SHOP_ITEMS.filter(item => item.type === 'skin');
+
   return (
     <div className={`min-h-screen flex flex-col items-center justify-start pt-4 pb-24 p-4 select-none relative overflow-x-hidden transition-all duration-700 ${getBackgroundClass()} ${getFontFamilyClass()}`}>
       
@@ -574,10 +569,14 @@ export default function App() {
               <h2 className="text-lg font-bold text-amber-600 tracking-widest">
                 {lang === 'ja' ? '電脳授与所' : lang === 'en' ? 'Cyber Shop' : '電腦授與所'}
               </h2>
-              {/* 🔄 陳列更新ボタン (マークを削除) */}
-              <button onClick={refreshShopItemsManual} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
-                {lang === 'ja' ? '陳列更新' : 'Refresh'} (10{getCurrencyUnit()})
-              </button>
+              {/* 🔄 陳列更新ボタン (御守の時のみ有効、背景仕様時は隠す) */}
+              {shopCategory === 'talisman' ? (
+                <button onClick={refreshShopItemsManual} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
+                  {lang === 'ja' ? '陳列更新' : 'Refresh'} (10{getCurrencyUnit()})
+                </button>
+              ) : (
+                <div className="text-[10px] text-stone-400 italic px-2 py-1">全品常時陳列</div>
+              )}
             </div>
 
             {/* 📌 Sticky カテゴリボタン */}
@@ -590,9 +589,9 @@ export default function App() {
               </button>
             </div>
 
-            {/* 常に5件のみ表示 */}
+            {/* アイテム陳列グリッド */}
             <div className="grid grid-cols-1 gap-2 min-h-[240px] content-start">
-              {displayedShopItems.map(item => {
+              {currentShopItems.map(item => {
                 const isOwned = ownedItems.includes(item.id);
                 const canBuy = wallet >= item.price;
                 return (
@@ -607,9 +606,9 @@ export default function App() {
                   </button>
                 );
               })}
-              {displayedShopItems.length === 0 && (
+              {currentShopItems.length === 0 && (
                 <p className="text-xs text-stone-400 italic py-6 text-center">
-                  {lang === 'ja' ? '陳列アイテムがありません。更新してください。' : 'No items displayed. Try refreshing.'}
+                  {lang === 'ja' ? '陳列アイテムがありません。' : 'No items displayed.'}
                 </p>
               )}
             </div>
@@ -638,7 +637,7 @@ export default function App() {
                 {inventoryCategory === 'talisman' ? (
                   <>
                     {currentPagedOwnedItems.map(item => (
-                      <button key={item.id} onClick={() => setSelectedInventoryItem(item)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans font-medium transition-transform active:scale-98 flex justify-between items-center ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-slate-200 hover:border-emerald-500' : 'bg-white border-stone-200 hover:bg-emerald-50/30'}`}>
+                      <button key={item.id} onClick={() => setSelectedInventoryItem(item)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans font-medium transition-transform active:scale-98 flex justify-between items-center ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-slate-2200 hover:border-emerald-500' : 'bg-white border-stone-200 hover:bg-emerald-50/30'}`}>
                         <span>{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</span>
                         <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0 font-bold">霊視</span>
                       </button>
@@ -649,10 +648,12 @@ export default function App() {
                   </>
                 ) : (
                   <>
-                    <button onClick={() => equipSkin('default')} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
-                      <span>{lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'}</span>
-                      {activeSkin === 'default' && <span className="text-emerald-600 font-bold">✓</span>}
-                    </button>
+                    {inventoryPage === 1 && (
+                      <button onClick={() => equipSkin('default')} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
+                        <span>{lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'}</span>
+                        {activeSkin === 'default' && <span className="text-emerald-600 font-bold">✓</span>}
+                      </button>
+                    )}
                     {currentPagedOwnedItems.map(item => {
                       const isActive = activeSkin === item.id;
                       return (
