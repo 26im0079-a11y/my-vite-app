@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 
 type LangMode = 'ja' | 'en' | 'zh_tw' | 'zh_cn';
-type TabMode = 'omikuji' | 'shop' | 'inventory' | 'goshuin'; // 📱 4タブ構成へ拡張
+type TabMode = 'omikuji' | 'shop' | 'inventory' | 'goshuin';
+type CategoryMode = 'talisman' | 'skin'; // 📂 カテゴリ切り替え用
 
-type ShopItem = { id: string; nameJa: string; nameEn: string; nameTw: string; nameCn: string; price: number; type: 'talisman' | 'skin' };
+type ShopItem = { id: string; nameJa: string; nameEn: string; nameTw: string; nameCn: string; price: number; type: CategoryMode };
 
-// 🛒 増量された授与所データ（絵文字・「背景：」接頭辞を削除、全10種類）
+// 授与所データ
 const SHOP_ITEMS: ShopItem[] = [
   // 御守・護符（5種類）
   { id: 'talisman_bug', nameJa: '無病息災・バグ退散札', nameEn: 'Anti-Bug Talisman', nameTw: '驅逐程式錯誤符', nameCn: '驱逐程序错误符', price: 150, type: 'talisman' },
@@ -30,7 +31,7 @@ const LUCK_DATA = [
   { fortuneJa: '吉', fortuneEn: 'Good Luck', fortuneTw: '吉', fortuneCn: '吉', weight: 150, btnJa: '吉を広げる', btnEn: 'Expand Good Fortune', btnTw: '展延吉兆', btnCn: '展延吉兆', commentsJa: ['誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。'], commentsEn: ['Act with a sincere heart, and your path will open naturally. Wait patiently without rushing.'], commentsTw: ['若以誠懇之心待人處事，前路自會豁然開朗。切勿焦躁，靜待時機。'], commentsCn: ['若以诚恳之心待人处事，前路自会豁然开朗。切勿焦躁，静待时机。'] },
   { fortuneJa: '中吉', fortuneEn: 'Middle Luck', fortuneTw: '中吉', fortuneCn: '中吉', weight: 120, btnJa: '縁を結ぶ', btnEn: 'Nurture Harmony', btnTw: '廣結善緣', btnCn: '广结善缘', commentsJa: ['平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。'], commentsEn: ['Signs of peaceful happiness. Value harmony and show kindness to those around you.'], commentsTw: ['此乃獲得平穩幸福之兆。當注重身心調和，多加關懷身邊之人。'], commentsCn: ['此乃获得平稳幸福之兆。当注重身心调和，多加关怀身边之人。'] },
   { fortuneJa: '小吉', fortuneEn: 'Small Luck', fortuneTw: '小吉', fortuneCn: '小吉', weight: 100, btnJa: '歩みを進める', btnEn: 'Step Forward', btnTw: '漫步向前', btnCn: '漫步向前', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.'], commentsTw: ['小驚喜接連不斷的一天。但切記不可掉以輕心，凡事穩紮穩打為上。'], commentsCn: ['小惊喜接连不断的一天。但切记不可掉以轻心，凡事稳扎稳打为上。'] },
-  { fortuneJa: '末吉', fortuneEn: 'Future Luck', fortuneTw: '末吉', fortuneCn: '末吉', weight: 80, btnJa: '時を待つ', btnEn: 'Await the Hour', btnTw: '靜候時機', btnCn: '静候时机', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.'], commentsTw: ['當下為蓄精儲銳之時。宜靜心沉著，品一盞溫茶，好好休養生息。'], commentsCn: ['当下为蓄精储锐之时。宜静心沉著，品一盏温茶，好好休养生息。'] },
+  { fortuneJa: '末吉', fortuneEn: 'Future Luck', fortuneTw: '末吉', fortuneCn: '末吉', weight: 80, btnJa: '時を待つ', btnEn: 'Await the Hour', btnTw: '靜候時機', btnCn: '静候时机', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.'], commentsTw: ['當看為蓄精儲銳之時。宜靜心沉著，品一盞溫茶，好好休養生息。'], commentsCn: ['当下为蓄精储锐之时。宜静心沉著，品一盏温茶，好好修养生息。'] },
   { fortuneJa: '接続大吉', fortuneEn: 'Max Connection Luck', fortuneTw: '連線大吉', fortuneCn: '连线大吉', weight: 60, btnJa: '帯域を広げる', btnEn: 'Maximize Bandwidth', btnTw: '拓寬頻寬', btnCn: '拓宽带宽', commentsJa: ['通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。'], commentsEn: ['Network speed is soaring; videos load instantly. All connections and relationships thrive.'], commentsTw: ['網路速度大幅提升，影片載入僅在瞬間。今日所連結之一切緣分皆順暢無阻。'], commentsCn: ['网络速度大幅提升，视频加载仅在瞬间。今日所连结之一切缘分皆顺畅无阻。'] },
   { fortuneJa: '通信吉', fortuneEn: 'Stable Connection Luck', fortuneTw: '通訊吉', fortuneCn: '通讯吉', weight: 150, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', btnTw: '保持同步', btnCn: '保持同步', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.'], commentsTw: ['訊號通暢無比。近期似乎會有久未聯絡的舊友，突然傳來令人欣喜的訊息。'], commentsCn: ['信号通畅无比。近期似乎会有久未联络的旧友，突然传来令人欣喜的讯息。'] },
   { fortuneJa: '再起動', fortuneEn: 'System Reboot', fortuneTw: '系統重啟', fortuneCn: '系统重启', weight: 70, btnJa: '新たに紡ぐ', btnEn: 'Reboot Anew', btnTw: '重新啟航', btnCn: '重新启航', commentsJa: ['頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。'], commentsEn: ['If your mind feels heavy, take a long sleep. Refresh your body and soul to reboot your luck.'], commentsTw: ['若感到思緒沉重，切勿硬撐，早些入眠為妙。身心徹底重整後，運勢將大幅好轉。'], commentsCn: ['若感到思绪沉重，切勿硬撑，早些入眠为妙。身心彻底重整后，运势将大幅好转。'] },
@@ -77,6 +78,11 @@ const decodeData = (cipher: string | null): any => {
 export default function App() {
   const [lang, setLang] = useState<LangMode>('ja');
   const [activeTab, setActiveTab] = useState<TabMode>('omikuji');
+  
+  // 🗂️ 「授与所」と「所持」タブ内のカテゴリ状態を独立して管理
+  const [shopCategory, setShopCategory] = useState<CategoryMode>('talisman');
+  const [inventoryCategory, setInventoryCategory] = useState<CategoryMode>('talisman');
+
   const [result, setResult] = useState<{ fortune: string; comment: string; color: string; item: string; currentBtn: string } | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [visitDate, setVisitDate] = useState<string>('');
@@ -167,13 +173,12 @@ export default function App() {
       setResult({ fortune, comment, color, item, currentBtn });
       setIsRolling(false); setLastFortune(historyKey);
 
-      // 🪙 運勢の結果によるスマートな報酬の重み付け変動ロジック
       let payout = 50; 
       if (historyKey === '超大吉') payout = 1000;
-      else if (historyKey === 'システム大破') payout = -Math.floor(wallet / 2); // 所持金半減
-      else if (historyKey.includes('大吉')) payout = 150 + Math.floor(Math.random() * 50); // 150〜200両
-      else if (historyKey.includes('中吉') || historyKey === '吉' || historyKey.includes('通信')) payout = 80 + Math.floor(Math.random() * 20); // 80〜100両
-      else if (historyKey === '再起動' || historyKey === '恐') payout = 10; // 低評価エラー枠
+      else if (historyKey === 'システム大破') payout = -Math.floor(wallet / 2);
+      else if (historyKey.includes('大吉')) payout = 150 + Math.floor(Math.random() * 50);
+      else if (historyKey.includes('中吉') || historyKey === '吉' || historyKey.includes('通信')) payout = 80 + Math.floor(Math.random() * 20);
+      else if (historyKey === '再起動' || historyKey === '恐') payout = 10;
 
       const nextWallet = Math.max(0, wallet + payout);
       setWallet(nextWallet);
@@ -217,7 +222,6 @@ export default function App() {
   const unlockedCount = FORTUNE_ORDER.filter(luck => history[luck] > 0).length;
   const completionRate = Math.round((unlockedCount / FORTUNE_ORDER.length) * 100);
 
-  // 動的背景スタイルの適用
   const getBackgroundClass = () => {
     if (activeSkin === 'wallpaper_gold') return 'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200';
     if (activeSkin === 'wallpaper_neon') return 'bg-slate-900 text-stone-100';
@@ -249,7 +253,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* 🎛️ 画面表示切替エリア */}
+      {/* 🎛️ メイン画面表示エリア */}
       <div className="max-w-md w-full flex-1 flex flex-col justify-center">
         
         {/* TAB 1: おみくじ */}
@@ -291,89 +295,92 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 2: 電脳授与所（ショップ）アイコンマークを全廃 */}
+        {/* TAB 2: 電脳授与所（ショップ） */}
         {activeTab === 'shop' && (
           <div className={`w-full rounded-lg shadow-xl p-6 border-2 border-amber-500 animate-fade-in ${activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark' ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
-            <h2 className="text-xl font-bold text-amber-600 border-b pb-2 mb-4 tracking-widest">
+            <h2 className="text-xl font-bold text-amber-600 border-b pb-3 mb-4 tracking-widest">
               {lang === 'ja' ? '電脳授与所' : lang === 'en' ? 'Cyber Shop' : '電腦授與所'}
             </h2>
 
-            <div className="mb-6">
-              <h3 className="text-xs font-bold text-stone-400 tracking-wider mb-2">✦ {lang === 'ja' ? '御守・護符' : 'Sacred Amulets'}</h3>
-              <div className="grid grid-cols-1 gap-2">
-                {SHOP_ITEMS.filter(i => i.type === 'talisman').map(item => {
-                  const isOwned = ownedItems.includes(item.id);
-                  const canBuy = wallet >= item.price;
-                  return (
-                    <button key={item.id} onClick={() => buyItem(item)} disabled={isOwned || !canBuy} className={`p-3 rounded border text-left flex justify-between items-center transition-all ${isOwned ? 'bg-stone-200/50 text-stone-400 border-stone-300' : canBuy ? 'bg-amber-50/50 border-amber-200 hover:bg-amber-100/50' : 'bg-stone-100 text-stone-400 border-stone-200'}`}>
-                      <div className="font-sans text-xs font-medium">{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</div>
-                      <span className="font-sans text-xs font-bold text-amber-600">{isOwned ? (lang === 'ja' ? '拝受済' : 'Owned') : `🪙 ${item.price}`}</span>
-                    </button>
-                  );
-                })}
-              </div>
+            {/* 🎛️ 授与所のカテゴリ切り替え用切り替えボタン */}
+            <div className="flex gap-2 mb-4 font-sans text-xs">
+              <button onClick={() => setShopCategory('talisman')} className={`flex-1 py-2 rounded border font-bold transition-all ${shopCategory === 'talisman' ? 'bg-amber-500 text-stone-950 border-amber-600 shadow-sm' : 'bg-stone-200/60 border-stone-300 text-stone-600 hover:bg-stone-200'}`}>
+                {lang === 'ja' ? '御守・護符' : 'Amulets'}
+              </button>
+              <button onClick={() => setShopCategory('skin')} className={`flex-1 py-2 rounded border font-bold transition-all ${shopCategory === 'skin' ? 'bg-amber-500 text-stone-950 border-amber-600 shadow-sm' : 'bg-stone-200/60 border-stone-300 text-stone-600 hover:bg-stone-200'}`}>
+                {lang === 'ja' ? '背景仕様' : 'Backgrounds'}
+              </button>
             </div>
 
-            <div>
-              <h3 className="text-xs font-bold text-stone-400 tracking-wider mb-2">✦ {lang === 'ja' ? '背景仕様' : 'Background Skins'}</h3>
-              <div className="grid grid-cols-1 gap-2">
-                {SHOP_ITEMS.filter(i => i.type === 'skin').map(item => {
-                  const isOwned = ownedItems.includes(item.id);
-                  const canBuy = wallet >= item.price;
-                  return (
-                    <button key={item.id} onClick={() => buyItem(item)} disabled={isOwned || !canBuy} className={`p-3 rounded border text-left flex justify-between items-center transition-all ${isOwned ? 'bg-stone-200/50 text-stone-400 border-stone-300' : canBuy ? 'bg-amber-50/50 border-amber-200 hover:bg-amber-100/50' : 'bg-stone-100 text-stone-400 border-stone-200'}`}>
-                      <div className="font-sans text-xs font-medium">{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</div>
-                      <span className="font-sans text-xs font-bold text-amber-600">{isOwned ? (lang === 'ja' ? '拝受済' : 'Owned') : `🪙 ${item.price}`}</span>
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="grid grid-cols-1 gap-2 min-h-[220px] content-start">
+              {SHOP_ITEMS.filter(i => i.type === shopCategory).map(item => {
+                const isOwned = ownedItems.includes(item.id);
+                const canBuy = wallet >= item.price;
+                return (
+                  <button key={item.id} onClick={() => buyItem(item)} disabled={isOwned || !canBuy} className={`p-3 rounded border text-left flex justify-between items-center transition-all ${isOwned ? 'bg-stone-200/50 text-stone-400 border-stone-300' : canBuy ? 'bg-amber-50/50 border-amber-200 hover:bg-amber-100/50' : 'bg-stone-100 text-stone-400 border-stone-200'}`}>
+                    <div className="font-sans text-xs font-medium">{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</div>
+                    <span className="font-sans text-xs font-bold text-amber-600">{isOwned ? (lang === 'ja' ? '拝受済' : 'Owned') : `🪙 ${item.price}`}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
 
-        {/* TAB 3: ✨ 新設：所持（コレクション管理）タブ */}
+        {/* TAB 3: 所持（コレクション管理） */}
         {activeTab === 'inventory' && (
           <div className={`w-full rounded-lg shadow-xl p-6 border-2 border-emerald-600 animate-fade-in ${activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark' ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
-            <h2 className="text-xl font-bold text-emerald-700 border-b pb-2 mb-4 tracking-widest">
+            <h2 className="text-xl font-bold text-emerald-700 border-b pb-3 mb-4 tracking-widest">
               {lang === 'ja' ? '神物所持一覧' : lang === 'en' ? 'Inventory' : '所持神物'}
             </h2>
 
-            <div className="mb-6">
-              <h3 className="text-xs font-bold text-stone-400 tracking-wider mb-2">✦ {lang === 'ja' ? '授かった御守・護符' : 'Your Amulets'}</h3>
-              <div className="space-y-1.5">
-                {SHOP_ITEMS.filter(i => i.type === 'talisman').map(item => {
-                  const hasIt = ownedItems.includes(item.id);
-                  if (!hasIt) return null;
-                  return (
-                    <div key={item.id} className={`p-2.5 rounded border text-xs font-sans font-medium ${activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark' ? 'bg-slate-900 border-slate-700' : 'bg-white border-stone-200'}`}>
-                      {lang === 'ja' ? item.nameJa : item.nameEn}
-                    </div>
-                  );
-                })}
-                {ownedItems.filter(id => id.startsWith('talisman_')).length === 0 && (
-                  <p className="text-xs text-stone-400 italic py-2">{lang === 'ja' ? '所持している御守はありません' : 'No amulets held'}</p>
-                )}
-              </div>
+            {/* 🎛️ 所持品のカテゴリ切り替え用切り替えボタン */}
+            <div className="flex gap-2 mb-4 font-sans text-xs">
+              <button onClick={() => setInventoryCategory('talisman')} className={`flex-1 py-2 rounded border font-bold transition-all ${inventoryCategory === 'talisman' ? 'bg-emerald-600 text-stone-100 border-emerald-700 shadow-sm' : 'bg-stone-200/60 border-stone-300 text-stone-600 hover:bg-stone-200'}`}>
+                {lang === 'ja' ? '御守・護符' : 'Amulets'}
+              </button>
+              <button onClick={() => setInventoryCategory('skin')} className={`flex-1 py-2 rounded border font-bold transition-all ${inventoryCategory === 'skin' ? 'bg-emerald-600 text-stone-100 border-emerald-700 shadow-sm' : 'bg-stone-200/60 border-stone-300 text-stone-600 hover:bg-stone-200'}`}>
+                {lang === 'ja' ? '背景仕様' : 'Backgrounds'}
+              </button>
             </div>
 
-            <div>
-              <h3 className="text-xs font-bold text-stone-400 tracking-wider mb-2">✦ {lang === 'ja' ? '背景仕様の変更' : 'Equipped Background Skin'}</h3>
-              <div className="grid grid-cols-1 gap-1.5">
-                <button onClick={() => setActiveSkin('default')} className={`p-2.5 rounded border text-left text-xs font-sans ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
-                  {lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'} {activeSkin === 'default' && '✓'}
-                </button>
-                {SHOP_ITEMS.filter(i => i.type === 'skin').map(item => {
-                  const hasIt = ownedItems.includes(item.id);
-                  const isActive = activeSkin === item.id;
-                  if (!hasIt) return null;
-                  return (
-                    <button key={item.id} onClick={() => setActiveSkin(item.id)} className={`p-2.5 rounded border text-left text-xs font-sans ${isActive ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200 hover:bg-stone-50'}`}>
-                      {lang === 'ja' ? item.nameJa : item.nameEn} {isActive && '✓'}
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="min-h-[220px]">
+              {/* 🧿 御守・護符の所持表示 */}
+              {inventoryCategory === 'talisman' && (
+                <div className="space-y-1.5">
+                  {SHOP_ITEMS.filter(i => i.type === 'talisman').map(item => {
+                    const hasIt = ownedItems.includes(item.id);
+                    if (!hasIt) return null;
+                    return (
+                      <div key={item.id} className={`p-2.5 rounded border text-xs font-sans font-medium ${activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark' ? 'bg-slate-900 border-slate-700' : 'bg-white border-stone-200'}`}>
+                        {lang === 'ja' ? item.nameJa : item.nameEn}
+                      </div>
+                    );
+                  })}
+                  {ownedItems.filter(id => id.startsWith('talisman_')).length === 0 && (
+                    <p className="text-xs text-stone-400 italic py-6 text-center">{lang === 'ja' ? '所持している御守はありません' : 'No amulets held'}</p>
+                  )}
+                </div>
+              )}
+
+              {/* 🖼️ 背景仕様の切り替え表示 */}
+              {inventoryCategory === 'skin' && (
+                <div className="grid grid-cols-1 gap-1.5">
+                  <button onClick={() => setActiveSkin('default')} className={`p-2.5 rounded border text-left text-xs font-sans ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
+                    {lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'} {activeSkin === 'default' && '✓'}
+                  </button>
+                  {SHOP_ITEMS.filter(i => i.type === 'skin').map(item => {
+                    const hasIt = ownedItems.includes(item.id);
+                    const isActive = activeSkin === item.id;
+                    if (!hasIt) return null;
+                    return (
+                      <button key={item.id} onClick={() => setActiveSkin(item.id)} className={`p-2.5 rounded border text-left text-xs font-sans ${isActive ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200 hover:bg-stone-50'}`}>
+                        {lang === 'ja' ? item.nameJa : item.nameEn} {isActive && '✓'}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -423,7 +430,7 @@ export default function App() {
 
       </div>
 
-      {/* 📱 底面マルチタブバー（全4種へアップデート） */}
+      {/* 📱 底面マルチタブバー */}
       <div className={`fixed bottom-0 left-0 right-0 border-t z-30 shadow-lg flex justify-around p-2 ${activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark' ? 'bg-slate-950 border-slate-800' : 'bg-white border-stone-200'}`}>
         <button onClick={() => setActiveTab('omikuji')} className={`flex flex-col items-center flex-1 py-1 font-sans text-[11px] transition-all ${activeTab === 'omikuji' ? 'text-red-700 font-bold scale-105' : 'text-stone-400'}`}>
           <span className="text-lg">⛩️</span>
