@@ -5,7 +5,7 @@ const LUCK_DATA = [
   { fortuneJa: '大吉', fortuneEn: 'Great Good Luck', weight: 5, btnJa: '福を重ねる', btnEn: 'Multiply Blessings', commentsJa: ['運気大いに盛んにして、何をなすにも好機なり。日々の感謝を忘れねば、さらに幸い至らん。', '暗闇に一筋の光明が差す如く、すべての迷いが消え去る日。自信を持って前へ進むべし。'], commentsEn: ['Your luck is at its peak; it is the perfect time for anything. Gratitude brings more blessings.', 'Like a bright light piercing the darkness, all doubts vanish. Step forward with confidence.'] },
   { fortuneJa: '吉', fortuneEn: 'Good Luck', weight: 15, btnJa: '吉を広げる', btnEn: 'Expand Good Fortune', commentsJa: ['誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。', '地道なる歩みが実を結ぶ日なり。派手さはなくとも、確実な一歩が将来の吉を呼ぶ。'], commentsEn: ['Act with a sincere heart, and your path will open naturally. Wait patiently without rushing.', 'Steady progress bears fruit today. A quiet but sure step will lead to future success.'] },
   { fortuneJa: '中吉', fortuneEn: 'Middle Luck', weight: 12, btnJa: '縁を結ぶ', btnEn: 'Nurture Harmony', commentsJa: ['平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。', '日常の中に小さな奇跡が隠されている日。空の美しさや風の心地よさに目を向けるが吉。'], commentsEn: ['Signs of peaceful happiness. Value harmony and show kindness to those around you.', 'A day filled with small everyday miracles. Look up at the sky and feel the gentle breeze.'] },
-  { fortuneJa: '小吉', fortuneEn: 'Small Luck', weight: 10, btnJa: '歩みを進める', btnEn: 'Step Forward', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。', '忘れ物や落とし物に少し注意が必要。出かける前の指差し確認が、災いを未然に防ぐ。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.', 'Be mindful of misplaced items. Checking your belongings before leaving prevents trouble.'] },
+  { fortuneJa: '小吉', fortuneEn: 'Small Luck', weight: 10, btnJa: '歩みを進める', btnEn: 'Step Forward', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。', '忘れ物や落とし物に少し注意必要。出かける前の指差し確認が、災いを未然に防ぐ。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.', 'Be mindful of misplaced items. Checking your belongings before leaving prevents trouble.'] },
   { fortuneJa: '末吉', fortuneEn: 'Future Luck', weight: 8, btnJa: '時を待つ', btnEn: 'Await the Hour', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。', '物事の始まりは遅けれど、後から徐々に良くなる運気。焦りは禁物、時をじっくり待て。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.', 'Things may start slowly, but luck improves over time. Do not rush; wait for the right moment.'] },
   { fortuneJa: '接続大吉', fortuneEn: 'Max Connection Luck', weight: 6, btnJa: '帯域を広げる', btnEn: 'Maximize Bandwidth', commentsJa: ['通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。', '遮るものなき高速回線の如く、滞っていた作業が一気に片付く。集中力みなぎる日なり。'], commentsEn: ['Network speed is soaring; videos load instantly. All connections and relationships thrive.', 'Like an unhindered high-speed line, delayed tasks clear up instantly. Focus is unlocked.'] },
   { fortuneJa: '通信吉', fortuneEn: 'Stable Connection Luck', weight: 15, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。', 'Wi-Fiの繋がりが安定する如く、穏やかで途切れのない安心した時間を過ごせる一日。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.', 'Just like a stable Wi-Fi connection, enjoy a calm, uninterrupted, and peaceful day.' ] },
@@ -25,12 +25,13 @@ const SPECIAL_LUCK: { [key: string]: { ja: string; en: string; commentJa: string
 
 const FORTUNE_ORDER = ['星連大吉', '深淵大吉', '順風大吉', '複製大吉', '大吉', '吉', '中吉', '小吉', '末吉', '接続大吉', '通信吉', '再起動', '大吉持', '平', '大器晩成', '恐'];
 
-// 🎨 吉兆の色＆物（海外文化への完全ローカライズ対応）
+// 吉兆の色＆物
 const LUCKY_COLORS_JA = ['漆黒', '朱赤', '瑠璃色', '黄金色', '白', '黒', '赤', '青', '琥珀色', '常盤色'];
 const LUCKY_COLORS_EN = ['Jet Black', 'Vermilion Red', 'Lapis Lazuli', 'Pure Gold', 'White', 'Black', 'Red', 'Blue', 'Amber', 'Evergreen'];
 const LUCKY_ITEMS_JA = ['LANケーブル', '温かい緑茶', 'ハンカチ', 'ティッシュ', 'ボールペン', 'イヤホン', '最新のガジェット', '和紙のノート'];
 const LUCKY_ITEMS_EN = ['LAN Cable', 'Warm Matcha Tea', 'Pocket Square', 'Tissue Pack', 'Ballpoint Pen', 'Earphones', 'Latest Gadget', 'Washi Notebook'];
 
+// 時候の挨拶
 const MONTHLY_GREETINGS: { [key: number]: { ja: string; en: string } } = {
   1: { ja: '新春の清らかな光がシステムを照らす如く、', en: 'As the pure light of the New Year illuminates the system, ' },
   2: { ja: '厳しい寒さの中で梅が静かに芽吹く如く、', en: 'As plum blossoms quietly bud amidst the severe winter cold, ' },
@@ -46,10 +47,8 @@ const MONTHLY_GREETINGS: { [key: number]: { ja: string; en: string } } = {
   12: { ja: '寒風に耐え忍びてサーバーが強固に稼働する如く、', en: 'As servers stand resilient and strong against the biting winter wind, ' }
 };
 
-// 「正」の字カウント変換ロジック
+// 「正」の字カウント変換ロジック（未使用変数を削除し、修正完了）
 const toSeiNoJi = (num: number): string => {
-  const seiStr = '𛀔一𛀕𛀖正'; // 正の字の構築ステップ用代用表現、もしくは簡易線画
-  // シンプルに文字パーツで組み立て
   const fullSei = Math.floor(num / 5);
   const remainder = num % 5;
   let result = '正'.repeat(fullSei);
@@ -160,7 +159,7 @@ export default function App() {
         comment = lang === 'ja' ? '【デジタル記念日】一と零が織りなす美しき世界。あなたのロジックが冴え渡り、最良の成果を生む。' : '【Digital Day】The beautiful world of 1s and 0s. Your logic shines to produce the best results.';
         historyKey = '大吉';
       }
-      // 🎲 C. 通常おみくじ（🔄 連続回避ロジック搭載）
+      // 🎲 C. 通常おみくじ
       else {
         let selectedGroup = LUCK_DATA[0];
         for (let attempt = 0; attempt < 3; attempt++) {
@@ -176,7 +175,7 @@ export default function App() {
         fortune = lang === 'ja' ? selectedGroup.fortuneJa : selectedGroup.fortuneEn;
         currentBtnJa = selectedGroup.btnJa; currentBtnEn = selectedGroup.btnEn; historyKey = selectedGroup.fortuneJa;
 
-        // 🌤️ 電脳気象システムとの連動
+        // 🌤️ 電脳気象システム
         const weathers = [
           { ja: '晴天の電波の如く見通しが良く、', en: 'Clear as a sunny-day broadband signal, ' },
           { ja: '雨天の不純物を洗い流す如く清らかに、', en: 'Pure as rain washing away network static, ' },
@@ -205,7 +204,6 @@ export default function App() {
       setResult({ fortune, comment, color, item, currentBtn });
       setIsRolling(false); setLastFortune(historyKey); playSound('success');
 
-      // 📊 履歴＆最終拝受日の保存
       const newHistory = { ...history, [historyKey]: (history[historyKey] || 0) + 1 };
       const shortDate = `${month}/${date}`;
       const newDates = { ...lastDates, [historyKey]: shortDate };
@@ -225,7 +223,6 @@ export default function App() {
     setShowModal(false);
   };
 
-  // 🏆 隠し称号の算出
   const getTitle = () => {
     if (visitDays >= 30) return lang === 'ja' ? '【電脳導師】' : ' [Digital Master]';
     if (visitDays >= 10) return lang === 'ja' ? '【皆勤の信徒】' : ' [Devoted Pilgrim]';
@@ -233,7 +230,6 @@ export default function App() {
     return '';
   };
 
-  // 📊 御朱印成就（コンプリート率）の計算
   const unlockedCount = FORTUNE_ORDER.filter(luck => history[luck] > 0).length;
   const completionRate = Math.round((unlockedCount / FORTUNE_ORDER.length) * 100);
 
@@ -245,7 +241,6 @@ export default function App() {
         backgroundSize: '20px 20px'
       }}
     >
-      {/* ⛩️ カスタムスクロールバー＆アニメーション用スタイル注入 */}
       <style>{`
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -258,7 +253,6 @@ export default function App() {
         .animate-fade-in-up { animation: fadeInUp 0.4s ease forwards; }
       `}</style>
 
-      {/* 🌐 言語切り替えボタン */}
       <button 
         onClick={() => setLang(lang === 'ja' ? 'en' : 'ja')}
         className="absolute top-4 left-4 bg-stone-200 border border-stone-400 text-xs px-3 py-1.5 rounded hover:bg-stone-300 font-serif shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-red-700"
@@ -317,7 +311,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* 📊 格式順・仮想御朱印帳エリア */}
+      {/* 📊 仮想御朱印帳 */}
       <div className="max-w-md w-full mt-6 bg-stone-50 rounded border border-stone-300 p-4 shadow-md font-serif text-center relative">
         <h3 className="text-xs font-bold text-stone-600 tracking-wider border-b border-stone-200 pb-1.5 mb-2.5 flex justify-between items-center px-1">
           <span className="flex items-center gap-1">
@@ -360,7 +354,7 @@ export default function App() {
         )}
       </div>
 
-      {/* ⛩️ 和風カスタムモーダル（お焚き上げ確認用） */}
+      {/* ⛩️ 和風カスタムモーダル */}
       {showModal && (
         <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-stone-50 border-2 border-red-800 max-w-xs w-full rounded p-6 shadow-2xl font-serif text-center relative animate-fade-in-up">
