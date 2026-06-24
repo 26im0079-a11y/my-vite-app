@@ -91,7 +91,7 @@ const LUCK_DATA = [
     ]
   },
   {
-    fortune: '大吉持', fortuneEn: 'Loading Great Luck', weight: 5,
+    fortuneJa: '大吉持', fortuneEn: 'Loading Great Luck', weight: 5,
     commentsJa: [
       '今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。',
       '種が地中でじっと芽吹くのを待つ如き時。焦らずに水をやり続ければ、やがて大輪の花が開かん。'
@@ -191,7 +191,7 @@ export default function App() {
       }
 
       // 1. 基本のお告げと運勢を取得
-      let fortune = lang === 'ja' ? selectedGroup.fortuneJa || (selectedGroup as any).fortune : selectedGroup.fortuneEn;
+      let fortune = lang === 'ja' ? selectedGroup.fortuneJa : selectedGroup.fortuneEn;
       const idx = Math.floor(Math.random() * selectedGroup.commentsJa.length);
       let comment = lang === 'ja' ? selectedGroup.commentsJa[idx] : selectedGroup.commentsEn[idx];
 
@@ -221,7 +221,7 @@ export default function App() {
       playSound('success');
 
       // 📊 履歴の保存処理（日本語の運勢名で統一してカウント保持）
-      const historyKey = selectedGroup.fortuneJa || (selectedGroup as any).fortune;
+      const historyKey = selectedGroup.fortuneJa;
       const newHistory = { ...history, [historyKey]: (history[historyKey] || 0) + 1 };
       setHistory(newHistory);
       localStorage.setItem('omikuji_history', JSON.stringify(newHistory));
@@ -299,7 +299,7 @@ export default function App() {
       {/* 📊 おみくじ帳（コレクション履歴機能） */}
       <div className="max-w-md w-full mt-6 bg-stone-50 rounded border border-stone-300 p-4 shadow-md font-serif text-center">
         <h3 className="text-xs font-bold text-stone-600 tracking-wider border-b border-stone-200 pb-1.5 mb-2.5">
-          {lang === 'ja' ? '📜 仮想御朱印（あなたのおみくじ帳）' : '📜 Your Fortune Log'}
+          {lang === 'ja' ? '仮想御朱印' : 'Your Fortune Log'}
         </h3>
         {Object.keys(history).length === 0 ? (
           <p className="text-[11px] text-stone-400 italic">
@@ -309,7 +309,7 @@ export default function App() {
           <div className="flex flex-wrap justify-center gap-1.5 text-[10px]">
             {Object.entries(history).map(([luck, count]) => (
               <span key={luck} className="bg-red-50 text-red-800 border border-red-200/60 rounded px-2 py-0.5 shadow-sm">
-                {lang === 'ja' ? luck : luck} : <strong className="text-xs font-sans">{count}</strong>
+                {luck} : <strong className="text-xs font-sans">{count}</strong>
               </span>
             ))}
           </div>
