@@ -13,7 +13,7 @@ type ShopItem = {
   isNightOnly?: boolean; // 🌙 夜間限定フラグ
 };
 
-// ⛩️ 怒涛の御守・護符ラインナップ拡張（既存5種 + 新規50種 = 55種 ＋ 背景5種 = 計60種）
+// ⛩️ 御守・護符ラインナップ（全55種 ＋ 背景5種 = 計60種）
 const SHOP_ITEMS: ShopItem[] = [
   // --- 既存御守 (5種) ---
   { id: 'talisman_bug', nameJa: '無病息災・バグ退散札', nameEn: 'Anti-Bug Talisman', nameTw: '驅逐程式錯誤符', nameCn: '驱逐程序错误符', descJa: 'コードの不純物を根こそぎクリアにし、予期せぬ例外をシャットアウトする。', descEn: 'Clears impurities in code and completely blocks unexpected exceptions.', descTw: '將程式碼中的雜質悉數清除，完全杜絕意料之外的異常。', descCn: '将代码中的杂质悉数清除，完全杜绝意料之外的异常。', price: 150, type: 'talisman' },
@@ -38,10 +38,10 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_1', nameJa: 'メモリリーク封じのお札', nameEn: 'Leak Prevention Sticker', nameTw: '防記憶體洩漏神符', nameCn: '防内存泄漏神符', descJa: 'じわじわと枯渇していく生命の雫（リソース）を完璧に塞ぎ止める。', descEn: 'Perfectly plugs the gradual drain of life resources.', descTw: '完美封堵緩慢流失的生命點滴（資源）。', descCn: '完美封堵缓慢流失的生命点滴（资源）。', price: 120, type: 'talisman' },
   { id: 'talisman_gen_2', nameJa: 'ぬるぽ直撃回避身代守', nameEn: 'NullPointer Avoidance Ward', nameTw: '空指標直擊迴避替身守', nameCn: '空指针直击回避替身守', descJa: '存在しない虚無（Null）を参照した瞬間の精神的ショックを身代わりとなって受ける。', descEn: 'Takes the psychological shock for you the moment you reference Nonexistence.', descTw: '當不慎參照到虛無（Null）時，將化為替身承受其帶來的精神衝擊。', descCn: '当不慎参照到虚无（Null）时，将化为替身承受其带来的精神冲击。', price: 180, type: 'talisman' },
   { id: 'talisman_gen_3', nameJa: '無限ループ脱出の命綱', nameEn: 'Infinite Loop Lifeline', nameTw: '無限迴圈逃生索', nameCn: '无限循环逃生索', descJa: '永遠に同じ思考を繰り返してしまう迷宮から、力ずくで現実へ引き戻す。', descEn: 'Forcefully pulls you back to reality from labyrinths of eternal loops.', descTw: '強行將您從陷入無盡重複思考的死胡同迷宮中拉回現實。', descCn: '强行将您从陷入无尽重复思考的死胡同迷宫中拉回现实。', price: 220, type: 'talisman' },
-  { id: 'talisman_gen_4', nameJa: '安全な型定義の数珠', nameEn: 'Safe Type Rosary', nameTw: '安全型別定義念珠', nameCn: '安全型别定义念珠', descJa: '「any」という悪魔の誘惑を退け、厳格で純粋な世界の規律を保つ。', descEn: 'Rejects the demonic temptation of "any", keeping strict order in your world.', descTw: '摒除名為「any」的惡魔誘惑，堅守嚴格且純粹的世界秩序。', descCn: '摒除名为“any”的恶魔诱惑，坚守严格且纯粹的世界秩序。', price: 250, type: 'talisman' },
+  { id: 'talisman_gen_4', nameJa: '安全な型定義の数珠', nameEn: 'Safe Type Rosary', nameTw: '安全型別定義念珠', nameCn: '安全型别定义念珠', descJa: '「any」という悪魔の誘惑を退け、厳格で純粋な世界の規律を保つ。', descEn: 'Rejects the demonic temptation of "any", keeping strict order in your world.', descTw: '擺脫名為「any」的惡魔誘惑，堅守嚴格且純粹的世界秩序。', descCn: '摆脱名为“any”的恶魔诱惑，坚守严格且纯粹的世界秩序。', price: 250, type: 'talisman' },
   { id: 'talisman_gen_5', nameJa: 'コンパイル一発通し鈴', nameEn: 'One-Shot Compile Bell', nameTw: '編譯一擊通關鈴', nameCn: '编译一击通关铃', descJa: '清らかな音色が、一文字の構文エラー（シンタックス）すらも焼き尽くす。', descEn: 'Its pure ring burns away even a single syntax error.', descTw: '清脆的鈴聲將燒盡哪怕只有一字之差的語法錯誤。', descCn: '清脆的铃声将烧尽哪怕只有一字之差的语法错误。', price: 280, type: 'talisman' },
   { id: 'talisman_gen_6', nameJa: 'マージ衝突和解の注連縄', nameEn: 'Merge Conflict Peace Rope', nameTw: '合併衝突和解注連繩', nameCn: '合并冲突和解注连绳', descJa: '互いに譲らない異なる世界線（ブランチ）の衝突を穏便に融和させる。', descEn: 'Gently harmonizes clashes of stubborn different world lines.', descTw: '和睦融化互不相讓的平行世界線（分支）衝突。', descCn: '和睦融化互不相让的平行世界线（分支）冲突。', price: 310, type: 'talisman' },
-  { id: 'talisman_gen_7', nameJa: 'クエリ最適化の智恵袋', nameEn: 'Query Optimization Pouch', nameTw: '查詢優化智慧錦囊', nameCn: '查询优化智慧锦囊', descJa: '迷路のような探索（フルスキャン）を止め、最短で真実へ到達する智恵。', descEn: 'Wisdom to bypass full scans and reach the truth via the shortest path.', descTw: '摒棄如迷宮般的全面檢索，以最短路徑直達真相的智慧。', descCn: '摒弃如迷宫般的全面检索，以最短路径直达真相的智慧。', price: 340, type: 'talisman' },
+  { id: 'talisman_gen_7', nameJa: 'クエリ最適化の智恵袋', nameEn: 'Query Optimization Pouch', nameTw: '查詢優化智慧錦囊', nameCn: '查询优化智慧锦囊', descJa: '迷路のような探索（フルスキャン）を止め、最短で真実へ到達する智恵。', descEn: 'Wisdom to bypass full scans and reach the truth via the shortest path.', descTw: '外包如迷宮般的全面檢索，以最短路徑直達真相的智慧。', descCn: '外包如迷宫般的全面检索，以最短路径直达真相的智慧。', price: 340, type: 'talisman' },
   { id: 'talisman_gen_8', nameJa: 'APIレスポンス音速爆走香', nameEn: 'Blazing API Incense', nameTw: 'API響應音速爆走香', nameCn: 'API响应音速爆走香', descJa: '漂う香煙がパケットの足取りを軽くし、レイテンシを極限まで削ぎ落とす。', descEn: 'Floating incense smoke lightens packets, scraping latencies to the extreme.', descTw: '飄渺的香煙使封包步履輕盈，將延遲極限削減。', descCn: '飘渺的香烟使封包步履轻盈，将延迟极限削减。', price: 380, type: 'talisman' },
   { id: 'talisman_gen_9', nameJa: 'ガベージコレクション大祓', nameEn: 'Garbage Collection Purification', nameTw: '垃圾回收大祓修持', nameCn: '垃圾回收大祓修持', descJa: '過去のしがらみ（不要キャッシュ）をすべて未練なく宇宙の彼方へ消し去る。', descEn: 'Expels past regrets and unneeded caches into the void without hesitation.', descTw: '毫無留戀地將過去的束縛（無用快取）悉數遣送至宇宙彼方。', descCn: '毫无留恋地将过去的束缚（无用缓存）悉数遣送至宇宙彼方。', price: 420, type: 'talisman' },
   { id: 'talisman_gen_10', nameJa: 'ロードバランサー身代の鏡', nameEn: 'Load Balancer Mirror', nameTw: '負載均衡替身之鏡', nameCn: '负载均衡替身之镜', descJa: '一箇所に集中する怨念（アクセス）を均等に受け流し、崩壊を防ぐ奇跡の鏡。', descEn: 'A miraculous mirror that evenly redirects concentrated curses.', descTw: '均勻疏導集中於一處的怨念（訪問流），防止崩壞的奇蹟之鏡。', descCn: '均匀疏导集中于一处的怨念（访问流），防止崩坏的奇迹之镜。', price: 460, type: 'talisman' },
@@ -49,7 +49,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_12', nameJa: 'SSL証明書永久の灯火', nameEn: 'Eternal SSL Candle', nameTw: 'SSL憑證永久燈火', nameCn: 'SSL凭证永久灯火', descJa: '秘密の暗号通信を守護し、期限切れによる遮断を永劫に防ぐ聖なる火。', descEn: 'A holy flame protecting secret cryptos, keeping expirations at bay.', descTw: '守護秘密加密通訊，永劫防止因過期而遭遇阻斷的神聖之火。', descCn: '守护秘密加密通讯，永劫防止因过期而遭遇阻断的神圣之火。', price: 290, type: 'talisman' },
   { id: 'talisman_gen_13', nameJa: '本番環境トラブル平穏平癒札', nameEn: 'Prod Calmness Sheet', nameTw: '正式環境安穩平癒神札', nameCn: '正式环境安稳平愈神札', descJa: '燃え盛る戦場（障害対応）を一瞬で鎮め、エンジニアに安眠をもたらす。', descEn: 'Instantly calms blazing battlefields, restoring peace to tired developers.', descTw: '瞬間平息燃燒的戰場（故障排除），為工程師帶來安穩睡眠。', descCn: '瞬间平息燃烧的战场（故障排除），为工程师带来安稳睡眠。', price: 480, type: 'talisman' },
   { id: 'talisman_gen_14', nameJa: '深夜アラート撃退の破魔矢', nameEn: 'Midnight Alert Banisher', nameTw: '深夜警報擊退破魔矢', nameCn: '深夜警报击退破魔矢', descJa: '睡眠を妨げる悪霊（不必要な自動アラート通知）の根源を射抜く。', descEn: 'Pierces the core of sleep-depriving phantoms like unneeded alerts.', descTw: '無情射穿剝奪睡眠之惡靈（不必要的自動警報通知）的根源。', descCn: '无情射穿剥夺睡眠之恶灵（不必要的自动警报通知）的根源。', price: 360, type: 'talisman' },
-  { id: 'talisman_gen_15', nameJa: 'バックアップ完全保護の巾着', nameEn: 'Backup Preservation Pouch', nameTw: '備份完全保護錦囊', nameCn: '备份完全保护锦囊', descJa: '物理的破壊や消失から、大切な魂の器（データ）を安全に格納する。', descEn: 'Safely encapsulates your precious soul data from physical losses.', descTw: '安全收納珍貴的靈魂之器（數據），免受物理損毀或消失之災。', descCn: '安全收纳珍贵的灵魂之器（数据），免受物理损毁或消失之灾。', price: 260, type: 'talisman' },
+  { id: 'talisman_gen_15', nameJa: 'バックアップ完全保護の巾着', nameEn: 'Backup Preservation Pouch', nameTw: '備份完全保護錦囊', nameCn: '备份完全保护锦囊', descJa: '物理的破壊や消失から、大切な魂の器（データ）を安全に格納する。', descEn: 'Safely encapsulates your precious soul data from physical losses.', descTw: '安全收納珍貴的靈魂之器（數據），免受物理損毀或消失之災。', descCn: '安全收纳珍贵的灵魂之器（数据），免受物理损毁 or 消失之灾。', price: 260, type: 'talisman' },
   { id: 'talisman_gen_16', nameJa: 'クッキー持続・豊穣のお守り', nameEn: 'Cookie Harvest Charm', nameTw: 'Cookie持續・豐收御守', nameCn: 'Cookie持续・丰收御守', descJa: 'セッションの記憶を長く保ち、何度もログインを求められる手間を省く。', descEn: 'Maintains session memory long, freeing you from endless re-logins.', descTw: '長久保存對話紀錄，省去反覆被要求登入的繁瑣步驟。', descCn: '长久保存对话纪录，省去反复被要求登入的繁琐步骤。', price: 140, type: 'talisman' },
   { id: 'talisman_gen_17', nameJa: 'ダークモード調和の眼帯', nameEn: 'Darkmode Harmony Eyepatch', nameTw: '深色模式調和眼罩', nameCn: '深色模式调和眼罩', descJa: '過酷なブルーライトの光芒から、あなたの網膜と精神の平穏を守る。', descEn: 'Shields your retina and inner peace from harsh blue light emissions.', descTw: '從殘酷的藍光光芒中，守護您的視網膜與精神防線。', descCn: '从残酷的蓝光光芒中，守护您的视网膜与精神防线。', price: 190, type: 'talisman' },
   { id: 'talisman_gen_18', nameJa: 'レスポンシブ自在の折り紙', nameEn: 'Fluid Responsive Origami', nameTw: '響應式變幻自在折紙', nameCn: '响应式变幻自在折纸', descJa: 'どんな狭い世界（画面幅）に押し込められても、美しく形を変えて適応する。', descEn: 'Beautifully adapts and shapes itself to any cramped viewport.', descTw: '不論被塞進多麼狹窄的世界（螢幕寬度），皆能優美變形完美適應。', descCn: '不论被塞进多么狭窄的世界（屏幕宽度），皆能优美变形完美适应。', price: 210, type: 'talisman' },
@@ -74,7 +74,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_37', nameJa: 'ダークウェブ流入防御の結界', nameEn: 'Darkweb Border Barrier', nameTw: '暗網流入防禦結界', nameCn: '暗网流入防御结界', descJa: '悪意に満ちた闇の世界から差し込まれる触手を、光の壁で遮断する。', descEn: 'Blocks malicious tentacles reaching out from deep internet underworlds.', descTw: '以光之壁障徹底阻絕自充滿惡意的暗黑世界延伸而來的觸手。', descCn: '以光之壁障彻底阻绝自充满恶意的暗黑世界延伸而来的触手。', price: 470, type: 'talisman' },
   { id: 'talisman_gen_38', nameJa: '正規表現一発的中の一線', nameEn: 'Regex Perfect Match Line', nameTw: '正規表示式一擊命中線', nameCn: '正则表达式一击命中线', descJa: 'どれだけ複雑に入り組んだ文字列の迷宮からも、意図した獲物を一瞬で見つけ出す。', descEn: 'Finds target text in complex string string-mazes instantly.', descTw: '不論多麼複雜交錯的字串迷宮，皆能在一瞬間精確揪出目標獵物。', descCn: '不论多么复杂交错的字符串迷宫，皆能在一瞬间精确揪出目标猎物。', price: 200, type: 'talisman' },
   { id: 'talisman_gen_39', nameJa: 'ローカルホスト繁盛の盛り塩', nameEn: 'Localhost Prosperity Salt', nameTw: '本地主機繁榮盛り塩', nameCn: '本地主机繁荣盛り盐', descJa: '自分の開発領域（127.0.0.1）を清め、最高のひらめきをもたらす聖なる塩。', descEn: 'Purifies your dev space (127.0.0.1), bringing supreme inspirations.', descTw: '淨化屬於自己的開發聖域（127.0.0.1），招來絕佳靈感的純潔之鹽。', descCn: '净化属于自己的开发圣域（127.0.0.1），招来绝佳灵感的纯洁之盐。', price: 110, type: 'talisman' },
-  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平浪静、悄然融入的和谐。', price: 500, type: 'talisman' },
+  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平浪静、悄然融入和谐。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_41', nameJa: '神隠しパケット回収の網', nameEn: 'Lost Packet Fishing Net', nameTw: '神隱封包回收漁網', nameCn: '神隐封包回收渔网', descJa: '回線の狭間で神隠しに遭った迷子のパケットたちを漏らさず救い出す。', descEn: 'Rescues orphan packets that went missing in network rifts.', descTw: '將在網路裂縫間遭遇神隱、流離失所的迷途封包悉數搜救歸隊。', descCn: '将在网络裂缝间遭遇神隐、流离失所的迷途封包悉数搜救归队。', price: 230, type: 'talisman' },
   { id: 'talisman_gen_42', nameJa: 'AIプロンプト意思疎通のパイプ', nameEn: 'Prompt Telepathy Pipe', nameTw: 'AI提示詞心靈感應菸斗', nameCn: 'AI提示词心灵感应烟斗', descJa: '人工知能との魂のシンクロ率を高め、一言で完璧な成果物を出力させる。', descEn: 'Boosts soul sync with AI, achieving absolute output with one phrase.', descTw: '提升與人工智慧之間的靈魂同步率，僅憑片言隻字便能引導出完美成果。', descCn: '提升与人工智能之间的灵魂同步率，仅凭片言只字便能引导出完美成果。', price: 310, type: 'talisman' },
 
@@ -86,7 +86,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'wallpaper_sakura', nameJa: '桜満開合格仕様', nameEn: 'Sakura in Full Bloom', nameTw: '櫻花滿開合格樣式', nameCn: '樱花满开合格样式', descJa: '満開の桜が描かれた縁起の良い背景。願いが成就した喜びの春を演出。', descEn: 'A lucky backdrop painted with cherry blossoms. Paints a joyful spring of wish completions.', descTw: '繪有櫻花盛開的吉利背景。演繹出心中所願皆得以圓滿成就的喜悅之春。', descCn: '绘有樱花盛开的吉利背景。演绎出心中所愿皆得以圆满成就的喜悦之春。', price: 600, type: 'skin' }
 ];
 
-// 運勢データ (英語ランクをより洗練された神社風に変更)
+// 運勢データ
 const LUCK_DATA = [
   { fortuneJa: '超大吉', fortuneEn: 'Absolute Supreme Destiny', fortuneTw: '超大吉', fortuneCn: '超大吉', weight: 1, btnJa: '天命を全うする', btnEn: 'Claim Absolute Destiny', btnTw: '承接天命', btnCn: '承接天命', commentsJa: ['【確率0.1%の奇跡】全サーバーの全ログがあなたを祝福せり。全自動で莫大な福徳（1000両）がウォレットにデポジットされました。'], commentsEn: ['【0.1% Miracle】All core logs celebrate your presence. A massive blessing (1000 Gold) has been deposited into your wallet automatically.'], commentsTw: ['【機率0.1%的奇蹟】全伺服器的所有日誌皆在為您祝福。無上福德（1000兩）已自動匯入您的加密錢包。'], commentsCn: ['【机率0.1%的奇迹】全服务器的所有日志皆在为您祝福。无上福德（1000两）已自动汇入您的加密钱包。'] },
   { fortuneJa: 'システム大破', fortuneEn: 'CRITICAL SYSTEM CRASH', fortuneTw: '系統大破', fortuneCn: '系统大破', weight: 5, btnJa: '強制パッチ適用', btnEn: 'Apply Hotfix Forcefully', btnTw: '強制修復系統', btnCn: '强制修复系统', commentsJa: ['【致命的エラー：大凶】不穏な例外コードを検知。ペナルティとしてセッション内の資産（所持金）に重大なパケットロス（減少）が発生せり。'], commentsEn: ['【FATAL ERROR】Malicious exception detected. A severe packet loss (money reduction) has occurred in your session assets.'], commentsTw: ['【致命錯誤：大凶】偵測到不穩定的異常代碼。作為懲罰，您在本會話中的資產（所持金）遭遇了嚴重的封包遺失。'], commentsCn: ['【致命错误：大凶】侦测到不稳定的异常代码。作为惩罚，您在本会话中的资产（所含金）遭遇了严重的封包遗失。'] },
@@ -96,7 +96,7 @@ const LUCK_DATA = [
   { fortuneJa: '小吉', fortuneEn: 'Small Fortune', fortuneTw: '小吉', fortuneCn: '小吉', weight: 100, btnJa: '歩みを進める', btnEn: 'Step Forward', btnTw: '漫步向前', btnCn: '漫步向前', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.'], commentsTw: ['小驚喜接連不斷的一天。但切記不可掉以輕心，凡事穩紮穩打為上。'], commentsCn: ['小惊喜接连不断的一天。但切记不可掉以轻心，凡事稳扎稳打为上。'] },
   { fortuneJa: '末吉', fortuneEn: 'Uncertain Fortune', fortuneTw: '末吉', fortuneCn: '末吉', weight: 80, btnJa: '時を待つ', btnEn: 'Await the Hour', btnTw: '靜候時機', btnCn: '静候时机', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.'], commentsTw: ['當下為蓄精儲銳之時。宜靜心沉著，品一盞溫茶，好好休養生息。'], commentsCn: ['当下为蓄精储锐之时。宜静心沉著，品一盏温茶，好好修养生息。'] },
   { fortuneJa: '接続大吉', fortuneEn: 'Max Connectivity', fortuneTw: '連線大吉', fortuneCn: '连线大吉', weight: 60, btnJa: '帯域を広げる', btnEn: 'Maximize Bandwidth', btnTw: '拓寬頻寬', btnCn: '拓宽带宽', commentsJa: ['通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。'], commentsEn: ['Network speed is soaring; videos load instantly. All connections and relationships thrive.'], commentsTw: ['網路速度大幅提升，影片載入僅在瞬間。今日所連結之一切緣分皆順暢無阻。'], commentsCn: ['网络速度大幅提升，视频加载仅在瞬间。今日所连结之一切缘分皆顺畅无阻。'] },
-  { fortuneJa: '通信吉', fortuneEn: 'Stable Connectivity', fortuneTw: '通訊吉', fortuneCn: '通讯吉', weight: 150, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', btnTw: '保持同步', btnCn: '保持同步', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.'], commentsTw: ['訊號通暢無比。近期似乎會有久未聯絡的舊友，突然傳來令人欣喜的訊息。'], commentsCn: ['信号通畅无比。近期似乎会有久未联络的旧友，突然传来令人欣喜的讯息。'] },
+  { fortuneJa: '通信吉', fortuneEn: 'Stable Connectivity', fortuneTw: '通訊吉', fortuneCn: '通讯吉', weight: 150, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', btnTw: '保持同步', btnCn: '保持同步', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.'], commentsTw: ['訊號通暢無比。近期似乎會有久未聯絡的舊友，突然傳來令人欣喜的訊息。'], commentsCn: ['信号通畅无比。近期似乎会有久未联络的旧友，突然传来令人欣喜的信息。'] },
   { fortuneJa: '再起動', fortuneEn: 'System Reboot', fortuneTw: '系統重啟', fortuneCn: '系统重启', weight: 70, btnJa: '新たに紡ぐ', btnEn: 'Reboot Anew', btnTw: '重新啟航', btnCn: '重新启航', commentsJa: ['頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。'], commentsEn: ['If your mind feels heavy, take a long sleep. Refresh your body and soul to reboot your luck.'], commentsTw: ['若感到思緒沉重，切勿硬撐，早些入眠為妙。身心徹底重整後，運勢將大幅好轉。'], commentsCn: ['若感到思绪沉重，切勿硬撑，早些入眠为妙。身心彻底重整后，运势将大幅好转。'] },
   { fortuneJa: '大吉持', fortuneEn: 'Loading Great Fortune', fortuneTw: '大吉載入中', fortuneCn: '大吉载入中', weight: 50, btnJa: '読込を待つ', btnEn: 'Complete Loading', btnTw: '靜待載入', btnCn: '静待载入', commentsJa: ['今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。'], commentsEn: ['Current luck is average, but it is loading a massive blessing. A late-bloomer sign.'], commentsTw: ['當前運勢雖看似平凡，但此乃大器晚成之兆，往後將迎來令人驚嘆的巨大福運。'], commentsCn: ['当前运势虽看似平凡，但此乃大器晚成之兆，往后将迎来令人惊叹的巨大福运。'] },
   { fortuneJa: '平', fortuneEn: 'Balanced Fortune', fortuneTw: '平', fortuneCn: '平', weight: 50, btnJa: '平穏を保つ', btnEn: 'Maintain Balance', btnTw: '守持中庸', btnCn: '守持中庸', commentsJa: ['良くも悪くもなく、波風の立たない平穏な日。普通であることの有り難さを噛み締めるべし。'], commentsEn: ['Neither good nor bad, just a peaceful day. Appreciate the comfort of an ordinary day.'], commentsTw: ['無好亦無壞，波瀾不驚。當細細品味這份平凡安穩帶來的難得福氣。'], commentsCn: ['无好亦无坏，波澜不惊。当细细品味这份平凡安稳带来的难得福气。'] },
@@ -104,7 +104,7 @@ const LUCK_DATA = [
   { fortuneJa: '恐', fortuneEn: 'Perilous Exception', fortuneTw: '恐', fortuneCn: '恐', weight: 20, btnJa: '慎重に進む', btnEn: 'Proceed with Caution', btnTw: '履步涉冰', btnCn: '履步涉冰', commentsJa: ['少し慎重になるべき日。新しいことには手を染めず、いつものルーティンを淡々とこなすのが賢明なり。'], commentsEn: ['A day to tread with caution. Avoid starting new things and stick to your usual routine.'], commentsTw: ['今日行事宜多加謹慎。切勿盲目開展新計畫，安守既有常規方為上策。'], commentsCn: ['今日行事宜多加谨慎。切勿盲目开展新计划，安守既有常规方为上策。'] }
 ];
 
-// 👾 イースターエッグ用（タイトル10回タップで強制発動する隠し運勢）
+// 👾 イースターエッグ用（タイトル10回タップ隠し運勢）
 const SECRET_LUCK_RESULT = {
   fortuneJa: '神殺しのデバッグ', fortuneEn: 'God-Mode Debugged', fortuneTw: '弒神級極限偵錯', fortuneCn: '弑神级极限侦错',
   commentJa: '【裏コマンド検知】神の領域にバグを注入し、運命の不合理なソースコードを書き換えた。世界は今、あなたの手で強制リビルドされた。',
@@ -125,7 +125,7 @@ const HOLIDAY_FORTUNES: { [key: string]: { [key: string]: string } } = {
 
 const FORTUNE_ORDER = ['神殺しのデバッグ', '超大吉', '星連大吉', '歳旦大吉', '大吉', '吉', '中吉', '小吉', '末吉', '接続大吉', '通信吉', '再起動', '大吉持', '平', '大器晩成', '恐', 'システム大破'];
 
-// 🗺️ ラッキーアイテム・カラーの完全多言語ローカライズマップ
+// 🗺️ ラッキーアイテム・カラーマップ
 const LUCKY_MAPS = {
   ja: {
     colors: ['漆黒', '朱赤', '瑠璃色', '黄金色', '白', '琥珀色'],
@@ -172,7 +172,7 @@ export default function App() {
   // 🎰 授与所のガチャ陳列データ（5個）
   const [displayedShopItems, setDisplayedShopItems] = useState<ShopItem[]>([]);
 
-  // 📝 所持タブで選択中のアイテムID（説明文表示用ポップアップ用）
+  // 📝 所持タブで選択中のアイテムID
   const [selectedInventoryItem, setSelectedInventoryItem] = useState<ShopItem | null>(null);
 
   // 🐣 イースターエッグ用カウンタ
@@ -189,7 +189,7 @@ export default function App() {
   const [recentScores, setRecentScores] = useState<number[]>([]);
   const [isBurning, setIsBurning] = useState(false);
 
-  // 📈 ウォレットのカウントアニメーション用状態
+  // 📈 ウォレットカウントアニメーション
   const [wallet, setWallet] = useState<number>(0);
   const [displayWallet, setDisplayWallet] = useState<number>(0);
 
@@ -247,8 +247,15 @@ export default function App() {
     localStorage.setItem('shrine_last_visit', todayStr);
     setVisitDays(days);
 
-    // 最初にショップ陳列を初期化
-    refreshShopItems(currentOwned, currentWallet, false);
+    // 初期化時は料金消費なしで更新
+    const nightActive = (new Date()).getHours() >= 22 || (new Date()).getHours() < 4;
+    const pool = SHOP_ITEMS.filter(item => {
+      if (item.type !== 'talisman') return false;
+      if (item.isNightOnly && !nightActive) return false;
+      return true;
+    });
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    setDisplayedShopItems(shuffled.slice(0, 5));
   }, []);
 
   const saveMasterState = (nextHistory: any, nextDates: any, nextWallet: number, nextOwned: string[], nextSkin: string) => {
@@ -262,33 +269,32 @@ export default function App() {
     return hour >= 22 || hour < 4;
   };
 
-  // 🎰 授与所のランダム5件抽選システム
-  const refreshShopItems = (currentOwned = ownedItems, currentWallet = wallet, deductFee = true) => {
+  // 🎰 授与所のランダム5件抽選システム (引数から未使用だった引数を整理してビルドエラーを回避)
+  const refreshShopItems = (deductFee = true) => {
     if (deductFee) {
-      if (currentWallet < 10) return;
-      const nextWallet = currentWallet - 10;
+      if (wallet < 10) return;
+      const nextWallet = wallet - 10;
       setWallet(nextWallet);
+      saveMasterState(history, lastDates, nextWallet, ownedItems, activeSkin);
     }
 
     const nightActive = isNightTime();
-    // カテゴリ（御守・背景）に合わせて母集団をフィルタ
     const pool = SHOP_ITEMS.filter(item => {
       if (item.type !== shopCategory) return false;
-      if (item.isNightOnly && !nightActive) return false; // 昼間は夜間限定が出ない
+      if (item.isNightOnly && !nightActive) return false;
       return true;
     });
 
-    // シャッフルして5つ選出
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
     setDisplayedShopItems(shuffled.slice(0, 5));
   };
 
   // カテゴリが変わったら自動で再陳列（無料）
   useEffect(() => {
-    refreshShopItems(ownedItems, wallet, false);
+    refreshShopItems(false);
   }, [shopCategory]);
 
-  // 🐣 タイトル10回タップ時のイースターエッグ処理
+  // 🐣 イースターエッグのトリガー
   const handleTitleTap = () => {
     if (isRolling) return;
     const nextCount = titleTapCount + 1;
@@ -316,7 +322,7 @@ export default function App() {
       setIsRolling(false);
       setLastFortune('神殺しのデバッグ');
 
-      const nextWallet = wallet + 500; // 特別に500両授与
+      const nextWallet = wallet + 500; 
       setWallet(nextWallet);
 
       const updatedScores = [5, ...recentScores].slice(0, 5);
@@ -419,7 +425,10 @@ export default function App() {
       setHistory({}); setLastDates({}); setRecentScores([]); setResult(null); setLastFortune(''); setVisitDays(1);
       setWallet(0); setDisplayWallet(0); setOwnedItems([]); setActiveSkin('default');
       setIsBurning(false); setShowModal(false);
-      refreshShopItems([], 0, false);
+      
+      // ショップ陳列の強制初期化
+      const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !item.isNightOnly);
+      setDisplayedShopItems(pool.slice(0, 5));
     }, 1800);
   };
 
@@ -460,10 +469,10 @@ export default function App() {
     return 'bg-stone-100 text-stone-900';
   };
 
-  // 🌐 言語・フォントの高度なファミリ制御クラス
+  // 🌐 言語・フォントの制御
   const getFontFamilyClass = () => {
-    if (lang === 'en') return 'font-serif'; // 欧州向けセリフ体
-    if (lang === 'zh_tw' || lang === 'zh_cn') return 'font-[\'SimSun\',\'Songti_TC\',serif]'; // 中華圏の美しい明朝体風
+    if (lang === 'en') return 'font-serif';
+    if (lang === 'zh_tw' || lang === 'zh_cn') return 'font-[\'SimSun\',\'Songti_TC\',serif]';
     return 'font-serif';
   };
 
@@ -478,7 +487,7 @@ export default function App() {
         .dark-theme .sticky-bar { background-color: rgba(30, 41, 59, 0.95) !important; border-color: #334155 !important; }
       `}</style>
 
-      {/* 🌐 トップヘッダー領域（言語切替 ＆ 🕒 時計 ＆ 🪙 ウォレット） */}
+      {/* 🌐 トップヘッダー領域 */}
       <div className="max-w-md w-full flex flex-col gap-2 z-20 mb-3 px-1 font-sans">
         <div className="flex justify-between items-center">
           <div className="flex gap-1">
@@ -558,12 +567,12 @@ export default function App() {
                 {lang === 'ja' ? '電脳授与所' : lang === 'en' ? 'Cyber Shop' : '電腦授與所'}
               </h2>
               {/* 🔄 陳列更新ボタン */}
-              <button onClick={() => refreshShopItems(ownedItems, wallet, true)} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center gap-0.5 border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
+              <button onClick={() => refreshShopItems(true)} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center gap-0.5 border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
                 🔄 {lang === 'ja' ? '陳列更新' : 'Refresh'} (10{getCurrencyUnit()})
               </button>
             </div>
 
-            {/* 📌 画面スクロール時上部にピタッとくっつく Sticky カテゴリボタン */}
+            {/* 📌 Sticky カテゴリボタン */}
             <div className={`sticky top-0 z-10 flex gap-2 py-2 mb-3 border-b border-dashed font-sans text-[11px] sm:text-xs sticky-bar ${isDarkSkin ? 'bg-slate-800/95 border-slate-700' : 'bg-stone-50/95 border-stone-200'}`}>
               <button onClick={() => setShopCategory('talisman')} className={`flex-1 py-2 rounded border font-bold transition-all ${shopCategory === 'talisman' ? (isDarkSkin ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md scale-102' : 'bg-amber-500 text-stone-950 border-amber-600 shadow-sm') : (isDarkSkin ? 'bg-slate-900 text-slate-400 border-slate-700' : 'bg-stone-200/60 border-stone-300 text-stone-600')}`}>
                 {lang === 'ja' ? '御守・護符' : 'Sacred Amulets'}
@@ -599,7 +608,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 3: 所持（コレクション管理 ＆ タップで説明文ポップアップ） */}
+        {/* TAB 3: 所持 */}
         {activeTab === 'inventory' && (
           <div className={`w-full rounded-lg shadow-xl p-5 border-2 border-emerald-600 animate-fade-in ${isDarkSkin ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
             <h2 className="text-xl font-bold text-emerald-700 border-b pb-2 mb-3 tracking-widest">
@@ -617,7 +626,6 @@ export default function App() {
             </div>
 
             <div className="min-h-[240px]">
-              {/* 🧿 御守・護符の所持表示（タップするとポップアップで解説が読める仕様） */}
               {inventoryCategory === 'talisman' && (
                 <div className="grid grid-cols-1 gap-1.5">
                   {SHOP_ITEMS.filter(i => i.type === 'talisman').map(item => {
@@ -636,7 +644,6 @@ export default function App() {
                 </div>
               )}
 
-              {/* 🖼️ 背景仕様の切り替え表示 */}
               {inventoryCategory === 'skin' && (
                 <div className="grid grid-cols-1 gap-1.5">
                   <button onClick={() => equipSkin('default')} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
@@ -660,7 +667,7 @@ export default function App() {
           </div>
         )}
 
-        {/* TAB 4: 御朱印帳（履歴） */}
+        {/* TAB 4: 御朱印帳 */}
         {activeTab === 'goshuin' && (
           <div className={`w-full rounded-lg shadow-xl p-6 border-2 border-stone-300 animate-fade-in ${isDarkSkin ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
             <div className="mb-4 pb-2 border-b border-stone-200 flex justify-between items-end">
@@ -725,7 +732,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* 📖 所持アイテム詳細解説ポップアップモーダル */}
+      {/* 📖 所持アイテム詳細解説ポップアップ */}
       {selectedInventoryItem && (
         <div className="fixed inset-0 bg-stone-900/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-stone-50 border-4 border-emerald-700 max-w-sm w-full rounded-lg p-5 shadow-2xl text-stone-900">
