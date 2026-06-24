@@ -3,27 +3,43 @@ import { useState, useEffect } from 'react';
 // 🌐 4モード対応：言語設定の型
 type LangMode = 'ja' | 'en' | 'zh_tw' | 'zh_cn';
 
-// 運勢データ（全15種類 ＋ 4言語対応）
+// ショップのアイテム型
+type ShopItem = { id: string; nameJa: string; nameEn: string; nameTw: string; nameCn: string; price: number; icon: string };
+
+// 🛒 ショップの景品データ
+const SHOP_ITEMS: ShopItem[] = [
+  { id: 'talisman_bug', nameJa: '無病息災・バグ退散札', nameEn: 'Anti-Bug Talisman', nameTw: '驅逐程式錯誤符', nameCn: '驱逐程序错误符', price: 150, icon: '⚡' },
+  { id: 'talisman_match', nameJa: '良縁成就・同期安定守', nameEn: 'Sync Harmony Amulet', nameTw: '同步安定緣結守', nameCn: '同步安定缘结守', price: 200, icon: '🌸' },
+  { id: 'wallpaper_gold', nameJa: '背景：黄金金運仕様', nameEn: 'Skin: Golden Fortune', nameTw: '外觀：黃金金運仕様', nameCn: '外观：黄金金运仕様', price: 400, icon: '✨' },
+  { id: 'wallpaper_neon', nameJa: '背景：電脳ネオン鳥居', nameEn: 'Skin: Cyber Neon Torii', nameTw: '外觀：電腦霓虹鳥居', nameCn: '外观：电脑霓虹鸟居', price: 500, icon: '🔮' }
+];
+
+// 運勢データ（全14種類。確率調整用の重み付き）
 const LUCK_DATA = [
-  { fortuneJa: '大吉', fortuneEn: 'Great Good Luck', fortuneTw: '大吉', fortuneCn: '大吉', weight: 5, btnJa: '福を重ねる', btnEn: 'Multiply Blessings', btnTw: '重溫福氣', btnCn: '重温福气', commentsJa: ['運気大いに盛んにして、何をなすにも好機なり。日々の感謝を忘れねば、さらに幸い至らん。'], commentsEn: ['Your luck is at its peak; it is the perfect time for anything. Gratitude brings more blessings.'], commentsTw: ['運勢大吉大利，做任何事都是大好時機。切記常懷感恩之心，福報自會加倍而至。'], commentsCn: ['运势大吉大利，做任何事都是大好时机。切记常怀感恩之心，福报自会加倍而至。'] },
-  { fortuneJa: '吉', fortuneEn: 'Good Luck', fortuneTw: '吉', fortuneCn: '吉', weight: 15, btnJa: '吉を広げる', btnEn: 'Expand Good Fortune', btnTw: '展延吉兆', btnCn: '展延吉兆', commentsJa: ['誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。'], commentsEn: ['Act with a sincere heart, and your path will open naturally. Wait patiently without rushing.'], commentsTw: ['若以誠懇之心待人處事，前路自會豁然開朗。切勿焦躁，靜待時機。'], commentsCn: ['若以诚恳之心待人处事，前路自会豁然开朗。切勿焦躁，静待时机。'] },
-  { fortuneJa: '中吉', fortuneEn: 'Middle Luck', fortuneTw: '中吉', fortuneCn: '中吉', weight: 12, btnJa: '縁を結ぶ', btnEn: 'Nurture Harmony', btnTw: '廣結善緣', btnCn: '广结善缘', commentsJa: ['平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。'], commentsEn: ['Signs of peaceful happiness. Value harmony and show kindness to those around you.'], commentsTw: ['此乃獲得平穩幸福之兆。當注重身心調和，多加關懷身邊之人。'], commentsCn: ['此乃获得平稳幸福之兆。当注重身心调和，多加关怀身边之人。'] },
-  { fortuneJa: '小吉', fortuneEn: 'Small Luck', fortuneTw: '小吉', fortuneCn: '小吉', weight: 10, btnJa: '歩みを進める', btnEn: 'Step Forward', btnTw: '漫步向前', btnCn: '漫步向前', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.'], commentsTw: ['小驚喜接連不斷的一天。但切記不可掉以輕心，凡事穩紮穩打為上。'], commentsCn: ['小惊喜接连不断的一天。但切记不可掉以轻心，凡事稳扎稳打为上。'] },
-  { fortuneJa: '末吉', fortuneEn: 'Future Luck', fortuneTw: '末吉', fortuneCn: '末吉', weight: 8, btnJa: '時を待つ', btnEn: 'Await the Hour', btnTw: '靜候時機', btnCn: '静候时机', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.'], commentsTw: ['當下為蓄精儲銳之時。宜靜心沉著，品一盞溫茶，好好休養生息。'], commentsCn: ['当下为蓄精储锐之时。宜静心沉著，品一盏温茶，好好休养生息。'] },
-  { fortuneJa: '接続大吉', fortuneEn: 'Max Connection Luck', fortuneTw: '連線大吉', fortuneCn: '连线大吉', weight: 6, btnJa: '帯域を広げる', btnEn: 'Maximize Bandwidth', btnTw: '拓寬頻寬', btnCn: '拓宽带宽', commentsJa: ['通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。'], commentsEn: ['Network speed is soaring; videos load instantly. All connections and relationships thrive.'], commentsTw: ['網路速度大幅提升，影片載入僅在瞬間。今日所連結之一切緣分皆順暢無阻。'], commentsCn: ['网络速度大幅提升，视频加载仅在瞬间。今日所连结之一切缘分皆顺畅无阻。'] },
-  { fortuneJa: '通信吉', fortuneEn: 'Stable Connection Luck', fortuneTw: '通訊吉', fortuneCn: '通讯吉', weight: 15, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', btnTw: '保持同步', btnCn: '保持同步', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.'], commentsTw: ['訊號通暢無比。近期似乎會有久未聯絡的舊友，突然傳來令人欣喜的訊息。'], commentsCn: ['信号通畅无比。近期似乎会有久未联络的旧友，突然传来令人讯息。'] },
-  { fortuneJa: '再起動', fortuneEn: 'System Reboot', fortuneTw: '系統重啟', fortuneCn: '系统重启', weight: 7, btnJa: '新たに紡ぐ', btnEn: 'Reboot Anew', btnTw: '重新啟航', btnCn: '重新启航', commentsJa: ['頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。'], commentsEn: ['If your mind feels heavy, take a long sleep. Refresh your body and soul to reboot your luck.'], commentsTw: ['若感到思緒沉重，切勿硬撐，早些入眠為妙。身心徹底重整後，運勢將大幅好轉。'], commentsCn: ['若感到思绪沉重，切勿硬撑，早些入眠为妙。身心彻底重整后，运势将大幅好转。'] },
-  { fortuneJa: '大吉持', fortuneEn: 'Loading Great Luck', fortuneTw: '大吉載入中', fortuneCn: '大吉载入中', weight: 5, btnJa: '読込を待つ', btnEn: 'Complete Loading', btnTw: '靜待載入', btnCn: '静待载入', commentsJa: ['今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。'], commentsEn: ['Current luck is average, but it is loading a massive blessing. A late-bloomer sign.'], commentsTw: ['當前運勢雖看似平凡，但此乃大器晚成之兆，往後將迎來令人驚嘆的巨大福運。'], commentsCn: ['当前运势虽看似平凡，但此乃大器晚成之兆，往后将迎来令人惊叹的巨大福运。'] },
-  { fortuneJa: '平', fortuneEn: 'Status Quo', fortuneTw: '平', fortuneCn: '平', weight: 5, btnJa: '平穏を保つ', btnEn: 'Maintain Balance', btnTw: '守持中庸', btnCn: '守持中庸', commentsJa: ['良くも悪くもなく、波風の立たない平穏な日。普通であることの有り難さを噛み締めるべし。'], commentsEn: ['Neither good nor bad, just a peaceful day. Appreciate the comfort of an ordinary day.'], commentsTw: ['無好亦無壞，波瀾不驚。當細細品味這份平凡安穩帶來的難得福氣。'], commentsCn: ['无好亦无坏，波澜不惊。当细细品味这份平凡安稳带来的难得福气。'] },
-  { fortuneJa: '大器晩成', fortuneEn: 'Late Bloomer', fortuneTw: '大器晚成', fortuneCn: '大器晚成', weight: 1, btnJa: '牙を研ぐ', btnEn: 'Sharpen Your Mind', btnTw: '磨礪心志', btnCn: '磨砺心志', commentsJa: ['今はシステムデバッグ中（凶）の如く苦戦するも、これより先、全てのバグは綺麗に解消され、驚くべき大躍進を遂げる運気なり。'], commentsEn: ['Though you struggle now like a system under debugging, all errors will soon clear away, leading to a massive leap forward.'], commentsTw: ['當前雖如系統偵錯（凶）般陷入苦戰，但此後所有阻礙將煙消雲散，迎來驚人的大躍進。'], commentsCn: ['当前虽如系统侦错（凶）般陷入苦战，但此后所有阻碍将烟消云散，迎来惊人的大跃进。'] },
-  { fortuneJa: '恐', fortuneEn: 'System Error', fortuneTw: '恐', fortuneCn: '恐', weight: 2, btnJa: '慎重に進む', btnEn: 'Proceed with Caution', btnTw: '履步涉冰', btnCn: '履步涉冰', commentsJa: ['少し慎重になるべき日。新しいことには手を染めず、いつものルーティンを淡々とこなすのが賢明なり。'], commentsEn: ['A day to tread with caution. Avoid starting new things and stick to your usual routine.'], commentsTw: ['今日行事宜多加謹慎。切勿盲目開展新計畫，安守既有常規方為上策。'], commentsCn: ['今日行事宜多加谨慎。切勿盲目开展新计划，安守既有常规方为上策。'] }
+  // 💎 激レア運勢（確率0.1% = weight: 1 / 1000相当に調整）
+  { fortuneJa: '超大吉', fortuneEn: 'Hyper Grand Luck', fortuneTw: '超大吉', fortuneCn: '超大吉', weight: 1, btnJa: '天命を全うする', btnEn: 'Claim Absolute Destiny', btnTw: '承接天命', btnCn: '承接天命', commentsJa: ['【確率0.1%の奇跡】全サーバーの全ログがあなたを祝福せり。全自動で莫大な福徳（1000両）がウォレットにデポジットされました。'], commentsEn: ['【0.1% Miracle】All core logs celebrate your presence. A massive blessing (1000 Ryo) has been deposited into your wallet automatically.'], commentsTw: ['【機率0.1%的奇蹟】全伺服器的所有日誌皆在為您祝福。無上福德（1000兩）已自動匯入您的加密錢包。'], commentsCn: ['【机率0.1%的奇迹】全服务器的所有日志皆在为您祝福。无上福德（1000两）已自动汇入您的加密钱包。'] },
+  // 💀 禁忌の運勢（確率0.5% = weight: 5相当）
+  { fortuneJa: 'システム大破', fortuneEn: 'CRITICAL SYSTEM CRASH', fortuneTw: '系統大破', fortuneCn: '系统大破', weight: 5, btnJa: '強制パッチ適用', btnEn: 'Apply Hotfix Forcefully', btnTw: '強制修復系統', btnCn: '强制修复系统', commentsJa: ['【致命的エラー：大凶】不穏な例外コードを検知。ペナルティとしてセッション内の資産（所持金）に重大なパケットロス（減少）が発生せり。'], commentsEn: ['【FATAL ERROR】Malicious exception detected. A severe packet loss (money reduction) has occurred in your session assets.'], commentsTw: ['【致命錯誤：大凶】偵測到不穩定的異常代碼。作為懲罰，您在本會話中的資產（所持金）遭遇了嚴重的封包遺失。'], commentsCn: ['【致命错误：大凶】侦测到不稳定的异常代码。作为惩罚，您在本会话中的资产（所持金）遭遇了严重的封包遗失。'] },
+  
+  // 通常運勢
+  { fortuneJa: '大吉', fortuneEn: 'Great Good Luck', fortuneTw: '大吉', fortuneCn: '大吉', weight: 50, btnJa: '福を重ねる', btnEn: 'Multiply Blessings', btnTw: '重溫福氣', btnCn: '重温福气', commentsJa: ['運気大いに盛んにして、何をなすにも好機なり。日々の感謝を忘れねば、さらに幸い至らん。'], commentsEn: ['Your luck is at its peak; it is the perfect time for anything. Gratitude brings more blessings.'], commentsTw: ['運勢大吉大利，做任何事都是大好時機。切記常懷感恩之心，福報自會加倍而至。'], commentsCn: ['运势大吉大利，做任何事都是大好时机。切记常怀感恩之心，福报自会加倍而至。'] },
+  { fortuneJa: '吉', fortuneEn: 'Good Luck', fortuneTw: '吉', fortuneCn: '吉', weight: 150, btnJa: '吉を広げる', btnEn: 'Expand Good Fortune', btnTw: '展延吉兆', btnCn: '展延吉兆', commentsJa: ['誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。'], commentsEn: ['Act with a sincere heart, and your path will open naturally. Wait patiently without rushing.'], commentsTw: ['若以誠懇之心待人處事，前路自會豁然開朗。切勿焦躁，靜待時機。'], commentsCn: ['若以诚恳之心待人处事，前路自会豁然开朗。切勿焦躁，静待时机。'] },
+  { fortuneJa: '中吉', fortuneEn: 'Middle Luck', fortuneTw: '中吉', fortuneCn: '中吉', weight: 120, btnJa: '縁を結ぶ', btnEn: 'Nurture Harmony', btnTw: '廣結善緣', btnCn: '广结善缘', commentsJa: ['平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。'], commentsEn: ['Signs of peaceful happiness. Value harmony and show kindness to those around you.'], commentsTw: ['此乃獲得平穩幸福之兆。當注重身心調和，多加關懷身邊之人。'], commentsCn: ['此乃获得平稳幸福之兆。当注重身心调和，多加关怀身边之人。'] },
+  { fortuneJa: '小吉', fortuneEn: 'Small Luck', fortuneTw: '小吉', fortuneCn: '小吉', weight: 100, btnJa: '歩みを進める', btnEn: 'Step Forward', btnTw: '漫步向前', btnCn: '漫步向前', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.'], commentsTw: ['小驚喜接連不斷的一天。但切記不可掉以輕心，凡事穩紮穩打為上。'], commentsCn: ['小惊喜接连不断的一天。但切记不可掉以轻心，凡事稳扎稳打为上。'] },
+  { fortuneJa: '末吉', fortuneEn: 'Future Luck', fortuneTw: '末吉', fortuneCn: '末吉', weight: 80, btnJa: '時を待つ', btnEn: 'Await the Hour', btnTw: '靜候時機', btnCn: '静候时机', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.'], commentsTw: ['當下為蓄精儲銳之時。宜靜心沉著，品一盞溫茶，好好休養生息。'], commentsCn: ['当下为蓄精储锐之时。宜静心沉著，品一盏温茶，好好休养生息。'] },
+  { fortuneJa: '接続大吉', fortuneEn: 'Max Connection Luck', fortuneTw: '連線大吉', fortuneCn: '连线大吉', weight: 60, btnJa: '帯域を広げる', btnEn: 'Maximize Bandwidth', btnTw: '拓寬頻寬', btnCn: '拓宽带宽', commentsJa: ['通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。'], commentsEn: ['Network speed is soaring; videos load instantly. All connections and relationships thrive.'], commentsTw: ['網路速度大幅提升，影片載入僅在瞬間。今日所連結之一切緣分皆順暢無阻。'], commentsCn: ['网络速度大幅提升，视频加载仅在瞬间。今日所连结之一切缘分皆顺畅无阻。'] },
+  { fortuneJa: '通信吉', fortuneEn: 'Stable Connection Luck', fortuneTw: '通訊吉', fortuneCn: '通讯吉', weight: 150, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', btnTw: '保持同步', btnCn: '保持同步', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.'], commentsTw: ['訊號通暢無比。近期似乎會有久未聯絡的舊友，突然傳來令人欣喜的訊息。'], commentsCn: ['信号通畅无比。近期似乎会有久未联络的旧友，突然传来令人欣喜的讯息。'] },
+  { fortuneJa: '再起動', fortuneEn: 'System Reboot', fortuneTw: '系統重啟', fortuneCn: '系统重启', weight: 70, btnJa: '新たに紡ぐ', btnEn: 'Reboot Anew', btnTw: '重新啟航', btnCn: '重新启航', commentsJa: ['頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。'], commentsEn: ['If your mind feels heavy, take a long sleep. Refresh your body and soul to reboot your luck.'], commentsTw: ['若感到思緒沉重，切勿硬撐，早些入眠為妙。身心徹底重整後，運勢將大幅好轉。'], commentsCn: ['若感到思绪沉重，切勿硬撑，早些入眠为妙。身心彻底重整后，运势将大幅好转。'] },
+  { fortuneJa: '大吉持', fortuneEn: 'Loading Great Luck', fortuneTw: '大吉載入中', fortuneCn: '大吉载入中', weight: 50, btnJa: '読込を待つ', btnEn: 'Complete Loading', btnTw: '靜待載入', btnCn: '静待载入', commentsJa: ['今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。'], commentsEn: ['Current luck is average, but it is loading a massive blessing. A late-bloomer sign.'], commentsTw: ['當前運勢雖看似平凡，但此乃大器晚成之兆，往後將迎來令人驚嘆的巨大福運。'], commentsCn: ['当前运势虽看似平凡，但此乃大器晚成之兆，往后将迎来令人惊叹的巨大福运。'] },
+  { fortuneJa: '平', fortuneEn: 'Status Quo', fortuneTw: '平', fortuneCn: '平', weight: 50, btnJa: '平穏を保つ', btnEn: 'Maintain Balance', btnTw: '守持中庸', btnCn: '守持中庸', commentsJa: ['良くも悪くもなく、波風の立たない平穏な日。普通であることの有り難さを噛み締めるべし。'], commentsEn: ['Neither good nor bad, just a peaceful day. Appreciate the comfort of an ordinary day.'], commentsTw: ['無好亦無壞，波瀾不驚。當細細品味這份平凡安穩帶來的難得福氣。'], commentsCn: ['无好亦无坏，波澜不惊。当细细品味这份平凡安稳带来的难得福气。'] },
+  { fortuneJa: '大器晩成', fortuneEn: 'Late Bloomer', fortuneTw: '大器晚成', fortuneCn: '大器晚成', weight: 10, btnJa: '牙を研ぐ', btnEn: 'Sharpen Your Mind', btnTw: '磨礪心志', btnCn: '磨砺心志', commentsJa: ['今はシステムデバッグ中（凶）の如く苦戦するも、これより先、全てのバグは綺麗に解消され、驚くべき大躍進を遂げる運気なり。'], commentsEn: ['Though you struggle now like a system under debugging, all errors will soon clear away, leading to a massive leap forward.'], commentsTw: ['當前雖如系統偵錯（凶）般陷入苦戰，但此後所有阻礙將煙消雲散，迎來驚人的大躍進。'], commentsCn: ['当前虽如系统侦错（凶）般陷入苦战，但此后所有阻碍将烟消云散，迎来惊人的大跃进。'] },
+  { fortuneJa: '恐', fortuneEn: 'System Error', fortuneTw: '恐', fortuneCn: '恐', weight: 20, btnJa: '慎重に進む', btnEn: 'Proceed with Caution', btnTw: '履步涉冰', btnCn: '履步涉冰', commentsJa: ['少し慎重になるべき日。新しいことには手を染めず、いつものルーティンを淡々とこなすのが賢明なり。'], commentsEn: ['A day to tread with caution. Avoid starting new things and stick to your usual routine.'], commentsTw: ['今日行事宜多加謹慎。切勿盲目開展新計畫，安守既有常規方為上策。'], commentsCn: ['今日行事宜多加谨慎。切勿盲目开展新计划，安守既有常规方为上策。'] }
 ];
 
 const SPECIAL_LUCK: { [key: string]: { [key: string]: string } } = {
   '11:11': { ja: '星連大吉', en: 'Synchronicity Luck', zh_tw: '星連大吉', zh_cn: '星连大吉', commentJa: '【11:11の奇跡】時計の数字が美しく一直線に並ぶ瞬間。全てのノイズが消え去り、願いが最速で宇宙に届く大吉兆なり！', commentEn: '【11:11 Miracle】The numbers line up perfectly. All noise vanishes, and your wishes reach the universe at lightspeed!', commentTw: '【11:11的奇蹟】時鐘數字完美排成一線的神聖瞬間。萬般雜音盡除，心中所願將以最快速度傳遞至宇宙核心！', commentCn: '【11:11的奇迹】时钟数字完美排成一线的神圣瞬间。万般杂音尽除，心中所愿将以最快速度传递至宇宙核心！' }
 };
 
-// リアルカレンダー連動：年中行事お告げデータ
 const HOLIDAY_FORTUNES: { [key: string]: { [key: string]: string } } = {
   '1/1': { fortuneJa: '歳旦大吉', fortuneEn: 'New Year Milestone', fortuneTw: '歲旦大吉', fortuneCn: '岁旦大吉', commentJa: '【謹賀新年】新しいログの1行目なり。過去のキャッシュは綺麗さっぱりクリアされ、壮大なる新規セッションがここに開始された！', commentEn: '【Happy New Year】The first row of your new log. All old cache is cleared; a grand new session has initialized!', commentTw: '【恭賀新禧】新日誌的第一行。舊有快取已被悉數清除，一場無比壯麗的新連線已於此刻正式啟動！', commentCn: '【恭贺新禧】新日志的第一行。旧有缓存已被悉数清除，一场无比壮丽的新连线已于此刻正式启动！' },
   '2/14': { fortuneJa: '良縁良縁', fortuneEn: 'Chocolate Overflow', fortuneTw: '良緣結縛', fortuneCn: '良缘结缚', commentJa: '【聖バレンタイン】甘きカカオの香りがパケットを満たす日。義理や本命の判定ロジックに迷うなかれ、感謝の気持ちをストレートに送信せよ。', commentEn: '【Valentine\'s Day】Sweet cacao flavors fill the packets. Don\'t overthink the obligation vs. love logic; just send your gratitude.', commentTw: '【西洋情人節】甜蜜的可可香氣充溢著封包。不必糾結於人情或真心的判斷邏輯，將感謝之情直接發送便得吉兆。', commentCn: '【西洋情人节】甜蜜的可可香气充溢着封包。不必纠结于人情或真心的判断逻辑，将感谢之情直接发送便得吉兆。' },
@@ -32,12 +48,11 @@ const HOLIDAY_FORTUNES: { [key: string]: { [key: string]: string } } = {
   '12/25': { fortuneJa: '聖夜大吉', fortuneEn: 'SSL Holy Night', fortuneTw: '聖夜大吉', fortuneCn: '圣夜大吉', commentJa: '【降誕祭】赤き衣の老人が高速配送プロトコルで福を届ける日。聖なる夜の暗号化（SSL）は強固なれば、あなたのプライバシーと幸福は守られたり。', commentEn: '【Christmas】The red-suited elder delivers blessings via high-speed routing. Holy night encryption is solid; your happiness is fully secured.', commentTw: '【聖誕節】紅衣老人正透過高速傳輸協定配送福氣。今夜的安全加密（SSL）極其堅固，您的隱私與幸福皆受神聖守護。', commentCn: '【圣诞节】红衣老人正透过高速传输协定配送福气。今夜的安全加密（SSL）极其坚固，您的隐私与幸福皆受神圣守护。' }
 };
 
-const FORTUNE_ORDER = ['星連大吉', '歳旦大吉', '良縁良縁', '虚妄大吉', '南瓜大吉', '聖夜大吉', '大吉', '吉', '中吉', '小吉', '末吉', '接続大吉', '通信吉', '再起動', '大吉持', '平', '大器晩成', '恐'];
+const FORTUNE_ORDER = ['超大吉', '星連大吉', '歳旦大吉', '良縁良縁', '虚妄大吉', '南瓜大吉', '聖夜大吉', '大吉', '吉', '中吉', '小吉', '末吉', '接続大吉', '通信吉', '再起動', '大吉持', '平', '大器晩成', '恐', 'システム大破'];
 
-// 🎨 吉兆の色・物
 const LUCKY_COLORS_JA = ['漆黒', '朱赤', '瑠璃色', '黄金色', '白', '琥珀色'];
 const LUCKY_COLORS_EN = ['Jet Black', 'Vermilion Red', 'Lapis Lazuli', 'Pure Gold', 'White', 'Amber'];
-const LUCKY_COLORS_TW = ['漆黑', '朱赤', '瑠璃色', '黃金色', '純白', '琥珀色'];
+const LUCKY_COLORS_TW = ['漆黑', '朱赤', '瑠璃色', '黃臨色', '純白', '琥珀色'];
 const LUCKY_COLORS_CN = ['漆黑', '朱赤', '瑠璃色', '黄金色', '纯白', '琥珀色'];
 
 const LUCKY_ITEMS_JA = ['LANケーブル', '温かい緑茶', 'ハンカチ', '最新のガジェット'];
@@ -45,7 +60,6 @@ const LUCKY_ITEMS_EN = ['LAN Cable', 'Warm Matcha Tea', 'Pocket Square', 'Latest
 const LUCKY_ITEMS_TW = ['網路線', '熱綠茶', '手帕', '最新智慧裝置'];
 const LUCKY_ITEMS_CN = ['网线', '热绿茶', '手帕', '最新智能设备'];
 
-// 🌍 時候の挨拶（海外の季節感への最適化対応）
 const MONTHLY_GREETINGS: { [key: number]: { ja: string; en: string; zh_tw: string; zh_cn: string } } = {
   1: { ja: '新春の清らかな光がシステムを照らす如く、', en: 'As the pure crystalline light of the New Year illuminates the system, ', zh_tw: '猶如新春清朗之光照耀系統架構，', zh_cn: '犹如新春清朗之光照耀系统架构，' },
   2: { ja: '厳しい寒さの中で梅が静かに芽吹く如く、', en: 'As red plum blossoms quietly bud amidst the severe winter chill, ', zh_tw: '正似寒梅於嚴冬之中靜靜吐蕊，', zh_cn: '正似寒梅于严冬之中静静吐蕊，' },
@@ -61,8 +75,8 @@ const MONTHLY_GREETINGS: { [key: number]: { ja: string; en: string; zh_tw: strin
   12: { ja: '寒風に耐え忍びてサーバーが強固に稼働する如く、', en: 'As core systems stand resilient and strong against the biting winter wind, ', zh_tw: '正如伺服器頂著凜冽寒風依然堅固運作，', zh_cn: '正如服务器顶着凛冽寒风依然坚固运作，' }
 };
 
-// 🔒 安全な難読化セキュリティロジック（チート対策）
-const CRYPTO_SALT = 'cyber_shrine_secret_2026';
+// 🔒 拡張セキュリティ難読化（ウォレット・購入状況も一元保護）
+const CRYPTO_SALT = 'cyber_shrine_secret_2026_v2';
 const encodeData = (data: any): string => {
   const str = JSON.stringify(data);
   const hash = btoa(encodeURIComponent(str));
@@ -92,12 +106,20 @@ export default function App() {
   const [recentScores, setRecentScores] = useState<number[]>([]);
   const [isBurning, setIsBurning] = useState(false);
 
+  // 💰 新機能：仮想コイン＆所有アイテムステート
+  const [wallet, setWallet] = useState<number>(0);
+  const [ownedItems, setOwnedItems] = useState<string[]>([]);
+  const [activeSkin, setActiveSkin] = useState<string>('default');
+
   useEffect(() => {
-    const savedHistory = decodeData(localStorage.getItem('shrine_history_secure'));
-    const savedDates = decodeData(localStorage.getItem('shrine_dates_secure'));
+    const secureState = decodeData(localStorage.getItem('shrine_master_state_secure'));
+    if (secureState) {
+      if (secureState.history) setHistory(secureState.history);
+      if (secureState.lastDates) setLastDates(secureState.lastDates);
+      if (secureState.wallet !== undefined) setWallet(secureState.wallet);
+      if (secureState.ownedItems) setOwnedItems(secureState.ownedItems);
+    }
     const savedScores = localStorage.getItem('shrine_scores');
-    if (savedHistory) setHistory(savedHistory);
-    if (savedDates) setLastDates(savedDates);
     if (savedScores) setRecentScores(JSON.parse(savedScores));
 
     const todayStr = new Date().toDateString();
@@ -112,7 +134,13 @@ export default function App() {
     setVisitDays(days);
   }, []);
 
+  const saveMasterState = (nextHistory: any, nextDates: any, nextWallet: number, nextOwned: string[]) => {
+    const stateObj = { history: nextHistory, lastDates: nextDates, wallet: nextWallet, ownedItems: nextOwned };
+    localStorage.setItem('shrine_master_state_secure', encodeData(stateObj));
+  };
+
   const getFortuneScore = (fort: string): number => {
+    if (fort === '超大吉') return 5;
     if (fort.includes('大吉')) return 5;
     if (fort.includes('吉')) return 4;
     if (fort.includes('中吉') || fort.includes('平')) return 3;
@@ -146,7 +174,7 @@ export default function App() {
         historyKey = hol.fortuneJa;
       }
       else {
-        let selectedGroup = LUCK_DATA[0];
+        let selectedGroup = LUCK_DATA[2]; // デフォルト大吉
         for (let attempt = 0; attempt < 3; attempt++) {
           const totalWeight = LUCK_DATA.reduce((sum, item) => sum + item.weight, 0);
           let randomNum = Math.floor(Math.random() * totalWeight);
@@ -173,6 +201,15 @@ export default function App() {
       setResult({ fortune, comment, color, item, currentBtn });
       setIsRolling(false); setLastFortune(historyKey);
 
+      // 💰 コイン増減の処理ロジック
+      let nextWallet = wallet + 50; // 通常の参拝報酬: +50両
+      if (historyKey === '超大吉') {
+        nextWallet = wallet + 1000; // 超大吉プレミアム: +1000両
+      } else if (historyKey === 'システム大破') {
+        nextWallet = Math.floor(wallet / 2); // システム大破ペナルティ: 所持金半減
+      }
+      setWallet(nextWallet);
+
       const newScore = getFortuneScore(historyKey);
       const updatedScores = [newScore, ...recentScores].slice(0, 5);
       setRecentScores(updatedScores);
@@ -181,9 +218,23 @@ export default function App() {
       const newHistory = { ...history, [historyKey]: (history[historyKey] || 0) + 1 };
       const newDates = { ...lastDates, [historyKey]: `${month}/${date}` };
       setHistory(newHistory); setLastDates(newDates);
-      localStorage.setItem('shrine_history_secure', encodeData(newHistory));
-      localStorage.setItem('shrine_dates_secure', encodeData(newDates));
+      saveMasterState(newHistory, newDates, nextWallet, ownedItems);
     }, 600);
+  };
+
+  // 🛒 アイテム購入ロジック
+  const buyItem = (item: ShopItem) => {
+    if (wallet < item.price || ownedItems.includes(item.id)) return;
+    const nextWallet = wallet - item.price;
+    const nextOwned = [...ownedItems, item.id];
+    setWallet(nextWallet);
+    setOwnedItems(nextOwned);
+    saveMasterState(history, lastDates, nextWallet, nextOwned);
+
+    // 背景スキンアイテムの場合、即時適用
+    if (item.id.startsWith('wallpaper_')) {
+      setActiveSkin(item.id);
+    }
   };
 
   const handleClear = () => {
@@ -191,6 +242,7 @@ export default function App() {
     setTimeout(() => {
       localStorage.clear();
       setHistory({}); setLastDates({}); setRecentScores([]); setResult(null); setLastFortune(''); setVisitDays(1);
+      setWallet(0); setOwnedItems([]); setActiveSkin('default');
       setIsBurning(false); setShowModal(false);
     }, 1800);
   };
@@ -212,8 +264,15 @@ export default function App() {
   const completionRate = Math.round((unlockedCount / FORTUNE_ORDER.length) * 100);
   const bio = getBiorhythm();
 
+  // 🎨 購入したスキンアイテムに応じた背景スタイルの動的決定
+  const getBackgroundClass = () => {
+    if (activeSkin === 'wallpaper_gold') return 'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200';
+    if (activeSkin === 'wallpaper_neon') return 'bg-slate-900 text-stone-100';
+    return 'bg-stone-100';
+  };
+
   return (
-    <div className="min-h-screen bg-stone-100 flex flex-col items-center justify-center p-4 text-stone-900 select-none font-serif relative overflow-x-hidden">
+    <div className={`min-h-screen flex flex-col items-center justify-center p-4 select-none font-serif relative overflow-x-hidden transition-all duration-700 ${getBackgroundClass()} ${activeSkin === 'wallpaper_neon' ? 'text-stone-200' : 'text-stone-900'}`}>
       
       <style>{`
         @keyframes burnUp {
@@ -225,38 +284,44 @@ export default function App() {
         ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
       `}</style>
 
-      {/* 🌐 4カ国語切り替えバー */}
-      <div className="absolute top-4 left-4 flex flex-wrap gap-1 z-20">
-        {(['ja', 'en', 'zh_tw', 'zh_cn'] as LangMode[]).map(m => (
-          <button key={m} onClick={() => setLang(m)} className={`text-[10px] px-2 py-1 rounded border shadow-sm transition-all focus:ring-1 focus:ring-red-700 ${lang === m ? 'bg-red-800 text-stone-100 border-red-900 font-bold' : 'bg-stone-200 border-stone-400 text-stone-700 hover:bg-stone-300'}`}>
-            {m === 'ja' ? '日本語' : m === 'en' ? 'English' : m === 'zh_tw' ? '繁體中文' : '简体中文'}
-          </button>
-        ))}
+      {/* 🌐 言語＆財布情報バー */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-20">
+        <div className="flex gap-1">
+          {(['ja', 'en', 'zh_tw', 'zh_cn'] as LangMode[]).map(m => (
+            <button key={m} onClick={() => setLang(m)} className={`text-[10px] px-2 py-1 rounded border shadow-sm transition-all ${lang === m ? 'bg-red-800 text-stone-100 border-red-900 font-bold' : 'bg-stone-200 border-stone-400 text-stone-700 hover:bg-stone-300'}`}>
+              {m === 'ja' ? '日本語' : m === 'en' ? 'English' : m === 'zh_tw' ? '繁體' : '简体'}
+            </button>
+          ))}
+        </div>
+        {/* 💰 所持金（両）インジケーター */}
+        <div className="bg-amber-500 text-stone-950 px-2.5 py-1 rounded font-sans text-xs font-bold border border-amber-600 shadow-sm flex items-center gap-1">
+          🪙 {wallet} <span className="text-[10px] font-serif">{lang === 'ja' ? '両' : 'Ryo'}</span>
+        </div>
       </div>
 
       {/* ⛩️ おみくじ本体 */}
-      <div className="max-w-md w-full bg-stone-50 rounded-lg shadow-2xl p-8 border-4 border-red-700 text-center relative mt-12">
-        <div className="absolute top-0 left-0 w-full h-3 bg-red-700"></div>
+      <div className={`max-w-md w-full rounded-lg shadow-2xl p-8 border-4 border-red-700 text-center relative mt-12 transition-all ${activeSkin === 'wallpaper_neon' ? 'bg-slate-800/90 border-cyan-500' : 'bg-stone-50'}`}>
+        <div className={`absolute top-0 left-0 w-full h-3 ${activeSkin === 'wallpaper_neon' ? 'bg-cyan-500' : 'bg-red-700'}`}></div>
         {visitDate && <div className="text-[10px] text-stone-500 font-sans tracking-widest absolute top-5 right-6">{visitDate}</div>}
 
-        <h1 className="text-4xl font-bold text-red-800 my-4 tracking-widest">{lang === 'ja' ? '御神籤' : lang === 'en' ? 'OMIKUJI' : '電子靈籤'}</h1>
+        <h1 className={`text-4xl font-bold my-4 tracking-widest ${activeSkin === 'wallpaper_neon' ? 'text-cyan-400' : 'text-red-800'}`}>{lang === 'ja' ? '御神籤' : lang === 'en' ? 'OMIKUJI' : '電子靈籤'}</h1>
 
-        <div className="min-h-[230px] flex flex-col items-center justify-center bg-stone-100 rounded border border-stone-300 p-5 mb-5 shadow-inner">
+        <div className={`min-h-[230px] flex flex-col items-center justify-center rounded border p-5 mb-5 shadow-inner ${activeSkin === 'wallpaper_neon' ? 'bg-slate-950 border-slate-700' : 'bg-stone-100 border-stone-300'}`}>
           {isRolling ? (
-            <div className="text-sm font-bold text-red-700 animate-pulse tracking-widest">
+            <div className={`text-sm font-bold animate-pulse tracking-widest ${activeSkin === 'wallpaper_neon' ? 'text-cyan-400' : 'text-red-700'}`}>
               {lang === 'ja' ? '御神意を伺っております...' : lang === 'en' ? 'Consulting the digital horizon...' : '正在祈求神明降旨...'}
             </div>
           ) : result ? (
             <div className="w-full text-sm animate-fade-in">
-              <div className="text-3xl font-black text-red-700 mb-4 tracking-widest border-b-2 border-red-700/10 pb-2 inline-block">
+              <div className={`text-3xl font-black mb-4 tracking-widest border-b-2 pb-2 inline-block ${activeSkin === 'wallpaper_neon' ? 'text-cyan-400 border-cyan-500/20' : 'text-red-700 border-red-700/10'}`}>
                 {result.fortune}
               </div>
-              <p className="text-stone-700 leading-relaxed text-left px-2 mb-4 font-sans text-xs sm:text-sm">
+              <p className={`leading-relaxed text-left px-2 mb-4 font-sans text-xs sm:text-sm ${activeSkin === 'wallpaper_neon' ? 'text-slate-300' : 'text-stone-700'}`}>
                 {result.comment}
               </p>
-              <div className="border-t border-dashed border-stone-300 pt-3 text-xs text-stone-600 bg-stone-50/70 py-2.5 rounded flex flex-col gap-1 px-4 text-left">
-                <div><span className="text-red-700 font-bold">{lang === 'ja' ? '吉兆の色：' : lang === 'en' ? 'Lucky Color: ' : '幸運色：'}</span>{result.color}</div>
-                <div><span className="text-red-700 font-bold">{lang === 'ja' ? '吉兆の物：' : lang === 'en' ? 'Lucky Item: ' : '幸運物：'}</span>{result.item}</div>
+              <div className={`border-t border-dashed pt-3 text-xs py-2.5 rounded flex flex-col gap-1 px-4 text-left ${activeSkin === 'wallpaper_neon' ? 'border-slate-700 bg-slate-900/50 text-slate-400' : 'border-stone-300 bg-stone-50/70 text-stone-600'}`}>
+                <div><span className={`font-bold ${activeSkin === 'wallpaper_neon' ? 'text-cyan-400' : 'text-red-700'}`}>{lang === 'ja' ? '吉兆の色：' : lang === 'en' ? 'Lucky Color: ' : '幸運色：'}</span>{result.color}</div>
+                <div><span className={`font-bold ${activeSkin === 'wallpaper_neon' ? 'text-cyan-400' : 'text-red-700'}`}>{lang === 'ja' ? '吉兆の物：' : lang === 'en' ? 'Lucky Item: ' : '幸運物：'}</span>{result.item}</div>
               </div>
             </div>
           ) : (
@@ -266,19 +331,19 @@ export default function App() {
           )}
         </div>
 
-        <button onClick={drawOmikuji} disabled={isRolling} className={`w-full py-3.5 px-6 text-base font-bold text-stone-100 rounded shadow-md transition-all active:scale-95 tracking-widest focus:outline-none focus:ring-2 focus:ring-red-700 ${isRolling ? 'bg-stone-400' : 'bg-red-800 hover:bg-red-900'}`}>
+        <button onClick={drawOmikuji} disabled={isRolling} className={`w-full py-3.5 px-6 text-base font-bold text-stone-100 rounded shadow-md transition-all active:scale-95 tracking-widest focus:outline-none ${isRolling ? 'bg-stone-400' : activeSkin === 'wallpaper_neon' ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-red-800 hover:bg-red-900'}`}>
           {result ? result.currentBtn : (lang === 'ja' ? 'おみくじを引く' : lang === 'en' ? 'Draw Fortune' : '求取靈籤')}
         </button>
       </div>
 
       {/* 📊 バイオリズム ＆ 御朱印帳ログエリア */}
-      <div className="max-w-md w-full mt-4 bg-stone-50 rounded border border-stone-300 p-4 shadow-md relative">
+      <div className={`max-w-md w-full mt-4 rounded border p-4 shadow-md relative ${activeSkin === 'wallpaper_neon' ? 'bg-slate-800/90 border-slate-700' : 'bg-stone-50 border-stone-300'}`}>
         <div className="mb-3.5 pb-2.5 border-b border-stone-200 text-left">
           <h4 className="text-[11px] font-bold text-stone-500 tracking-wider mb-1 flex justify-between">
             <span>{lang === 'ja' ? '📈 運気バイオリズム' : lang === 'en' ? '📈 Fortune Biorhythm' : '📈 運勢波動圖'}</span>
-            <span className="text-red-700 text-[10px] font-sans font-bold">{bio.status}</span>
+            <span className={`text-[10px] font-sans font-bold ${activeSkin === 'wallpaper_neon' ? 'text-cyan-400' : 'text-red-700'}`}>{bio.status}</span>
           </h4>
-          <div className="text-xs font-sans tracking-widest bg-stone-100 py-1.5 px-3 rounded text-center text-stone-600 border border-stone-200/50">
+          <div className={`text-xs font-sans tracking-widest py-1.5 px-3 rounded text-center border ${activeSkin === 'wallpaper_neon' ? 'bg-slate-950 text-slate-400 border-slate-800' : 'bg-stone-100 text-stone-600 border-stone-200/50'}`}>
             {bio.graph}
           </div>
         </div>
@@ -303,23 +368,53 @@ export default function App() {
               }} />
             ))}
 
-            {/* 🔢 拝受回数を通常の「数字」で分かりやすく表示 */}
             <div className={`flex flex-wrap justify-center gap-1.5 text-[10px] mb-2.5 transition-opacity duration-500 ${isBurning ? 'opacity-20 pointer-events-none' : ''}`}>
               {FORTUNE_ORDER.map(luckKey => {
                 const count = history[luckKey]; const lastDate = lastDates[luckKey];
                 if (!count) return null;
                 return (
-                  <span key={luckKey} title={`Last: ${lastDate}`} className="bg-red-50/60 text-red-800 border border-red-200/60 rounded px-2 py-0.5 shadow-sm font-sans text-[10px] font-medium">
+                  <span key={luckKey} title={`Last: ${lastDate}`} className={`border rounded px-2 py-0.5 shadow-sm font-sans text-[10px] font-medium ${activeSkin === 'wallpaper_neon' ? 'bg-slate-900 text-cyan-400 border-cyan-500/30' : 'bg-red-50/60 text-red-800 border-red-200/60'}`}>
                     <span className="font-serif font-bold">{luckKey}</span> : {count}{lang === 'ja' ? '回' : ''}
                   </span>
                 );
               })}
             </div>
 
-            <button onClick={() => setShowModal(true)} disabled={isBurning} className="text-[9px] text-stone-400 hover:text-red-700 underline block mx-auto focus:outline-none focus:ring-1 focus:ring-red-700 px-1 font-sans">
+            <button onClick={() => setShowModal(true)} disabled={isBurning} className="text-[9px] text-stone-400 hover:text-red-700 underline block mx-auto focus:outline-none px-1 font-sans">
               {lang === 'ja' ? '御神籤をお焚き上げする' : lang === 'en' ? 'Perform Sacred Disposal' : '將靈籤送返化寶'}
             </button>
           </div>
+        )}
+      </div>
+
+      {/* 🛒 新設：サイバー賽銭ショップセクション */}
+      <div className={`max-w-md w-full mt-4 rounded border p-4 shadow-md ${activeSkin === 'wallpaper_neon' ? 'bg-slate-800/90 border-slate-700' : 'bg-stone-50 border-stone-300'}`}>
+        <h3 className="text-[11px] font-bold text-stone-500 tracking-wider border-b border-stone-200 pb-1.5 mb-2.5">
+          🏪 {lang === 'ja' ? '電脳授与所（ショップ）' : lang === 'en' ? 'Cyber Shrine Shop' : '電腦授與所'}
+        </h3>
+        <div className="grid grid-cols-2 gap-2">
+          {SHOP_ITEMS.map(item => {
+            const isOwned = ownedItems.includes(item.id);
+            const canBuy = wallet >= item.price;
+            const name = lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : lang === 'zh_tw' ? item.nameTw : item.nameCn;
+            
+            return (
+              <button key={item.id} onClick={() => buyItem(item)} disabled={isOwned || !canBuy} className={`p-2 rounded border text-left flex flex-col justify-between transition-all font-sans text-[10px] ${isOwned ? 'bg-stone-200/60 text-stone-400 border-stone-300' : canBuy ? 'bg-amber-50/50 border-amber-300 hover:bg-amber-100/50' : 'bg-stone-100 text-stone-400 border-stone-200 cursor-not-allowed'}`}>
+                <div className="flex gap-1 items-center mb-1 font-medium">
+                  <span>{item.icon}</span>
+                  <span className="line-clamp-1">{name}</span>
+                </div>
+                <div className="text-right w-full font-bold text-amber-600">
+                  {isOwned ? (lang === 'ja' ? '「拝受済」' : 'Owned') : `🪙 ${item.price}`}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        {ownedItems.length > 0 && (
+          <button onClick={() => setActiveSkin('default')} className="text-[9px] text-stone-400 hover:text-red-700 underline block mx-auto mt-2 font-sans">
+            {lang === 'ja' ? '背景をデフォルトに戻す' : 'Reset theme to default'}
+          </button>
         )}
       </div>
 
@@ -329,10 +424,10 @@ export default function App() {
           <div className="bg-stone-50 border-2 border-red-800 max-w-xs w-full rounded p-6 shadow-2xl text-center animate-fade-in">
             <h4 className="text-base font-bold text-red-800 mb-2">{lang === 'ja' ? '御神籤お焚き上げ' : lang === 'en' ? 'Sacred Disposal' : '靈籤化寶'}</h4>
             <p className="text-xs text-stone-600 leading-relaxed mb-5 font-sans">
-              {lang === 'ja' ? 'これまでの参拝履歴、ならびに仮想御朱印をすべてお焚き上げ（消去）いたします。よろしいですか？' : lang === 'en' ? 'This will securely clear and incinerate your fortune logs. Proceed?' : '這將會把您所有的參拜紀錄與御朱印付之一炬（重設），確定執行嗎？'}
+              {lang === 'ja' ? 'これまでの参拝履歴、所持金、ならびに購入したお守りをすべてお焚き上げ（消去）いたします。よろしいですか？' : lang === 'en' ? 'This will securely clear and incinerate your fortune logs and wallet. Proceed?' : '這將會把您所有的參拜紀錄、所持金與御朱印付之一炬（重設），確定執行嗎？'}
             </p>
             <div className="flex gap-3 justify-center text-xs font-sans">
-              <button onClick={handleClear} disabled={isBurning} className="bg-red-800 text-stone-100 font-bold px-4 py-2 rounded hover:bg-red-900 focus:ring-2 focus:ring-red-700 transition-colors">
+              <button onClick={handleClear} disabled={isBurning} className="bg-red-800 text-stone-100 font-bold px-4 py-2 rounded hover:bg-red-900 transition-colors">
                 {isBurning ? (lang === 'ja' ? '昇華中...' : 'Burning...') : (lang === 'ja' ? 'お焚き上げする' : lang === 'en' ? 'Burn Records' : '確認化寶')}
               </button>
               <button onClick={() => setShowModal(false)} disabled={isBurning} className="bg-stone-200 text-stone-700 font-bold px-4 py-2 rounded hover:bg-stone-300">
