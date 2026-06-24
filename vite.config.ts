@@ -4,5 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/my-vite-app/', // 👈 この行を新しく追加してください！
   plugins: [react(), tailwindcss()],
 })
