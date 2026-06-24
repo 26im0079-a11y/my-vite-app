@@ -66,7 +66,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_29', nameJa: 'デバッガ追跡の探知灯', nameEn: 'Debugger Searchlight', nameTw: '偵錯追蹤探照燈', nameCn: '侦错追踪探照灯', descJa: '深い闇に潜むバグの潜伏場所を特定し、スタックトレースを明瞭に照らし出す。', descEn: 'Locates deep-seated bugs, brightly illuminating stack traces.', descTw: '精準鎖定潛藏於深邃暗處的程式錯誤，將堆疊追蹤照得一清二楚。', descCn: '精准锁定潜藏于深邃暗处的程序错误，将堆栈追踪照得一清二楚。', price: 230, type: 'talisman' },
   { id: 'talisman_gen_30', nameJa: 'ステータスコード200の祝詞', nameEn: 'HTTP 200 Blessing', nameTw: '狀態碼200神聖祝詞', nameCn: '状态码200神圣祝词', descJa: '全てが正常であり、世界が調和に満ちていることを宣言するお祓いの言葉。', descEn: 'Declares that everything is normal and the world is in perfect harmony.', descTw: '宣告一切正常運作、世界充滿和諧的淨化神聖祝詞。', descCn: '宣告一切正常运作、世界充满和谐的净化神圣祝词。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_31', nameJa: 'クロスドメイン突破の通行手形', nameEn: 'CORS Freedom Pass', nameTw: '跨網域突破通行手形', nameCn: '跨网域突破通行手形', descJa: 'ブラウザが課す厳しい境界線をすり抜け、自由なデータ交信を許可する。', descEn: 'Slips through strict browser boundaries to allow free cross-domain talk.', descTw: '穿透瀏覽器施加的嚴格邊界鐵幕，允許自由進行跨網域數據通信。', descCn: '穿透浏览器施加的严格边界铁幕，允许自由进行跨网域数据通信。', price: 220, type: 'talisman' },
-  { id: 'talisman_gen_32', nameJa: '環境変数秘匿のお守り', nameEn: 'Env Secret Keeper', nameTw: '環境變數秘匿御守', nameCn: '环境变量秘匿御守', descJa: '漏洩してはならない鍵（パスワード）を、胸の奥深くに隠して守る。', descEn: 'Hides critical passwords deep in its chest, preventing credential leaks.', descTw: '將絕不可外洩的金鑰（密碼）深藏於胸中內核，嚴加防護。', descCn: '将绝不可外泄的金钥（密码）深藏于胸中内核，严加防护。', price: 350, type: 'talisman' },
+  { id: 'talisman_gen_32', nameJa: '環境変数秘匿のお守り', nameEn: 'Env Secret Keeper', nameTw: '環境變數秘匿御守', nameCn: '环境变量秘匿御守', descJa: '漏洩してはならない鍵（パスワード）を、胸の奥深くに隠して守る。', descEn: 'Hides critical passwords deep in its chest, preventing credential leaks.', descTw: '將端不可外洩的金鑰（密碼）深藏於胸中內核，嚴加防護。', descCn: '将绝不可外泄的金钥（密码）深藏于胸中内核，严加防护。', price: 350, type: 'talisman' },
   { id: 'talisman_gen_33', nameJa: 'スクレイピング円滑化の潤滑油', nameEn: 'Smooth Scraping Oil', nameTw: '網頁爬蟲圓滑潤滑油', nameCn: '网页爬虫圆滑润滑油', descJa: 'ブロックされることなく、情報の海から必要な真実だけをスムーズに掬い取る。', descEn: 'Smoothly scoops facts from information seas without triggering blocks.', descTw: '在免於被封鎖的前提下，從資訊汪洋中流暢撈取所需的真相。', descCn: '在免于被封锁的前提下，从资讯汪洋中流畅捞取所需的真相。', price: 180, type: 'talisman' },
   { id: 'talisman_gen_34', nameJa: 'Webhook即時着荷の飛脚鳥', nameEn: 'Webhook Instant Bird', nameTw: 'Webhook即時著陸飛腳鳥', nameCn: 'Webhook即时着陆飞脚鸟', descJa: 'イベントの発生を1ミリ秒の遅れもなく、目的の場所へと届ける伝書鳥。', descEn: 'An event messenger bird that delivers updates with zero milliseconds delay.', descTw: '不帶一毫秒延遲、將事件發生動態精準送達目的地的傳書飛鳥。', descCn: '不带一毫秒延迟、将事件发生动态精准送达目的地的传书飞鸟。', price: 260, type: 'talisman' },
   { id: 'talisman_gen_35', nameJa: '依存パッケージ安定の楔', nameEn: 'Dependency Lock Wedge', nameTw: '依賴套件安定之楔', nameCn: '依赖套件安定之楔', descJa: '他人の作った土台（ライブラリ）の突然の破壊的変更から、我が身を固定して守る。', descEn: 'Locks your feet to guard against sudden breaks in third-party libraries.', descTw: '當他人構建的基石（函式庫）發生突發性破壞變更時，牢牢固定自我免受衝擊。', descCn: '当他人构建的基石（函数库）发生突发性破坏变更时，牢牢固定自我免受冲击。', price: 300, type: 'talisman' },
@@ -74,7 +74,7 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_37', nameJa: 'ダークウェブ流入防御の結界', nameEn: 'Darkweb Border Barrier', nameTw: '暗網流入防禦結界', nameCn: '暗网流入防御结界', descJa: '悪意に満ちた闇の世界から差し込まれる触手を、光の壁で遮断する。', descEn: 'Blocks malicious tentacles reaching out from deep internet underworlds.', descTw: '以光之壁障徹底阻絕自充滿惡意的暗黑世界延伸而來的觸手。', descCn: '以光之壁障彻底阻绝自充满恶意的暗黑世界延伸而来的触手。', price: 470, type: 'talisman' },
   { id: 'talisman_gen_38', nameJa: '正規表現一発的中の一線', nameEn: 'Regex Perfect Match Line', nameTw: '正規表示式一擊命中線', nameCn: '正则表达式一击命中线', descJa: 'どれだけ複雑に入り組んだ文字列の迷宮からも、意図した獲物を一瞬で見つけ出す。', descEn: 'Finds target text in complex string string-mazes instantly.', descTw: '不論多麼複雜交錯的字串迷宮，皆能在一瞬間精確揪出目標獵物。', descCn: '不论多么复杂交错的字符串迷宫，皆能在一瞬间精确揪出目标猎物。', price: 200, type: 'talisman' },
   { id: 'talisman_gen_39', nameJa: 'ローカルホスト繁盛の盛り塩', nameEn: 'Localhost Prosperity Salt', nameTw: '本地主機繁榮盛り塩', nameCn: '本地主机繁荣盛り盐', descJa: '自分の開発領域（127.0.0.1）を清め、最高のひらめきをもたらす聖なる塩。', descEn: 'Purifies your dev space (127.0.0.1), bringing supreme inspirations.', descTw: '淨化屬於自己的開發聖域（127.0.0.1），招來絕佳靈感的純潔之鹽。', descCn: '净化属于自己的开发圣域（127.0.0.1），招来绝佳灵感的纯洁之盐。', price: 110, type: 'talisman' },
-  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平浪静、悄然融入和谐。', price: 500, type: 'talisman' },
+  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平静、悄然融入和谐。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_41', nameJa: '神隠しパケット回収の網', nameEn: 'Lost Packet Fishing Net', nameTw: '神隱封包回收漁網', nameCn: '神隐封包回收渔网', descJa: '回線の狭間で神隠しに遭った迷子のパケットたちを漏らさず救い出す。', descEn: 'Rescues orphan packets that went missing in network rifts.', descTw: '將在網路裂縫間遭遇神隱、流離失所的迷途封包悉數搜救歸隊。', descCn: '将在网络裂缝间遭遇神隐、流离失所的迷途封包悉数搜救归队。', price: 230, type: 'talisman' },
   { id: 'talisman_gen_42', nameJa: 'AIプロンプト意思疎通のパイプ', nameEn: 'Prompt Telepathy Pipe', nameTw: 'AI提示詞心靈感應菸斗', nameCn: 'AI提示词心灵感应烟斗', descJa: '人工知能との魂のシンクロ率を高め、一言で完璧な成果物を出力させる。', descEn: 'Boosts soul sync with AI, achieving absolute output with one phrase.', descTw: '提升與人工智慧之間的靈魂同步率，僅憑片言隻字便能引導出完美成果。', descCn: '提升与人工智能之间的灵魂同步率，仅凭片言只字便能引导出完美成果。', price: 310, type: 'talisman' },
 
@@ -216,8 +216,6 @@ export default function App() {
   // 🚀 初回起動・ロード処理
   useEffect(() => {
     const secureState = decodeData(localStorage.getItem('shrine_master_state_secure_v3'));
-    let currentWallet = 0;
-    let currentOwned: string[] = [];
 
     if (secureState) {
       if (secureState.history) setHistory(secureState.history);
@@ -225,11 +223,9 @@ export default function App() {
       if (secureState.wallet !== undefined) {
         setWallet(secureState.wallet);
         setDisplayWallet(secureState.wallet);
-        currentWallet = secureState.wallet;
       }
       if (secureState.ownedItems) {
         setOwnedItems(secureState.ownedItems);
-        currentOwned = secureState.ownedItems;
       }
       if (secureState.activeSkin) setActiveSkin(secureState.activeSkin);
     }
@@ -269,7 +265,7 @@ export default function App() {
     return hour >= 22 || hour < 4;
   };
 
-  // 🎰 授与所のランダム5件抽選システム (引数から未使用だった引数を整理してビルドエラーを回避)
+  // 🎰 授与所のランダム5件抽選システム
   const refreshShopItems = (deductFee = true) => {
     if (deductFee) {
       if (wallet < 10) return;
