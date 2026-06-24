@@ -11,10 +11,9 @@ type ShopItem = {
   price: number;
   type: CategoryMode;
   isNightOnly?: boolean; // 🌙 夜間限定フラグ
-  availableMonths?: number[]; // 📅 季節限定フラグ（例: [4] なら4月のみ出現）
 };
 
-// ⛩️ 御守・護符・背景ラインナップ（季節限定を追加した全62種）
+// ⛩️ 御守・護符ラインナップ（全55種 ＋ 背景5種 = 計60種）
 const SHOP_ITEMS: ShopItem[] = [
   // --- 既存御守 (5種) ---
   { id: 'talisman_bug', nameJa: '無病息災・バグ退散札', nameEn: 'Anti-Bug Talisman', nameTw: '驅逐程式錯誤符', nameCn: '驱逐程序错误符', descJa: 'コードの不純物を根こそぎクリアにし、予期せぬ例外をシャットアウトする。', descEn: 'Clears impurities in code and completely blocks unexpected exceptions.', descTw: '將程式碼中的雜質悉數清除，完全杜絕意料之外的異常。', descCn: '将代码中的杂质悉数清除，完全杜绝意料之外的异常。', price: 150, type: 'talisman' },
@@ -23,14 +22,10 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_overtime', nameJa: '定時退社・健康祈願符', nameEn: 'Leave-on-Time Rune', nameTw: '準時下班祈願符', nameCn: '准时下班祈愿符', descJa: '定時が近づくと強制的に作業終了へと導く、労働環境の守護ルーン。', descEn: 'A protective rune that guides you to a clean wrap-up when clock-out time nears.', descTw: '每逢下班時間便強制導向收尾階段，捍衛勞動環境的守護符文。', descCn: '每逢下班时间便强制导向收尾阶段，捍卫劳动环境守护符文。', price: 350, type: 'talisman' },
   { id: 'talisman_infra', nameJa: '高可用性・インフラ安定護符', nameEn: 'Infra Stability Charm', nameTw: '雲端架構安定符', nameCn: '云端架构安定符', descJa: 'クラウドサーバーの負荷を分散し、99.999%の稼働率を約束する最上位の護符。', descEn: 'Distributes cloud server load, guaranteeing 99.999% uptime.', descTw: '分散雲端伺服器負載，確保高達99.999%系統可用性的至高護符。', descCn: '分散云端服务器负载，确保高达99.999%系统可用性的至高护符。', price: 500, type: 'talisman' },
 
-  // --- 📅 季節限定・期間限定の御守 (2種追加) ---
-  { id: 'talisman_season_spring', nameJa: '【4月限定】新卒研修生存御守', nameEn: '【April Only】Newbie Survival Ribbon', nameTw: '【4月限定】新卒研修生存御守', nameCn: '【4月限定】新卒研修生存御守', descJa: '環境構築の迷宮や未知の専門用語の嵐を切り抜け、無事に現場（配属先）に生還する力を与える。', descEn: 'Helps navigate the maze of environment setup and terminology to survive training.', descTw: '安然渡過環境建置迷宮與未知術語風暴，賜予順利分發分局生還的神祕力量。', descCn: '安然渡过环境建置迷宫与未知术语风暴，赐予顺利分发分局生还的神秘力量。', price: 240, type: 'talisman', availableMonths: [4] },
-  { id: 'talisman_season_winter', nameJa: '【12月限定】年末リリース無事通過祈願札', nameEn: '【December Only】Year-End Release Peace Stamp', nameTw: '【12月限定】年末釋出無事通過祈願札', nameCn: '【12月限定】年末释放无事通过祈愿札', descJa: '御用納め直前のデスマーチ及び恐怖の本番デプロイを奇跡的に無風で通過させるお守り。', descEn: 'Miraculously secures a calm end-of-year live deploy right before the winter holidays.', descTw: '在工作結束前的死線狂奔及恐怖正式上線中，創造奇蹟般平靜通過的無風守護。', descCn: '在工作结束前的死线狂奔及恐怖正式上线中，创造奇迹般平静通过的无风守护。', price: 490, type: 'talisman', availableMonths: [12] },
-
   // --- 🪙 1両で買えるお遊びアイテム (3種) ---
   { id: 'talisman_cheap_1', nameJa: '埃をかぶった記憶媒体', nameEn: 'Dusty Storage Medium', nameTw: '落滿灰塵的儲存媒介', nameCn: '落满灰尘的储存媒介', descJa: '不思議な力を感じる。中には大昔の怪文書のようなログが一行だけ刻まれている。', descEn: 'You feel a mysterious force. Inside, a single row of ancient bizarre text remains.', descTw: '散發著神祕的力量。內部僅刻有一行宛如遠古怪文書的日誌。', descCn: '散发着神秘的力量。内部仅刻有一行宛如远古怪文书的日志。', price: 1, type: 'talisman' },
   { id: 'talisman_cheap_2', nameJa: 'ちぎれた錫線', nameEn: 'Torn Solder Wire', nameTw: '斷裂的錫線', nameCn: '断裂的锡线', descJa: 'ただのゴミに見えるが、時折かすかに16進数の電磁波を放っているような気がする。', descEn: 'Looks like trash, but it seems to emit faint hexadecimal electromagnetic waves.', descTw: '看似只是廢棄物，但總覺得偶爾會釋放出微弱的十六進位電磁波。', descCn: '看似只是废弃物，总觉得偶尔会释放出微弱的十六进制电磁波。', price: 1, type: 'talisman' },
-  { id: 'talisman_cheap_3', nameJa: '古びたキートップ', nameEn: 'Ancient Keycap', nameTw: '古舊的鍵帽', nameCn: '古旧的键帽', descJa: '「Esc」と書かれている。この神社からログアウトするための鍵だったのかもしれない。', descEn: 'Engraved with "Esc". Perhaps it was once a key used to log out of this shrine.', descTw: '刻有「Esc」字樣。這或許曾是逃離這座神社、登出系統的關鍵鑰匙。', descCn: '刻有“Esc”字样。这或许曾是逃离这座神社、登出系统的关键钥匙。', price: 1, type: 'talisman' },
+  { id: 'talisman_cheap_3', nameJa: '古びたキートップ', nameEn: 'Ancient Keycap', nameTw: '古舊的鍵帽', nameCn: '古旧的键帽', descJa: '「Esc」と書かれている。この神社からログアウトするための鍵だったのかもしれない。', descEn: 'Engraved with "Esc". Perhaps it was once a key used to log out of this shrine.', descTw: '刻有「Esc」字樣。這或許曾是逃離這座神社、登出系統的關鍵鑰匙。', descCn: '刻有“Esc”字样。这或许曾逃离这座神社、登出系统的关键钥匙。', price: 1, type: 'talisman' },
 
   // --- 🌙 夜間限定アイテム (5種) ---
   { id: 'talisman_night_1', nameJa: '常夜の電脳黒魔術骨董', nameEn: 'Nocturnal Cyber Relic', nameTw: '常夜電腦黑魔法古董', nameCn: '常夜电脑黑魔法古董', descJa: '【夜間限定】丑三つ時にのみ製造可能とされる、ダークネットの禁忌の塊。', descEn: '【Night Only】A taboo package from the darknet, craftable only during the witching hour.', descTw: '【夜間限定】據傳僅能在丑時三刻製造、源自暗網的禁忌之物。', descCn: '【夜间限定】据传仅能在丑时三刻制造、源自暗网的禁忌之物。', price: 666, type: 'talisman', isNightOnly: true },
@@ -56,11 +51,11 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_14', nameJa: '深夜アラート撃退の破魔矢', nameEn: 'Midnight Alert Banisher', nameTw: '深夜警報擊退破魔矢', nameCn: '深夜警报击退破魔矢', descJa: '睡眠を妨げる悪霊（不必要な自動アラート通知）の根源を射抜く。', descEn: 'Pierces the core of sleep-depriving phantoms like unneeded alerts.', descTw: '無情射穿剝奪睡眠之惡靈（不必要的自動警報通知）的根源。', descCn: '无情射穿剥夺睡眠之恶灵（不必要的自动警报通知）的根源。', price: 360, type: 'talisman' },
   { id: 'talisman_gen_15', nameJa: 'バックアップ完全保護の巾着', nameEn: 'Backup Preservation Pouch', nameTw: '備份完全保護錦囊', nameCn: '备份完全保护锦囊', descJa: '物理的破壊や消失から、大切な魂の器（データ）を安全に格納する。', descEn: 'Safely encapsulates your precious soul data from physical losses.', descTw: '安全收納珍貴的靈魂之器（數據），免受物理損毀或消失之災。', descCn: '安全收纳珍贵的灵魂之器（数据），免受物理损毁 or 消失之灾。', price: 260, type: 'talisman' },
   { id: 'talisman_gen_16', nameJa: 'クッキー持続・豊穣のお守り', nameEn: 'Cookie Harvest Charm', nameTw: 'Cookie持續・豐收御守', nameCn: 'Cookie持续・丰收御守', descJa: 'セッションの記憶を長く保ち、何度もログインを求められる手間を省く。', descEn: 'Maintains session memory long, freeing you from endless re-logins.', descTw: '長久保存對話紀錄，省去反覆被要求登入的繁瑣步驟。', descCn: '长久保存对话纪录，省去反复被要求登入的繁琐步骤。', price: 140, type: 'talisman' },
-  { id: 'talisman_gen_17', nameJa: 'ダークモード調和の眼帯', nameEn: 'Darkmode Harmony Eyepatch', nameTw: '深色模式調和眼罩', nameCn: '深色模式调和眼罩', descJa: '過酷なブルーライトの光芒から、あなたの網膜と精神 of 平穏を守る。', descEn: 'Shields your retina and inner peace from harsh blue light emissions.', descTw: '從殘酷的藍光光芒中，守護您的視網膜與精神防線。', descCn: '从残酷的蓝光光芒中，守护您的视网膜与精神防线。', price: 190, type: 'talisman' },
+  { id: 'talisman_gen_17', nameJa: 'ダークモード調和の眼帯', nameEn: 'Darkmode Harmony Eyepatch', nameTw: '深色模式調和眼罩', nameCn: '深色模式调和眼罩', descJa: '過酷なブルーライトの光芒から、あなたの網膜と精神の平穏を守る。', descEn: 'Shields your retina and inner peace from harsh blue light emissions.', descTw: '從殘酷的藍光光芒中，守護您的視網膜與精神防線。', descCn: '从残酷的蓝光光芒中，守护您的视网膜与精神防线。', price: 190, type: 'talisman' },
   { id: 'talisman_gen_18', nameJa: 'レスポンシブ自在の折り紙', nameEn: 'Fluid Responsive Origami', nameTw: '響應式變幻自在折紙', nameCn: '响应式变幻自在折纸', descJa: 'どんな狭い世界（画面幅）に押し込められても、美しく形を変えて適応する。', descEn: 'Beautifully adapts and shapes itself to any cramped viewport.', descTw: '不論被塞進多麼狹窄的世界（螢幕寬度），皆能優美變形完美適應。', descCn: '不论被塞进多么狭窄的世界（屏幕宽度），皆能优美变形完美适应。', price: 210, type: 'talisman' },
   { id: 'talisman_gen_19', nameJa: 'CSSレガシー打破の熊手', nameEn: 'Legacy CSS Breaker', nameTw: 'CSS舊代遺產打破熊手', nameCn: 'CSS旧代遗产打破熊手', descJa: '太古のブラウザ仕様による表示崩れを、力強くかき集めて成敗する。', descEn: 'Aggressively sweeps away layout breakages caused by ancient browsers.', descTw: '強力掃除並懲治因太古瀏覽器規格所導致的排版崩壞。', descCn: '强力清除并惩治因太古浏览器规格所导致的排版崩坏。', price: 240, type: 'talisman' },
-  { id: 'talisman_gen_20', nameJa: 'アセット圧縮・軽量化の瓢箪', nameEn: 'Asset Compression Gourd', nameTw: '資產壓縮・輕量化葫蘆', nameCn: '资产压缩・轻量化葫芦', descJa: '肥大化したカルマ（ファイルサイズ）を吸い込み、限界まで凝縮して軽快にする。', descEn: 'Sucks in bloated karma file sizes, compressing them to lightweight forms.', descTw: '吸入肥大化的因果業報（檔案體積），極限凝聚使其重獲輕盈。', descCn: '吸入肥大化的因果业报（文件体积），极限凝聚使其重获轻盈。', price: 170, type: 'talisman' },
-  { id: 'talisman_gen_21', nameJa: '進捗百発百中勾玉', nameEn: '100% Progress Magatama', nameTw: '進度百發百中勾玉', nameCn: '进度百发百中勾玉', descJa: '予定通りのマイルストーンを刻み、遅延の悪霊を徹底的に寄せ付けない。', descEn: 'Marks milestones as scheduled, permanently dynamic against delay specters.', descTw: '精準刻劃如期規劃的里程碑，澈底杜絕拖延惡靈近身。', descCn: '精准刻划如期规划 the 里程碑，澈底杜绝拖延恶灵近身。', price: 400, type: 'talisman' },
+  { id: 'talisman_gen_20', nameJa: 'アasset圧縮・軽量化の瓢箪', nameEn: 'Asset Compression Gourd', nameTw: '資產壓縮・輕量化葫蘆', nameCn: '资产压缩・轻量化葫芦', descJa: '肥大化したカルマ（ファイルサイズ）を吸い込み、限界まで凝縮して軽快にする。', descEn: 'Sucks in bloated karma file sizes, compressing them to lightweight forms.', descTw: '吸入肥大化的因果業報（檔案體積），極限凝聚使其重獲輕盈。', descCn: '吸入肥大化的因果业报（文件体积），极限凝聚使其重获轻盈。', price: 170, type: 'talisman' },
+  { id: 'talisman_gen_21', nameJa: '進捗百発百中勾玉', nameEn: '100% Progress Magatama', nameTw: '進度百發百中勾玉', nameCn: '进度百发百中勾玉', descJa: '予定通りのマイルストーンを刻み、遅延の悪霊を徹底的に寄せ付けない。', descEn: 'Marks milestones as scheduled, permanently dynamic against delay specters.', descTw: '精準刻劃如期規劃的里程碑，澈底杜絕拖延惡靈近身。', descCn: '精准刻划如期规划的里程碑，澈底杜绝拖延恶灵近身。', price: 400, type: 'talisman' },
   { id: 'talisman_gen_22', nameJa: '定例会議短縮化のお札', nameEn: 'Meeting Shortener Stamp', nameTw: '例行會議縮短神符', nameCn: '例行会议缩短神符', descJa: '形骸化した儀式（不毛な会議）の時間を神速で消化し、実作業の時を捻出する。', descEn: 'Consumes ceremonial wasted hours at godspeed, creating true dev hours.', descTw: '以神速消化流於形式的儀式（枯燥會議），爭取真正實作的寶貴時間。', descCn: '以神速消化流于形式的仪式（枯燥会议），争取真正实作的宝贵时间。', price: 150, type: 'talisman' },
   { id: 'talisman_gen_23', nameJa: '見積もり過小評価魔除守', nameEn: 'Estimation Safety Charm', nameTw: '時程低估防範魔除守', nameCn: '时程低估防范魔除守', descJa: '人間の楽観が生み出す「1日で終わります」という呪いを打ち砕き、安全圏を確保。', descEn: 'Crushes the human optimistic curse: "It takes just 1 day," securing buffers.', descTw: '粉碎人類盲目樂觀所產生的「一天內就能搞定」魔咒，確保安全緩衝。', descCn: '粉碎人类盲目乐观所产生的“一天内就能搞定”魔咒，确保安全缓冲。', price: 320, type: 'talisman' },
   { id: 'talisman_gen_24', nameJa: '技術負債返済の貯金箱', nameEn: 'Tech Debt Repayment Box', nameTw: '技術債務償還存錢筒', nameCn: '技术债务偿还存钱筒', descJa: '過去に目をつぶった設計の歪みを、少しずつ綺麗にリファクタリングする原動力。', descEn: 'The driving power to step-by-step refactor technical structural distortions.', descTw: '逐步清理並重構過去選擇閉上雙眼忽視的架構歪斜之原動力。', descCn: '逐步清理并重构过去选择闭上双眼忽视的架构歪斜之原动力。', price: 450, type: 'talisman' },
@@ -69,9 +64,9 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_27', nameJa: 'ガリガリ稼働・冷却扇子', nameEn: 'Cooling Engine Fan', nameTw: '瘋狂運轉・冷卻扇子', nameCn: '疯狂运转・冷却扇子', descJa: '演算によって熱を帯びた脳髄（CPU）へ涼風を送り、熱暴走を抑える。', descEn: 'Blows cool wind into computing-heated CPUs to suppress thermal runaways.', descTw: '為因高速運算而發熱的腦髓（CPU）送去涼風，抑制熱暴走。', descCn: '为因高速运算而发热的脑髓（CPU）送去凉风，抑制热暴走。', price: 160, type: 'talisman' },
   { id: 'talisman_gen_28', nameJa: 'テストカバレッジ上昇の幣束', nameEn: 'Coverage Expansion Wand', nameTw: '測試覆蓋率上升幣束', nameCn: '测试覆盖率上升币束', descJa: '振るうことで、テストの網の目が広がり、あらゆるバグの侵入を許さない。', descEn: 'Waving it widens the test net, preventing any bugs from slipping through.', descTw: '揮舞此幣束能擴大測試防護網，絕不容許任何漏洞隱瞞。', descCn: '挥舞此币束能扩大测试防护网，绝不容许任何漏洞隐瞒。', price: 390, type: 'talisman' },
   { id: 'talisman_gen_29', nameJa: 'デバッガ追跡の探知灯', nameEn: 'Debugger Searchlight', nameTw: '偵錯追蹤探照燈', nameCn: '侦错追踪探照灯', descJa: '深い闇に潜むバグの潜伏場所を特定し、スタックトレースを明瞭に照らし出す。', descEn: 'Locates deep-seated bugs, brightly illuminating stack traces.', descTw: '精準鎖定潛藏於深邃暗處的程式錯誤，將堆疊追蹤照得一清二楚。', descCn: '精准锁定潜藏于深邃暗处的程序错误，将堆栈追踪照得一清二楚。', price: 230, type: 'talisman' },
-  { id: 'talisman_gen_30', nameJa: 'ステータスコード200の祝詞', nameEn: 'HTTP 200 Blessing', nameTw: '狀態碼200神聖祝詞', nameCn: '状态码200神圣祝词', descJa: '全てが正常であり、世界が調和に満ちていることを宣言するお祓いの言葉。', descEn: 'Declares that everything is normal and the world is in perfect harmony.', descTw: '宣告一切正常運作、世界充滿和諧的淨化神聖祝詞。', descCn: '宣告一切正常运作、世界充满和谐的净化神圣祝词。', price: 500, type: 'talisman' },
+  { id: 'talisman_gen_30', nameJa: 'ステータスコード200の祝詞', nameEn: 'HTTP 200 Blessing', nameTw: '狀態碼200神聖祝詞', nameCn: '状态码200神圣祝词', descJa: '全てが正常であり、世界が調和に満ちていることを宣言するお祓いの言葉。', descEn: 'Declares that everything is normal and the world is in perfect harmony.', descTw: '宣告一切正常運作、世界充滿和諧的淨化神聖祝詞。', descCn: '宣告一切正常运作、世界充满和谐的净化神圣词。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_31', nameJa: 'クロスドメイン突破の通行手形', nameEn: 'CORS Freedom Pass', nameTw: '跨網域突破通行手形', nameCn: '跨网域突破通行手形', descJa: 'ブラウザが課す厳しい境界線をすり抜け、自由なデータ交信を許可する。', descEn: 'Slips through strict browser boundaries to allow free cross-domain talk.', descTw: '穿透瀏覽器施加的嚴格邊界鐵幕，允許自由進行跨網域數據通信。', descCn: '穿透浏览器施加的严格边界铁幕，允许自由进行跨网域数据通信。', price: 220, type: 'talisman' },
-  { id: 'talisman_gen_32', nameJa: '環境変数秘匿のお守り', nameEn: 'Env Secret Keeper', nameTw: '環境變數秘匿御守', nameCn: '环境变量秘匿御守', descJa: '漏洩してはならない鍵（パスワード）を、胸の奥深くに隠して守る。', descEn: 'Hides critical passwords deep in its chest, preventing credential leaks.', descTw: '將端不可外洩的金鑰（密碼）深藏於胸中內核，嚴加防護。', descCn: '将绝不可外泄的金钥（密码）深藏于胸中内核，严加防护。', price: 350, type: 'talisman' },
+  { id: 'talisman_gen_32', nameJa: '環境変数秘匿のお守り', nameEn: 'Env Secret Keeper', nameTw: '環境變數秘匿御守', nameCn: '环境变量秘匿御守', descJa: '漏洩してはならない鍵（パスワード）を、胸の奥深くに隠して守る。', descEn: 'Hides critical passwords deep in its chest, preventing credential leaks.', descTw: '將關鍵不可外洩的金鑰（密碼）深藏於胸中內核，嚴加防護。', descCn: '将关键不可外泄的金钥（密码）深藏于胸中内核，严加防护。', price: 350, type: 'talisman' },
   { id: 'talisman_gen_33', nameJa: 'スクレイピング円滑化の潤滑油', nameEn: 'Smooth Scraping Oil', nameTw: '網頁爬蟲圓滑潤滑油', nameCn: '网页爬虫圆滑润滑油', descJa: 'ブロックされることなく、情報の海から必要な真実だけをスムーズに掬い取る。', descEn: 'Smoothly scoops facts from information seas without triggering blocks.', descTw: '在免於被封鎖的前提下，從資訊汪洋中流暢撈取所需的真相。', descCn: '在免于被封锁的前提下，从资讯汪洋中流畅捞取所需的真相。', price: 180, type: 'talisman' },
   { id: 'talisman_gen_34', nameJa: 'Webhook即時着荷の飛脚鳥', nameEn: 'Webhook Instant Bird', nameTw: 'Webhook即時著陸飛腳鳥', nameCn: 'Webhook即时着陆飞脚鸟', descJa: 'イベントの発生を1ミリ秒の遅れもなく、目的の場所へと届ける伝書鳥。', descEn: 'An event messenger bird that delivers updates with zero milliseconds delay.', descTw: '不帶一毫秒延遲、將事件發生動態精準送達目的地的傳書飛鳥。', descCn: '不带一毫秒延迟、将事件发生动态精准送达目的地的传书飞鸟。', price: 260, type: 'talisman' },
   { id: 'talisman_gen_35', nameJa: '依存パッケージ安定の楔', nameEn: 'Dependency Lock Wedge', nameTw: '依賴套件安定之楔', nameCn: '依赖套件安定之楔', descJa: '他人の作った土台（ライブラリ）の突然の破壊的変更から、我が身を固定して守る。', descEn: 'Locks your feet to guard against sudden breaks in third-party libraries.', descTw: '當他人構建的基石（函式庫）發生突發性破壞變更時，牢牢固定自我免受衝擊。', descCn: '当他人构建的基石（函数库）发生突发性破坏变更时，牢牢固定自我免受冲击。', price: 300, type: 'talisman' },
@@ -79,724 +74,696 @@ const SHOP_ITEMS: ShopItem[] = [
   { id: 'talisman_gen_37', nameJa: 'ダークウェブ流入防御の結界', nameEn: 'Darkweb Border Barrier', nameTw: '暗網流入防禦結界', nameCn: '暗网流入防御结界', descJa: '悪意に満ちた闇の世界から差し込まれる触手を、光の壁で遮断する。', descEn: 'Blocks malicious tentacles reaching out from deep internet underworlds.', descTw: '以光之壁障徹底阻絕自充滿惡意的暗黑世界延伸而來的觸手。', descCn: '以光之壁障彻底阻绝自充满恶意的暗黑世界延伸而来的触手。', price: 470, type: 'talisman' },
   { id: 'talisman_gen_38', nameJa: '正規表現一発的中の一線', nameEn: 'Regex Perfect Match Line', nameTw: '正規表示式一擊命中線', nameCn: '正则表达式一击命中线', descJa: 'どれだけ複雑に入り組んだ文字列の迷宮からも、意図した獲物を一瞬で見つけ出す。', descEn: 'Finds target text in complex string string-mazes instantly.', descTw: '不論多麼複雜交錯的字串迷宮，皆能在一瞬間精確揪出目標獵物。', descCn: '不论多么复杂交错的字符串迷宫，皆能在一瞬间精确揪出目标猎物。', price: 200, type: 'talisman' },
   { id: 'talisman_gen_39', nameJa: 'ローカルホスト繁盛の盛り塩', nameEn: 'Localhost Prosperity Salt', nameTw: '本地主機繁榮盛り塩', nameCn: '本地主机繁荣盛り盐', descJa: '自分の開発領域（127.0.0.1）を清め、最高のひらめきをもたらす聖なる塩。', descEn: 'Purifies your dev space (127.0.0.1), bringing supreme inspirations.', descTw: '淨化屬於自己的開發聖域（127.0.0.1），招來絕佳靈感的純潔之鹽。', descCn: '净化属于自己的开发圣域（127.0.0.1），招来绝佳灵感的纯洁之盐。', price: 110, type: 'talisman' },
-  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平静、悄然融入和谐。', price: 500, type: 'talisman' },
+  { id: 'talisman_gen_40', nameJa: '本番デプロイ無風祈願のお守り', nameEn: 'Safe Deploy Charm', nameTw: '正式上線無風祈願御守', nameCn: '正式上线无风祈愿御守', descJa: '世界を書き換える瞬間（デプロイ）に、波風一つ立てず静かに調和をもたらす。', descEn: 'Brings silent harmony when updating the world during live deploys.', descTw: '在改寫世界（部署上線）的神聖瞬間，祈求風平浪靜、悄然融入的和諧。', descCn: '在改写世界（部署上线）的神圣瞬间，祈求风平浪静、悄然融入和谐。', price: 500, type: 'talisman' },
   { id: 'talisman_gen_41', nameJa: '神隠しパケット回収の網', nameEn: 'Lost Packet Fishing Net', nameTw: '神隱封包回收漁網', nameCn: '神隐封包回收渔网', descJa: '回線の狭間で神隠しに遭った迷子のパケットたちを漏らさず救い出す。', descEn: 'Rescues orphan packets that went missing in network rifts.', descTw: '將在網路裂縫間遭遇神隱、流離失所的迷途封包悉數搜救歸隊。', descCn: '将在网络裂缝间遭遇神隐、流离失所的迷途封包悉数搜救归队。', price: 230, type: 'talisman' },
-  { id: 'talisman_gen_42', nameJa: 'AIプロンプト意思疎通のパイプ', nameEn: 'Prompt Telepathy Pipe', nameTw: 'AI提示詞心靈感應菸斗', nameCn: 'AI提示词心灵感应烟斗', descJa: '人工知能との魂のシンクロ率を高め、一言で完璧な成果物を出力させる。', descEn: 'Boosts soul sync with AI, achieving absolute output with one phrase.', descTw: '提升與人工智慧的心靈契合度，僅憑隻言片語便能使其產出完美成品。', descCn: '提升与人工智能的心灵契合度，仅凭只言片语便能使其产出完美成品。', price: 330, type: 'talisman' },
+  { id: 'talisman_gen_42', nameJa: 'AIプロンプト意思疎通のパイプ', nameEn: 'Prompt Telepathy Pipe', nameTw: 'AI提示詞心靈感應菸斗', nameCn: 'AI提示词心灵感应烟斗', descJa: '人工知能との魂のシンクロ率を高め、一言で完璧な成果物を出力させる。', descEn: 'Boosts soul sync with AI, achieving absolute output with one phrase.', descTw: '提升與人工智慧之間的靈魂同步率，僅憑片言隻字便能引導出完美成果。', descCn: '提升与人工智能之间的灵魂同步率，仅凭片言只字便能引导出完美成果。', price: 310, type: 'talisman' },
 
-  // --- 背景仕様スキン (5種) ---
-  { id: 'skin_default', nameJa: '通常仕様（漆黒の闇）', nameEn: 'Default (Pitch Black)', nameTw: '通常款式（漆黑之闇）', nameCn: '通常款式（漆黑之暗）', descJa: 'デフォルト。深淵なる電子の夜空。何の色にも染まらない静寂の黒。', descEn: 'The default state. An abyssal cyber sky wrapped in absolute serene black.', descTw: '預設款式。深邃的電子夜空，不著痕跡的寂靜之黑。', descCn: '默认款式。深邃的电子夜空，不着痕迹的寂静之黑。', price: 100, type: 'skin' },
-  { id: 'skin_neon', nameJa: '背景：電脳ネオン鳥居', nameEn: 'Skin: Cyber Neon Torii', nameTw: '背景：電腦霓虹鳥居', nameCn: '背景：电脑霓虹鸟居', descJa: 'サイバーパンクの神髄。極彩色のネオンが優しくまたたき、結界を妖しく彩る。', descEn: 'Cyberpunk essence. Multi-colored neon gently pulses, framing a mysterious barrier.', descTw: '賽博龐克的精髓。五彩斑斕的霓虹溫柔閃爍，將結界染上妖異迷人的色彩。', descCn: '赛博朋克的精髓。五彩斑斓的霓虹温柔闪烁，将结界染上妖异迷人的色彩。', price: 250, type: 'skin' },
-  { id: 'skin_matrix', nameJa: '背景：電子コードの雨', nameEn: 'Skin: Digital Code Rain', nameTw: '背景：電子代碼瀑布', nameCn: '背景：电子代码瀑布', descJa: '上空から果てしなく降り注ぐ緑の16進数パケット。ハッカーの精神安寧。', descEn: 'Endless streams of cascading green hex packets. True tranquility for a hacker.', descTw: '從天而降、綿延不絕的綠色十六進位代碼封包。駭客的心靈綠洲。', descCn: '从天而降、绵延不绝的绿色十六进制代码封包。客的心灵绿洲。', price: 300, type: 'skin' },
-  { id: 'skin_sakura', nameJa: '背景：桜満開・電脳春嵐', nameEn: 'Skin: Cherry Blossom Storm', nameTw: '背景：櫻花滿開・電腦春嵐', nameCn: '背景：樱花满开・电脑春岚', descJa: '和風サイバーの新境地。画面の奥底で淡いピンクのデジタル桜吹雪が美しく舞い落ちる。', descEn: 'Neo-traditional fusion. Pale pink digital petals cascade elegantly through the depths.', descTw: '和風賽博新境界。粉嫩的數位櫻花雨在畫面深處優雅飛舞飄落。', descCn: '和风赛博新境界。粉嫩的数码樱花雨在画面深处优雅飞舞飘落。', price: 400, type: 'skin' },
-  { id: 'skin_gold', nameJa: '背景：黄金郷・成金仕様', nameEn: 'Skin: El Dorado Luxury', nameTw: '背景：黃金鄉・暴發戶款式', nameCn: '背景：黄金乡・暴发户款式', descJa: '拝金主義の極み。眩いゴールドのグリッド線が脈動し、圧倒的な富のオーラを放つ。', descEn: 'The peak of luxury. Blinding gold grids pulse, projecting massive wealth energy.', descTw: '拜金主義的極致。炫目的金色網格脈動閃耀，釋放出壓倒性的財富氣場。', descCn: '拜金主义的极致。炫目的金色网格脉动闪耀，释放出压倒性的财富气场。', price: 888, type: 'skin' }
+  // --- 背景スキン (5種) ---
+  { id: 'wallpaper_gold', nameJa: '黄金金運仕様', nameEn: 'Golden Fortune', nameTw: '黃金金運仕様', nameCn: '黄金金运仕様', descJa: '金運を呼び込む眩い輝き。画面全体が神々しい金色のオーラに包まれる。', descEn: 'Blazing radiance to call fortunes. The whole screen fills with a holy gold aura.', descTw: '招引財運的耀眼光芒。全螢幕皆包裹於神聖的金黃色氣場之中。', descCn: '招引财运的耀眼光芒。全屏幕皆包裹于神圣的金黄色气场之中。', price: 400, type: 'skin' },
+  { id: 'wallpaper_neon', nameJa: '電脳ネオン鳥居', nameEn: 'Cyber Neon Torii', nameTw: '電腦霓虹鳥居', nameCn: '电脑霓虹鸟居', descJa: 'サイバーパンクな夜を彩る光。サイアンブルーのネオンが美しく発光する。', descEn: 'Cyberpunk nocturnal lights. Cyan blue neon glows beautifully.', descTw: '裝點賽博龐克之夜的光彩。青藍霓虹散發科幻感的優美光暈。', descCn: '装点赛博朋克之夜的光彩。青蓝霓虹散发科幻感的优美光晕。', price: 500, type: 'skin' },
+  { id: 'wallpaper_dark', nameJa: '漆黒ダークモード', nameEn: 'Jet Dark Mode', nameTw: '漆黑深色模式', nameCn: '漆黑深色模式', descJa: '深夜の開発に最適な静寂。すべての無駄な光を排除したプロ仕様の闇。', descEn: 'Perfect stillness for midnight coding. A pro-tier darkness excluding stray lights.', descTw: '最適合深夜研發的安寧。徹底排除一切多餘光線、專業級的黑暗世界。', descCn: '最适合深夜研发的安宁。彻底排除一切多余光线、专业级的黑暗世界。', price: 250, type: 'skin' },
+  { id: 'wallpaper_washi', nameJa: '和紙風伝統仕様', nameEn: 'Traditional Washi', nameTw: '傳統和紙風貌', nameCn: '传统和纸风貌', descJa: '伝統的な手漉き和紙の温かみ。デジタルの中に息づく日本古来の質感。', descEn: 'Warmth of handmade artisan paper. Ancient Japanese texture alive inside digital frameworks.', descTw: '傳統手工和紙的溫潤質感。在數位代碼中完美重現的日本古老風貌。', descCn: '传统手工和纸的温润质感。在数字代码中完美重现的日本古老风貌。', price: 300, type: 'skin' },
+  { id: 'wallpaper_sakura', nameJa: '桜満開合格仕様', nameEn: 'Sakura in Full Bloom', nameTw: '櫻花滿開合格樣式', nameCn: '樱花满开合格样式', descJa: '満開の桜が描かれた縁起の良い背景。願いが成就した喜びの春を演出。', descEn: 'A lucky backdrop painted with cherry blossoms. Paints a joyful spring of wish completions.', descTw: '繪有櫻花盛開的吉利背景。演繹出心中所願皆得以圓滿成就的喜悅之春。', descCn: '绘有樱花盛开的吉利背景。演绎出心中所愿皆得以圆满成就的喜悦之春。', price: 600, type: 'skin' }
 ];
 
-// 📜 おみくじの基本結果データ
-type OmikujiResult = {
-  fortune: string;
-  detail: string;
-  luckyItem: string;
-  luckyLang: string;
-  points: string;
-  change: number;
-  type: 'plus' | 'minus' | 'jackpot' | 'hacker_curse';
+// 運勢データ
+const LUCK_DATA = [
+  { fortuneJa: '超大吉', fortuneEn: 'Absolute Supreme Destiny', fortuneTw: '超大吉', fortuneCn: '超大吉', weight: 1, btnJa: '天命を全うする', btnEn: 'Claim Absolute Destiny', btnTw: '承接天命', btnCn: '承接天命', commentsJa: ['【確率0.1%の奇跡】全サーバーの全ログがあなたを祝福せり。全自動で莫大な福徳（1000両）がウォレットにデポジットされました。'], commentsEn: ['【0.1% Miracle】All core logs celebrate your presence. A massive blessing (1000 Gold) has been deposited into your wallet automatically.'], commentsTw: ['【機率0.1%的奇蹟】全伺服器的所有日誌皆在為您祝福。無上福德（1000兩）已自動匯入您的加密錢包。'], commentsCn: ['【机率0.1%的奇迹】全服务器的所有日志皆在为您祝福。无上福德（1000两）已自动汇入您的加密钱包。'] },
+  { fortuneJa: 'システム大破', fortuneEn: 'CRITICAL SYSTEM CRASH', fortuneTw: '系統大破', fortuneCn: '系统大破', weight: 5, btnJa: '強制パッチ適用', btnEn: 'Apply Hotfix Forcefully', btnTw: '強制修復系統', btnCn: '强制修复系统', commentsJa: ['【致命的エラー：大凶】不穏な例外コードを検知。ペナルティとしてセッション内の資産（所持金）に重大なパケットロス（減少）が発生せり。'], commentsEn: ['【FATAL ERROR】Malicious exception detected. A severe packet loss (money reduction) has occurred in your session assets.'], commentsTw: ['【致命錯誤：大凶】偵測到不穩定的異常代碼。作為懲罰，您在本會話中的資產（所持金）遭遇了嚴重的封包遺失。'], commentsCn: ['【致命错误：大凶】侦测到不稳定的异常代码。作为惩罚，您在本会话中的资产（所含金）遭遇了严重的封包遗失。'] },
+  { fortuneJa: '大吉', fortuneEn: 'Great Good Fortune', fortuneTw: '大吉', fortuneCn: '大吉', weight: 50, btnJa: '福を重ねる', btnEn: 'Multiply Blessings', btnTw: '重溫福氣', btnCn: '重温福气', commentsJa: ['運気大いに盛んにして、何をなすにも好機なり。日々の感謝を忘れねば、さらに幸い至らん。'], commentsEn: ['Your luck is at its peak; it is the perfect time for anything. Gratitude brings more blessings.'], commentsTw: ['運勢大吉大利，做任何事都是大好時機。切記常懷感恩之心，福報自會加倍而至。'], commentsCn: ['运势大吉大利，做任何事都是大好时机。切记常怀感恩之心，福报自会加倍而至。'] },
+  { fortuneJa: '吉', fortuneEn: 'Good Fortune', fortuneTw: '吉', fortuneCn: '吉', weight: 150, btnJa: '吉を広げる', btnEn: 'Expand Good Fortune', btnTw: '展延吉兆', btnCn: '展延吉兆', commentsJa: ['誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。'], commentsEn: ['Act with a sincere heart, and your path will open naturally. Wait patiently without rushing.'], commentsTw: ['若以誠懇之心待人處事，前路自會豁然開朗。切勿焦躁，靜待時機。'], commentsCn: ['若以诚恳之心待人处事，前路自会豁然开朗。切勿焦躁，静待时机。'] },
+  { fortuneJa: '中吉', fortuneEn: 'Middle Fortune', fortuneTw: '中吉', fortuneCn: '中吉', weight: 120, btnJa: '縁を結ぶ', btnEn: 'Nurture Harmony', btnTw: '廣結善緣', btnCn: '广结善缘', commentsJa: ['平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。'], commentsEn: ['Signs of peaceful happiness. Value harmony and show kindness to those around you.'], commentsTw: ['此乃獲得平穩幸福之兆。當注重身心調和，多加關懷身邊之人。'], commentsCn: ['此乃获得平稳幸福之兆。当注重身心调和，多加关怀身边之人。'] },
+  { fortuneJa: '小吉', fortuneEn: 'Small Fortune', fortuneTw: '小吉', fortuneCn: '小吉', weight: 100, btnJa: '歩みを進める', btnEn: 'Step Forward', btnTw: '漫步向前', btnCn: '漫步向前', commentsJa: ['小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。'], commentsEn: ['Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.'], commentsTw: ['小驚喜接連不斷的一天。但切記不可掉以輕心，凡事穩紮穩打為上。'], commentsCn: ['小惊喜接连不断的一天。但切记不可掉以轻心，凡事稳扎稳打为上。'] },
+  { fortuneJa: '末吉', fortuneEn: 'Uncertain Fortune', fortuneTw: '末吉', fortuneCn: '末吉', weight: 80, btnJa: '時を待つ', btnEn: 'Await the Hour', btnTw: '靜候時機', btnCn: '静候时机', commentsJa: ['今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。'], commentsEn: ['Now is the time to build your strength. Stay calm, drink warm tea, and rest well.'], commentsTw: ['當下為蓄精儲銳之時。宜靜心沉著，品一盞溫茶，好好休養生息。'], commentsCn: ['当下为蓄精储锐之时。宜静心沉著，品一盏温茶，好好修养生息。'] },
+  { fortuneJa: '接続大吉', fortuneEn: 'Max Connectivity', fortuneTw: '連線大吉', fortuneCn: '连线大吉', weight: 60, btnJa: '帯域を広げる', btnEn: 'Maximize Bandwidth', btnTw: '拓寬頻寬', btnCn: '拓宽带宽', commentsJa: ['通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。'], commentsEn: ['Network speed is soaring; videos load instantly. All connections and relationships thrive.'], commentsTw: ['網路速度大幅提升，影片載入僅在瞬間。今日所連結之一切緣分皆順暢無阻。'], commentsCn: ['网络速度大幅提升，视频加载仅在瞬间。今日所连结之一切缘分皆顺畅无阻。'] },
+  { fortuneJa: '通信吉', fortuneEn: 'Stable Connectivity', fortuneTw: '通訊吉', fortuneCn: '通讯吉', weight: 150, btnJa: '同期を保つ', btnEn: 'Stay Synchronized', btnTw: '保持同步', btnCn: '保持同步', commentsJa: ['電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。'], commentsEn: ['Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.'], commentsTw: ['訊號通暢無比。近期似乎會有久未聯絡的舊友，突然傳來令人欣喜的訊息。'], commentsCn: ['信号通畅无比。近期似乎会有久未联络的旧友，突然传来令人欣喜的信息。'] },
+  { fortuneJa: '再起動', fortuneEn: 'System Reboot', fortuneTw: '系統重啟', fortuneCn: '系统重启', weight: 70, btnJa: '新たに紡ぐ', btnEn: 'Reboot Anew', btnTw: '重新啟航', btnCn: '重新启航', commentsJa: ['頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。'], commentsEn: ['If your mind feels heavy, take a long sleep. Refresh your body and soul to reboot your luck.'], commentsTw: ['若感到思緒沉重，切勿硬撐，早些入眠為妙。身心徹底重整後，運勢將大幅好轉。'], commentsCn: ['若感到思绪沉重，切勿硬撑，早些入眠为妙。身心彻底重整后，运势将大幅好转。'] },
+  { fortuneJa: '大吉持', fortuneEn: 'Loading Great Fortune', fortuneTw: '大吉載入中', fortuneCn: '大吉载入中', weight: 50, btnJa: '読込を待つ', btnEn: 'Complete Loading', btnTw: '靜待載入', btnCn: '静待载入', commentsJa: ['今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。'], commentsEn: ['Current luck is average, but it is loading a massive blessing. A late-bloomer sign.'], commentsTw: ['當前運勢雖看似平凡，但此乃大器晚成之兆，往後將迎來令人驚嘆的巨大福運。'], commentsCn: ['当前运势虽看似平凡，但此乃大器晚成之兆，往后将迎来令人惊叹的巨大福运。'] },
+  { fortuneJa: '平', fortuneEn: 'Balanced Fortune', fortuneTw: '平', fortuneCn: '平', weight: 50, btnJa: '平穏を保つ', btnEn: 'Maintain Balance', btnTw: '守持中庸', btnCn: '守持中庸', commentsJa: ['良くも悪くもなく、波風の立たない平穏な日。普通であることの有り難さを噛み締めるべし。'], commentsEn: ['Neither good nor bad, just a peaceful day. Appreciate the comfort of an ordinary day.'], commentsTw: ['無好亦無壞，波瀾不驚。當細細品味這份平凡安穩帶來的難得福氣。'], commentsCn: ['无好亦无坏，波澜不惊。当细细品味这份平凡安稳带来的难得福气。'] },
+  { fortuneJa: '大器晩成', fortuneEn: 'Late Architectural Rise', fortuneTw: '大器晚成', fortuneCn: '大器晚成', weight: 10, btnJa: '牙を研ぐ', btnEn: 'Sharpen Your Mind', btnTw: '磨礪心志', btnCn: '磨砺心志', commentsJa: ['今はシステムデバッグ中（凶）の如く苦戦するも、これより先、全てのバグは綺麗に解消され、驚くべき大躍進を遂げる運気なり。'], commentsEn: ['Though you struggle now like a system under debugging, all errors will soon clear away, leading to a massive leap forward.'], commentsTw: ['當前雖如系統偵錯（凶）般陷入苦戰，但此後所有阻礙將煙消雲散，迎來驚人的大躍進。'], commentsCn: ['当前虽如系统侦错（凶）般陷入苦战，但此后所有阻碍将烟消云散，迎来惊人的大跃进。'] },
+  { fortuneJa: '恐', fortuneEn: 'Perilous Exception', fortuneTw: '恐', fortuneCn: '恐', weight: 20, btnJa: '慎重に進む', btnEn: 'Proceed with Caution', btnTw: '履步涉冰', btnCn: '履步涉冰', commentsJa: ['少し慎重になるべき日。新しいことには手を染めず、いつものルーティンを淡々とこなすのが賢明なり。'], commentsEn: ['A day to tread with caution. Avoid starting new things and stick to your usual routine.'], commentsTw: ['今日行事宜多加謹慎。切勿盲目開展新計畫，安守既有常規方為上策。'], commentsCn: ['今日行事宜多加谨慎。切勿盲目开展新计划，安守既有常规方为上策。'] }
+];
+
+// 👾 イースターエッグ用（タイトル10回タップ隠し運勢）
+const SECRET_LUCK_RESULT = {
+  fortuneJa: '神殺しのデバッグ', fortuneEn: 'God-Mode Debugged', fortuneTw: '弒神級極限偵錯', fortuneCn: '弑神级极限侦错',
+  commentJa: '【裏コマンド検知】神の領域にバグを注入し、運命の不合理なソースコードを書き換えた。世界は今、あなたの手で強制リビルドされた。',
+  commentEn: '【Cheat Detected】Injected bugs into divine layers, overriding unfair code. The cosmos has been forcefully rebuilt by your bare hands.',
+  commentTw: '【偵測到隱藏指令】成功向神明領域寫入異常代碼，徹底改寫命運的荒謬核心。世界此時已由您親手強制重新建構。',
+  commentCn: '【侦测到隐藏指令】成功向神明领域写入异常代码，彻底改写命运的荒谬核心。世界此时已由您亲手强制重新建构。',
+  colorJa: '超次元マゼンタ', colorEn: 'Hyper Magenta', colorTw: '超次元洋紅', colorCn: '超次元洋红',
+  itemJa: 'マスター鍵鍵キー', itemEn: 'Master Access Key', itemTw: '萬能主控密鑰', itemCn: '万能主控密钥'
 };
 
-const OMIKUJI_POOL: { [key in LangMode]: OmikujiResult[] } = {
-  ja: [
-    { fortune: '超大吉', detail: '奇跡が連鎖します！本番デプロイが自動で完全成功し、技術負債がすべてガベージコレクトされました。所持金が大幅に増えます。', luckyItem: '虹色に輝くLANケーブル', luckyLang: 'TypeScript', points: '▲━●━▼', change: 100, type: 'plus' },
-    { fortune: '大吉', detail: '最高にクリーンな1日。コードレビューは一発通過、インフラは完全に安定。想定外の臨時報酬を受け取るでしょう。', luckyItem: '無水エタノール', luckyLang: 'Rust', points: '▲━●━▼', change: 50, type: 'plus' },
-    { fortune: '吉', detail: '安定した運気。エラーログの解読が驚くほどスムーズに進みます。自販機で当たりが出るような小さな幸運があります。', luckyItem: 'Escキーの予備', luckyLang: 'Go', points: '▲━●━▼', change: 20, type: 'plus' },
-    { fortune: '中吉', detail: 'まずまずの発展運。他人の書いたスパゲッティコードの中に、とても便利な共通関数を発見できそうです。', luckyItem: 'ノイズキャンセリングヘッドホン', luckyLang: 'Python', points: '▲━●━▼', change: 15, type: 'plus' },
-    { fortune: '小吉', detail: '小さな進歩あり。数時間悩んだバグが、タイポ（一文字の間違い）だったことに気付いてスッキリ解決します。', luckyItem: 'ブルーライトカット眼鏡', luckyLang: 'JavaScript', points: '▲━●━▼', change: 10, type: 'plus' },
-    { fortune: '末吉', detail: '現状維持の運勢。大きな成果はありませんが、障害も起きません。定時退社を最優先にすると吉。', luckyItem: 'ドリップコーヒー', luckyLang: 'HTML / CSS', points: '▲━●━▼', change: 5, type: 'plus' },
-    { fortune: '凶', detail: 'やや波乱の予感。コンパイルエラーが多発し、財布から「両」がバグのように勝手に流出する恐れがあります。', luckyItem: 'リセットボタン', luckyLang: 'C++', points: '▲━●━▼', change: -15, type: 'minus' },
-    { fortune: '大凶', detail: 'システム大破の危機！「ぬるぽ」が直撃し、思わぬ例外処理の連鎖でウォレットに大きな損害（ロスト）が発生します。', luckyItem: 'お祓い済みのUSBメモリ', luckyLang: 'Java', points: '▲━●━▼', change: -40, type: 'minus' }
-  ],
-  en: [
-    { fortune: 'Super Great Blessing', detail: 'Miracles cascade! Production deploy completely succeeds with zero errors, and all tech debt is purged.', luckyItem: 'Rainbow LAN Cable', luckyLang: 'TypeScript', points: '▲━●━▼', change: 100, type: 'plus' },
-    { fortune: 'Great Blessing', detail: 'Ultra clean day. Code review passes in one shot. Uptime is 100%. An unexpected bonus lands in your wallet.', luckyItem: 'Anhydrous Ethanol', luckyLang: 'Rust', points: '▲━●━▼', change: 50, type: 'plus' },
-    { fortune: 'Blessing', detail: 'Stable luck. Deciphering error logs is smoother than ever. A small profit finds its way to you.', luckyItem: 'Spare Esc Keycap', luckyLang: 'Go', points: '▲━●━▼', change: 20, type: 'plus' },
-    { fortune: 'Middle Blessing', detail: 'Decent growth. You will discover a hidden, highly reusable function inside legacy code spaghetti.', luckyItem: 'ANC Headphones', luckyLang: 'Python', points: '▲━●━▼', change: 15, type: 'plus' },
-    { fortune: 'Small Blessing', detail: 'Minor progress. A bug bothering you for hours is solved instantly after spotting a tiny typo.', luckyItem: 'Blue-light Glasses', luckyLang: 'JavaScript', points: '▲━●━▼', change: 10, type: 'plus' },
-    { fortune: 'Future Blessing', detail: 'Status quo. No big breakthroughs, but no downtime either. Prioritize clocking out on time.', luckyItem: 'Drip Coffee', luckyLang: 'HTML / CSS', points: '▲━●━▼', change: 5, type: 'plus' },
-    { fortune: 'Curse', detail: 'Turbulent currents. Compilation errors spike, causing an unexpected leakage of coins from your wallet.', luckyItem: 'Physical Reset Button', luckyLang: 'C++', points: '▲━●━▼', change: -15, type: 'minus' },
-    { fortune: 'Great Curse', detail: 'System Breakdown! NullPointer exception hits hard, causing massive damage and draining funds.', luckyItem: 'Blessed USB Drive', luckyLang: 'Java', points: '▲━●━▼', change: -40, type: 'minus' }
-  ],
-  zh_tw: [
-    { fortune: '超大吉', detail: '奇蹟連鎖發生！正式環境部署自動完美成功，技術債務全數被自動回收，錢包容量大幅擴增。', luckyItem: '彩虹光芒網路線', luckyLang: 'TypeScript', points: '▲━●━▼', change: 100, type: 'plus' },
-    { fortune: '大吉', detail: '極致純淨的一天。程式碼審查一擊通關，雲端架構穩如泰山。將會獲得意料之外的電子福德。', luckyItem: '無水酒精', luckyLang: 'Rust', points: '▲━●━▼', change: 50, type: 'plus' },
-    { fortune: '吉', detail: '運勢平穩和順。解讀錯誤日誌異常順暢，能避開大部分的地雷。會遇到一些微小的幸運。', luckyItem: '備用 Esc 鍵帽', luckyLang: 'Go', points: '▲━●━▼', change: 20, type: 'plus' },
-    { fortune: '中吉', detail: '穩定成長之運。在他人留下的陳年面條程式碼中，能驚喜挖掘到極具價值的共通函數。', luckyItem: '主動降噪耳機', luckyLang: 'Python', points: '▲━●━▼', change: 15, type: 'plus' },
-    { fortune: '小吉', detail: '略有進步。困擾數小時的異常突然發現只是打錯字（Typo），修正後迎刃而解、通體舒暢。', luckyItem: '抗藍光眼鏡', luckyLang: 'JavaScript', points: '▲━●━▼', change: 10, type: 'plus' },
-    { fortune: '末吉', detail: '維持現狀。雖無亮眼突破但好在四海無事、系統安穩。今日宜將「準時下班」視為最高指導原則。', luckyItem: '濾掛式咖啡', luckyLang: 'HTML / CSS', points: '▲━●━▼', change: 5, type: 'plus' },
-    { fortune: '凶', detail: '略有波折之兆。編譯錯誤頻發，資產有如遭遇幽靈漏洞般，發生不明原因的些微流失。', luckyItem: '硬體重設按鈕', luckyLang: 'C++', points: '▲━●━▼', change: -15, type: 'minus' },
-    { fortune: '大凶', detail: '系統崩潰崩壞危機！遭到「空指標 Null」正面突擊，引發例外處理連鎖效應，導致ウォレット嚴重虧損。', luckyItem: '受過法會淨化的隨身碟', luckyLang: 'Java', points: '▲━●━▼', change: -40, type: 'minus' }
-  ],
-  zh_cn: [
-    { fortune: '超大吉', detail: '奇迹连锁发生！生产环境部署自动完美成功，技术债务全数被自动回收，钱包容量大幅扩增。', luckyItem: '彩虹光芒网线', luckyLang: 'TypeScript', points: '▲━●━▼', change: 100, type: 'plus' },
-    { fortune: '大吉', detail: '极致纯净的一天。代码审查一击通关，云端架构稳如泰山。将会获得意料之外的电子福德。', luckyItem: '无水酒精', luckyLang: 'Rust', points: '▲━●━▼', change: 50, type: 'plus' },
-    { fortune: '吉', detail: '运势平稳和顺。解读错误日志异常顺畅，能避开大部分的地雷。会遇到一些微小的幸运。', luckyItem: '备用 Esc 键帽', luckyLang: 'Go', points: '▲━●━▼', change: 20, type: 'plus' },
-    { fortune: '中吉', detail: '稳定成长之运。在他人留下的陈年面条代码中，能惊喜挖掘到极具价值的共通函数。', luckyItem: '主动降噪耳机', luckyLang: 'Python', points: '▲━●━▼', change: 15, type: 'plus' },
-    { fortune: '小吉', detail: '略有进步。困扰数小时的异常突然发现只是打错字（Typo），修正后迎刃而解、通体舒畅。', luckyItem: '抗蓝光眼镜', luckyLang: 'JavaScript', points: '▲━●━▼', change: 10, type: 'plus' },
-    { fortune: '末吉', detail: '维持现状。虽无亮眼突破但好在四海无事、系统安稳。今日宜将“准时下班”视为最高指导原则。', luckyItem: '挂耳式咖啡', luckyLang: 'HTML / CSS', points: '▲━●━▼', change: 5, type: 'plus' },
-    { fortune: '凶', detail: '略有波折之兆。编译错误频发，资产有如遭遇幽灵漏洞般，发生不明原因的些微流失。', luckyItem: '硬件重置按钮', luckyLang: 'C++', points: '▲━●━▼', change: -15, type: 'minus' },
-    { fortune: '大凶', detail: '系统崩溃崩坏危机！遭到“空指针 Null”正面突击，引发异常处理连锁效应，导致钱包严重亏损。', luckyItem: '受过法会净化的闪存盘', luckyLang: 'Java', points: '▲━●━▼', change: -40, type: 'minus' }
-  ]
+const SPECIAL_LUCK: { [key: string]: { [key: string]: string } } = {
+  '11:11': { ja: '星連大吉', en: 'Astro-Aligned Luck', zh_tw: '星連大吉', zh_cn: '星连大吉', commentJa: '【11:11の奇跡】時計の数字が美しく一直線に並ぶ瞬間。全てのノイズが消え去り、願いが最速で宇宙に届く大吉兆なり！', commentEn: '【11:11 Miracle】The numbers line up perfectly. All noise vanishes, and your wishes reach the universe at lightspeed!', commentTw: '【11:11的奇蹟】時鐘數字完美排成一線的神聖瞬間。萬般雜音盡除，心中所願將以最快速度傳遞至宇宙核心！', commentCn: '【11:11的奇迹】时钟数字完美排成一线的神圣瞬间。万般杂音尽除，心中所愿将以最快速度传递至宇宙核心！' }
 };
 
-export default function CyberShrine() {
+const HOLIDAY_FORTUNES: { [key: string]: { [key: string]: string } } = {
+  '1/1': { fortuneJa: '歳旦大吉', fortuneEn: 'New Year Milestone', fortuneTw: '歲旦大吉', fortuneCn: '岁旦大吉', commentJa: '【謹賀新年】新しいログの1行目なり。過去のキャッシュは綺麗さっぱりクリアされ、壮大なる新規セッションがここに開始された！', commentEn: '【Happy New Year】The first row of your new log. All old cache is cleared; a grand new session has initialized!', commentTw: '【恭賀新禧】新日誌的第一行。舊有快取已被悉數清除，一場無比壯麗的新連線已於此刻正式啟動！', commentCn: '【恭贺新禧】新日志的第一行。旧有缓存已被悉数清除，一场无比壮丽的新连线已于此刻正式启动！' }
+};
+
+const FORTUNE_ORDER = ['神殺しのデバッグ', '超大吉', '星連大吉', '歳旦大吉', '大吉', '吉', '中吉', '小吉', '末吉', '接続大吉', '通信吉', '再起動', '大吉持', '平', '大器晩成', '恐', 'システム大破'];
+
+// 🗺️ ラッキーアイテム・カラーマップ
+const LUCKY_MAPS = {
+  ja: {
+    colors: ['漆黒', '朱赤', '瑠璃色', '黄金色', '白', '琥珀色'],
+    items: ['LANケーブル', '温かい緑茶', 'ハンカチ', '最新のガジェット']
+  },
+  en: {
+    colors: ['Jet Black', 'Vermilion Red', 'Lapis Lazuli', 'Pure Gold', 'Snow White', 'Amber'],
+    items: ['Ethernet Cable', 'Warm Matcha Tea', 'Silk Pocket Square', 'Lucky Coin']
+  },
+  zh_tw: {
+    colors: ['漆黑', '朱赤', '瑠璃色', '黃金色', '純白', '琥珀色'],
+    items: ['高速網路線', '文山包種茶', '刺繡手帕', '幸運鈦合金幣']
+  },
+  zh_cn: {
+    colors: ['漆黑', '朱赤', '瑠璃色', '黄金色', '纯白', '琥珀色'],
+    items: ['六类网线', '热西湖龙井', '随身手帕', '幸运纪念币']
+  }
+};
+
+const CRYPTO_SALT = 'cyber_shrine_secret_2026_v3';
+const encodeData = (data: any): string => {
+  const str = JSON.stringify(data);
+  const hash = btoa(encodeURIComponent(str));
+  return `${hash}.${btoa(CRYPTO_SALT)}`;
+};
+const decodeData = (cipher: string | null): any => {
+  if (!cipher) return null;
+  try {
+    const parts = cipher.split('.');
+    if (parts.length !== 2 || atob(parts[1]) !== CRYPTO_SALT) return null;
+    return JSON.parse(decodeURIComponent(atob(parts[0])));
+  } catch (e) { return null; }
+};
+
+export default function App() {
   const [lang, setLang] = useState<LangMode>('ja');
-  const [tab, setTab] = useState<TabMode>('omikuji');
-  const [wallet, setWallet] = useState<number>(300);
-  const [inventory, setInventory] = useState<ShopItem[]>([]);
-  const [logs, setLogs] = useState<{ id: string; date: string; fortune: string; langMode: LangMode }[]>([]);
-  const [activeSkin, setActiveSkin] = useState<string>('skin_default');
+  const [activeTab, setActiveTab] = useState<TabMode>('omikuji');
+  const [shopCategory, setShopCategory] = useState<CategoryMode>('talisman');
+  const [inventoryCategory, setInventoryCategory] = useState<CategoryMode>('talisman');
 
-  // ⭐️ 新規追加State群
-  const [equippedIds, setEquippedIds] = useState<string[]>([]); // 最大3つのアクティブ装備ID
-  const [searchQuery, setSearchQuery] = useState<string>(''); // インベントリ検索窓
-  const [sortBy, setSortBy] = useState<'date' | 'name' | 'price'>('date'); // インベントリソート順
-  const [isHackerCursed, setIsHackerCursed] = useState<boolean>(false); // F12検知フラグ
-  const [jackpotMessage, setJackpotMessage] = useState<string>(''); // 一攫千金/大破通知
-  const [randomBiorhythm, setRandomBiorhythm] = useState<number[]>([50, 50, 50, 50, 50]); // 5日分の運気数値
+  // 🕒 リアルタイム時計（神社標準時刻）
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
-  const [result, setResult] = useState<OmikujiResult | null>(null);
+  // 🎰 授与所のガチャ陳列データ（5個）
+  const [displayedShopItems, setDisplayedShopItems] = useState<ShopItem[]>([]);
+
+  // 📝 所持タブ用ページング管理
+  const [inventoryPage, setInventoryPage] = useState<number>(1);
+
+  // 📝 所持タブで選択中のアイテムID
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState<ShopItem | null>(null);
+
+  // 🐣 イースターエッグ用カウンタ
+  const [titleTapCount, setTitleTapCount] = useState<number>(0);
+
+  const [result, setResult] = useState<{ fortune: string; comment: string; color: string; item: string; currentBtn: string } | null>(null);
   const [isRolling, setIsRolling] = useState(false);
-  const [isNight, setIsNight] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [visitDate, setVisitDate] = useState<string>('');
+  const [history, setHistory] = useState<{ [key: string]: number }>({});
+  const [lastDates, setLastDates] = useState<{ [key: string]: string }>({});
+  const [visitDays, setVisitDays] = useState<number>(1);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [lastFortune, setLastFortune] = useState<string>('');
+  const [recentScores, setRecentScores] = useState<number[]>([]);
   const [isBurning, setIsBurning] = useState(false);
-  const [activeInfoItem, setActiveInfoItem] = useState<ShopItem | null>(null);
 
-  // ⏰ 時間監視＆夜間判定
+  // 👑 ウォレットカウントアニメーション
+  const [wallet, setWallet] = useState<number>(0);
+  const [displayWallet, setDisplayWallet] = useState<number>(0);
+
+  const [ownedItems, setOwnedItems] = useState<string[]>([]);
+  const [activeSkin, setActiveSkin] = useState<string>('default');
+
+  // 🕒 時計の同期
   useEffect(() => {
-    const checkTime = () => {
-      const hours = new Date().getHours();
-      setIsNight(hours >= 18 || hours < 6);
-    };
-    checkTime();
-    const timer = setInterval(checkTime, 60000);
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // 📊 運気バイオリズムのモック生成
+  // 🪙 ウォレットのカウントアップ/ダウン演出
   useEffect(() => {
-    const generateBiorhythm = () => {
-      const vals = Array.from({ length: 5 }, () => Math.floor(Math.random() * 85) + 15);
-      setRandomBiorhythm(vals);
-    };
-    generateBiorhythm();
-  }, [result]);
+    if (displayWallet === wallet) return;
+    const diff = wallet - displayWallet;
+    const step = diff > 0 ? Math.ceil(diff / 8) : Math.floor(diff / 8);
+    const timeout = setTimeout(() => {
+      setDisplayWallet(prev => (Math.abs(diff) <= Math.abs(step) ? wallet : prev + step));
+    }, 25);
+    return () => clearTimeout(timeout);
+  }, [wallet, displayWallet]);
 
-  // 🛡️ 開発者ツール（F12）検知イースターエッグ
+  // 🚀 初回起動・ロード処理
   useEffect(() => {
-    const triggerHackerCurse = () => {
-      if (!isHackerCursed) {
-        setIsHackerCursed(true);
-        setResult({
-          fortune: 'ハッカー大凶',
-          detail: '【電脳結界警報】不正なデバッグ用パケット（F12/Ctrl+Shift+I）の展開を検知！電脳神罰が下り、全パケットの暗号整合性が強制破棄されました。',
-          luckyItem: 'Wi-Fiルーターのコンセントを抜くこと',
-          luckyLang: 'Assembly',
-          points: '▼━▼━▼',
-          change: -50,
-          type: 'hacker_curse'
-        });
-        setWallet(prev => Math.max(0, prev - 50));
+    const secureState = decodeData(localStorage.getItem('shrine_master_state_secure_v3'));
+
+    if (secureState) {
+      if (secureState.history) setHistory(secureState.history);
+      if (secureState.lastDates) setLastDates(secureState.lastDates);
+      if (secureState.wallet !== undefined) {
+        setWallet(secureState.wallet);
+        setDisplayWallet(secureState.wallet);
       }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'F12' || ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'I' || e.key === 'i'))) {
-        e.preventDefault();
-        triggerHackerCurse();
+      if (secureState.ownedItems) {
+        setOwnedItems(secureState.ownedItems);
       }
-    };
+      if (secureState.activeSkin) setActiveSkin(secureState.activeSkin);
+    }
+    const savedScores = localStorage.getItem('shrine_scores');
+    if (savedScores) setRecentScores(JSON.parse(savedScores));
 
-    const handleResize = () => {
-      const threshold = 160;
-      if (window.outerWidth - window.innerWidth > threshold || window.outerHeight - window.innerHeight > threshold) {
-        triggerHackerCurse();
-      }
-    };
+    const todayStr = new Date().toDateString();
+    const lastVisit = localStorage.getItem('shrine_last_visit');
+    let days = parseInt(localStorage.getItem('shrine_visit_days') || '1', 10);
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [isHackerCursed]);
+    if (lastVisit && lastVisit !== todayStr) {
+      days += 1;
+      localStorage.setItem('shrine_visit_days', days.toString());
+    }
+    localStorage.setItem('shrine_last_visit', todayStr);
+    setVisitDays(days);
 
-  // 🕋 ローカルストレージ連動
-  useEffect(() => {
-    const savedWallet = localStorage.getItem('cyber_wallet');
-    const savedInv = localStorage.getItem('cyber_inventory');
-    const savedLogs = localStorage.getItem('cyber_logs');
-    const savedSkin = localStorage.getItem('cyber_skin');
-    const savedEquips = localStorage.getItem('cyber_equipped');
-
-    if (savedWallet) setWallet(Number(savedWallet));
-    if (savedInv) setInventory(JSON.parse(savedInv));
-    if (savedLogs) setLogs(JSON.parse(savedLogs));
-    if (savedSkin) setActiveSkin(savedSkin);
-    if (savedEquips) setEquippedIds(JSON.parse(savedEquips));
+    // 初期陳列は御守プールから5件無料で取得
+    const nightActive = (new Date().getHours() >= 22 || new Date().getHours() < 4);
+    const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !(item.isNightOnly && !nightActive));
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    setDisplayedShopItems(shuffled.slice(0, 5));
   }, []);
 
-  const saveToStorage = (newWallet: number, newInv: ShopItem[], newLogs: any[], newSkin: string, newEquips: string[]) => {
-    localStorage.setItem('cyber_wallet', newWallet.toString());
-    localStorage.setItem('cyber_inventory', JSON.stringify(newInv));
-    localStorage.setItem('cyber_logs', JSON.stringify(newLogs));
-    localStorage.setItem('cyber_skin', newSkin);
-    localStorage.setItem('cyber_equipped', JSON.stringify(newEquips));
+  const saveMasterState = (nextHistory: any, nextDates: any, nextWallet: number, nextOwned: string[], nextSkin: string) => {
+    const stateObj = { history: nextHistory, lastDates: nextDates, wallet: nextWallet, ownedItems: nextOwned, activeSkin: nextSkin };
+    localStorage.setItem('shrine_master_state_secure_v3', encodeData(stateObj));
   };
 
-  // 🥠 おみくじを引く
-  const handleOmikuji = () => {
+  // 🌙 夜間判定 (22:00 〜 04:00)
+  const isNightTime = () => {
+    const hour = currentTime.getHours();
+    return hour >= 22 || hour < 4;
+  };
+
+  // 🔄 手動での「陳列更新（10両）」実行処理（御守プールのみを5件シャッフル更新）
+  const refreshShopItemsManual = () => {
+    if (wallet < 10) return;
+    const nextWallet = wallet - 10;
+    setWallet(nextWallet);
+    saveMasterState(history, lastDates, nextWallet, ownedItems, activeSkin);
+    
+    const nightActive = isNightTime();
+    const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !(item.isNightOnly && !nightActive));
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    setDisplayedShopItems(shuffled.slice(0, 5));
+  };
+
+  // 所持タブのカテゴリ切り替え時はページを1に戻す
+  useEffect(() => {
+    setInventoryPage(1);
+  }, [inventoryCategory]);
+
+  // 🐣 イースターエッグのトリガー
+  const handleTitleTap = () => {
     if (isRolling) return;
-    setIsRolling(true);
-    setJackpotMessage('');
-    setIsHackerCursed(false);
+    const nextCount = titleTapCount + 1;
+    if (nextCount >= 10) {
+      setTitleTapCount(0);
+      triggerSecretOmikuji();
+    } else {
+      setTitleTapCount(nextCount);
+    }
+  };
+
+  const triggerSecretOmikuji = () => {
+    setIsRolling(true); setResult(null);
+    const today = new Date();
+    setVisitDate(formatInternationalDate(today));
 
     setTimeout(() => {
-      const pool = OMIKUJI_POOL[lang] || OMIKUJI_POOL['ja'];
-      const idx = Math.floor(Math.random() * pool.length);
-      let baseResult = { ...pool[idx] };
+      const f = SECRET_LUCK_RESULT;
+      const fortune = lang === 'ja' ? f.fortuneJa : lang === 'en' ? f.fortuneEn : lang === 'zh_tw' ? f.fortuneTw : f.fortuneCn;
+      const comment = lang === 'ja' ? f.commentJa : lang === 'en' ? f.commentEn : lang === 'zh_tw' ? f.commentTw : f.commentCn;
+      const color = lang === 'ja' ? f.colorJa : lang === 'en' ? f.colorEn : lang === 'zh_tw' ? f.colorTw : f.colorCn;
+      const item = lang === 'ja' ? f.itemJa : lang === 'en' ? f.itemEn : lang === 'zh_tw' ? f.itemTw : f.itemCn;
 
-      // 🎒 装備バフの適用ロジック
-      let walletModifier = baseResult.change;
-      if (baseResult.type === 'plus') {
-        // 装備アイテム1つにつきボーナス+10両
-        walletModifier += (equippedIds.length * 10);
-      } else if (baseResult.type === 'minus') {
-        // 装備アイテムがある場合、マイナス損失を20%軽減
-        if (equippedIds.length > 0) {
-          walletModifier = Math.floor(walletModifier * 0.8);
-        }
-      }
-
-      // 🪙 ウォレットの一攫千金（超低確率サプライズイベント）判定
-      const rollEvent = Math.random();
-      if (rollEvent < 0.007) { // 0.7%の確率で分散型埋蔵金発掘 (一攫千金)
-        const jackpot = 1500 + Math.floor(Math.random() * 3500);
-        walletModifier += jackpot;
-        baseResult.fortune = lang === 'ja' ? '【電脳奇跡】超一攫千金' : '【Cyber Miracle】Jackpot';
-        setJackpotMessage(lang === 'ja' ? `✨ 【分散型埋蔵金を発掘】暗号化された太古の金庫が解凍され、口座に ${jackpot}両 が直接着金しました！` : `✨ [Decentralized Treasure Found] ${jackpot} ryo has been transferred!`);
-        baseResult.type = 'jackpot';
-      } else if (rollEvent > 0.992) { // 0.8%の確率でシステム大破（ロストイベント）
-        const loss = Math.floor(wallet * 0.35); // 所持金の35%を消失
-        walletModifier = -loss;
-        baseResult.fortune = lang === 'ja' ? '【警告】システム大破' : '【Warning】System Crash';
-        setJackpotMessage(lang === 'ja' ? `🚨 【クリティカルエラー】大規模なバグの連鎖共振により、ウォレットから ${loss}両 が電子の藻屑に消えました...` : `🚨 [Critical Breakdown] Cascade error wiped out ${loss} ryo...`);
-        baseResult.type = 'minus';
-      }
-
-      const nextWallet = Math.max(0, wallet + walletModifier);
-      const newLog = {
-        id: Math.random().toString(36).substring(2, 9),
-        date: new Date().toLocaleTimeString(),
-        fortune: baseResult.fortune,
-        langMode: lang
-      };
-
-      const nextLogs = [newLog, ...logs].slice(0, 20);
-
-      setWallet(nextWallet);
-      setResult(baseResult);
-      setLogs(nextLogs);
+      setResult({ fortune, comment, color, item, currentBtn: lang === 'ja' ? '天命を掌握する' : 'Rule Destiny' });
       setIsRolling(false);
+      setLastFortune('神殺しのデバッグ');
 
-      saveToStorage(nextWallet, inventory, nextLogs, activeSkin, equippedIds);
-    }, 900);
+      const nextWallet = wallet + 500; 
+      setWallet(nextWallet);
+
+      const updatedScores = [5, ...recentScores].slice(0, 5);
+      setRecentScores(updatedScores);
+      localStorage.setItem('shrine_scores', JSON.stringify(updatedScores));
+
+      const newHistory = { ...history, '神殺しのデバッグ': (history['神殺しのデバッグ'] || 0) + 1 };
+      const newDates = { ...lastDates, '神殺しのデバッグ': `${today.getMonth() + 1}/${today.getDate()}` };
+      setHistory(newHistory); setLastDates(newDates);
+      saveMasterState(newHistory, newDates, nextWallet, ownedItems, activeSkin);
+    }, 700);
   };
 
-  // 🛍️ アイテム購入
-  const handleBuy = (item: ShopItem) => {
-    if (wallet < item.price) {
-      alert(lang === 'ja' ? 'ウォレットの「両」が不足しています。' : 'Insufficient ryo in wallet.');
-      return;
-    }
-    if (inventory.some(i => i.id === item.id)) {
-      alert(lang === 'ja' ? '既に拝受（所持）しています。' : 'You already own this item.');
-      return;
-    }
+  // ⛩️ 通常のおみくじ処理
+  const drawOmikuji = () => {
+    setIsRolling(true); setResult(null); setTitleTapCount(0);
+    const today = new Date(); const hours = today.getHours(); const minutes = today.getMinutes();
+    const month = today.getMonth() + 1; const date = today.getDate();
 
-    const nextWallet = wallet - item.price;
-    const nextInv = [...inventory, item];
-    let nextSkin = activeSkin;
+    setVisitDate(formatInternationalDate(today));
 
-    if (item.type === 'skin') {
-      nextSkin = item.id;
-      setActiveSkin(nextSkin);
-    }
+    setTimeout(() => {
+      let fortune = ''; let comment = ''; let currentBtn = '再び引く'; let historyKey = '吉';
+      const timeStr = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+      const holidayKey = `${month}/${date}`;
 
-    setWallet(nextWallet);
-    setInventory(nextInv);
-    saveToStorage(nextWallet, nextInv, logs, nextSkin, equippedIds);
-  };
+      if (SPECIAL_LUCK[timeStr]) {
+        const spec = SPECIAL_LUCK[timeStr];
+        fortune = spec[lang]; comment = spec.commentJa; historyKey = spec.ja;
+      } else if (HOLIDAY_FORTUNES[holidayKey]) {
+        const hol = HOLIDAY_FORTUNES[holidayKey];
+        fortune = hol[`fortune${lang.charAt(0).toUpperCase() + lang.slice(1)}` as any] || hol.fortuneJa;
+        comment = hol[`comment${lang.charAt(0).toUpperCase() + lang.slice(1)}` as any] || hol.commentJa;
+        historyKey = hol.fortuneJa;
+      } else {
+        let selectedGroup = LUCK_DATA[2];
+        for (let attempt = 0; attempt < 3; attempt++) {
+          const totalWeight = LUCK_DATA.reduce((sum, item) => sum + item.weight, 0);
+          let randomNum = Math.floor(Math.random() * totalWeight);
+          for (const group of LUCK_DATA) {
+            if (randomNum < group.weight) { selectedGroup = group; break; }
+            randomNum -= group.weight;
+          }
+          if (selectedGroup.fortuneJa !== lastFortune) break;
+        }
 
-  // 🎒 御守の装備・解除切り替え
-  const toggleEquip = (id: string) => {
-    let nextEquips = [...equippedIds];
-    if (nextEquips.includes(id)) {
-      nextEquips = nextEquips.filter(eId => eId !== id);
-    } else {
-      if (nextEquips.length >= 3) {
-        alert(lang === 'ja' ? '同時にアクティブにできる御守は最大3つまでです。' : 'Max 3 amulets can be active simultaneously.');
-        return;
+        fortune = lang === 'ja' ? selectedGroup.fortuneJa : lang === 'en' ? selectedGroup.fortuneEn : lang === 'zh_tw' ? selectedGroup.fortuneTw : selectedGroup.fortuneCn;
+        currentBtn = lang === 'ja' ? selectedGroup.btnJa : lang === 'en' ? selectedGroup.btnEn : lang === 'zh_tw' ? selectedGroup.btnTw : selectedGroup.btnCn;
+        historyKey = selectedGroup.fortuneJa;
+        comment = lang === 'ja' ? selectedGroup.commentsJa[0] : lang === 'en' ? selectedGroup.commentsEn[0] : lang === 'zh_tw' ? selectedGroup.commentsTw[0] : selectedGroup.commentsCn[0];
       }
-      nextEquips.push(id);
-    }
-    setEquippedIds(nextEquips);
-    saveToStorage(wallet, inventory, logs, activeSkin, nextEquips);
+
+      const currentLucks = LUCKY_MAPS[lang] || LUCKY_MAPS.ja;
+      const idx = Math.floor(Math.random() * currentLucks.colors.length);
+      const color = currentLucks.colors[idx];
+      const item = currentLucks.items[Math.floor(Math.random() * currentLucks.items.length)];
+
+      setResult({ fortune, comment, color, item, currentBtn });
+      setIsRolling(false); setLastFortune(historyKey);
+
+      let payout = 50; 
+      if (historyKey === '超大吉') payout = 1000;
+      else if (historyKey === 'システム大破') payout = -Math.floor(wallet / 2);
+      else if (historyKey.includes('大吉')) payout = 150 + Math.floor(Math.random() * 50);
+      else if (historyKey.includes('中吉') || historyKey === '吉' || historyKey.includes('通信')) payout = 80 + Math.floor(Math.random() * 20);
+      else if (historyKey === '再起動' || historyKey === '恐') payout = 10;
+
+      const nextWallet = Math.max(0, wallet + payout);
+      setWallet(nextWallet);
+
+      const newScore = historyKey.includes('大吉') ? 5 : historyKey.includes('吉') ? 4 : 3;
+      const updatedScores = [newScore, ...recentScores].slice(0, 5);
+      setRecentScores(updatedScores);
+      localStorage.setItem('shrine_scores', JSON.stringify(updatedScores));
+
+      const newHistory = { ...history, [historyKey]: (history[historyKey] || 0) + 1 };
+      const newDates = { ...lastDates, [historyKey]: `${month}/${date}` };
+      setHistory(newHistory); setLastDates(newDates);
+      saveMasterState(newHistory, newDates, nextWallet, ownedItems, activeSkin);
+    }, 600);
   };
 
-  // 🏮 お焚き上げ実行
+  const buyItem = (item: ShopItem) => {
+    if (wallet < item.price || ownedItems.includes(item.id)) return;
+    const nextWallet = wallet - item.price;
+    const nextOwned = [...ownedItems, item.id];
+    setWallet(nextWallet); setOwnedItems(nextOwned);
+    saveMasterState(history, lastDates, nextWallet, nextOwned, activeSkin);
+  };
+
+  const equipSkin = (skinId: string) => {
+    setActiveSkin(skinId);
+    saveMasterState(history, lastDates, wallet, ownedItems, skinId);
+  };
+
   const handleClear = () => {
     setIsBurning(true);
     setTimeout(() => {
       localStorage.clear();
-      setWallet(300);
-      setInventory([]);
-      setLogs([]);
-      setResult(null);
-      setActiveSkin('skin_default');
-      setEquippedIds([]);
-      setJackpotMessage('');
-      setIsHackerCursed(false);
-      setIsBurning(false);
-      setShowModal(false);
-    }, 1500);
+      setHistory({}); setLastDates({}); setRecentScores([]); setResult(null); setLastFortune(''); setVisitDays(1);
+      setWallet(0); setDisplayWallet(0); setOwnedItems([]); setActiveSkin('default');
+      setIsBurning(false); setShowModal(false);
+      
+      const pool = SHOP_ITEMS.filter(item => item.type === 'talisman' && !item.isNightOnly);
+      setDisplayedShopItems(pool.slice(0, 5));
+    }, 1800);
   };
 
-  // 📅 現在の月を取得してショップをフィルタリング（季節限定の制御用）
-  const currentMonth = new Date().getMonth() + 1;
-  const filteredShopItems = SHOP_ITEMS.filter(item => {
-    if (item.isNightOnly && !isNight) return false;
-    if (item.availableMonths && !item.availableMonths.includes(currentMonth)) return false;
-    return true;
+  // 🌍 日付フォーマットのローカライズ
+  const formatInternationalDate = (dateObj: Date) => {
+    if (lang === 'en') {
+      return dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    if (lang === 'zh_tw' || lang === 'zh_cn') {
+      return `${dateObj.getFullYear()}年${dateObj.getMonth() + 1}月${dateObj.getDate()}日`;
+    }
+    return `令和八年${dateObj.getMonth() + 1}月${dateObj.getDate()}日`;
+  };
+
+  // 🪙 通貨単位のローカライズ
+  const getCurrencyUnit = () => {
+    if (lang === 'en') return 'Gold';
+    if (lang === 'zh_tw' || lang === 'zh_cn') return '文';
+    return '両';
+  };
+
+  const getBiorhythm = () => {
+    if (recentScores.length === 0) return { graph: '●', status: lang === 'ja' ? '未知の運気' : 'Unknown' };
+    const symbols = recentScores.map(s => (s >= 5 ? '▲' : s === 4 ? '●' : '▼')).reverse();
+    return { graph: symbols.join('━'), status: lang === 'ja' ? '運気同調中' : 'Syncing' };
+  };
+
+  const unlockedCount = FORTUNE_ORDER.filter(luck => history[luck] > 0).length;
+  const completionRate = Math.round((unlockedCount / FORTUNE_ORDER.length) * 100);
+
+  // 動的スキン背景クラス
+  const getBackgroundClass = () => {
+    if (activeSkin === 'wallpaper_gold') return 'bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200 text-stone-900';
+    if (activeSkin === 'wallpaper_neon') return 'bg-slate-900 text-stone-100 dark-theme';
+    if (activeSkin === 'wallpaper_dark') return 'bg-zinc-950 text-zinc-200 dark-theme';
+    if (activeSkin === 'wallpaper_washi') return 'bg-stone-200 bg-[radial-gradient(#e5e5e5_1px,transparent_1px)] [background-size:16px_16px] text-stone-900';
+    if (activeSkin === 'wallpaper_sakura') return 'bg-gradient-to-tr from-rose-100 via-pink-50 to-rose-200 text-stone-900';
+    return 'bg-stone-100 text-stone-900';
+  };
+
+  // 🌐 言語・フォントの制御
+  const getFontFamilyClass = () => {
+    if (lang === 'en') return 'font-serif';
+    if (lang === 'zh_tw' || lang === 'zh_cn') return 'font-[\'SimSun\',\'Songti_TC\',serif]';
+    return 'font-serif';
+  };
+
+  const isDarkSkin = activeSkin === 'wallpaper_neon' || activeSkin === 'wallpaper_dark';
+
+  // 🎒 所持アイテムのフィルタリングとページング算出
+  const currentFilteredOwnedItems = SHOP_ITEMS.filter(item => {
+    return item.type === inventoryCategory && ownedItems.includes(item.id);
   });
 
-  // 🔍 インベントリの検索＆ソート適用
-  const processedInventory = inventory
-    .filter(item => {
-      const name = lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : lang === 'zh_tw' ? item.nameTw : item.nameCn;
-      return name.toLowerCase().includes(searchQuery.toLowerCase());
-    })
-    .sort((a, b) => {
-      if (sortBy === 'name') {
-        return a.nameJa.localeCompare(b.nameJa);
-      }
-      if (sortBy === 'price') {
-        return b.price - a.price; // 高い順
-      }
-      return 0; // 'date' はデフォルトのインデックス配列順
-    });
+  const ITEMS_PER_PAGE = 5;
+  const totalInventoryPages = Math.max(1, Math.ceil(currentFilteredOwnedItems.length / ITEMS_PER_PAGE));
+  const indexOfLastItem = inventoryPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentPagedOwnedItems = currentFilteredOwnedItems.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 🎰 授与所の表示用データ定義（御守ならシャッフル済みの5件、背景なら全5件をそのまま表示）
+  const currentShopItems = shopCategory === 'talisman' 
+    ? displayedShopItems 
+    : SHOP_ITEMS.filter(item => item.type === 'skin');
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-200 font-serif relative overflow-hidden flex flex-col items-center justify-start p-3 sm:p-6 antialiased selection:bg-red-800 selection:text-white">
+    <div className={`min-h-screen flex flex-col items-center justify-start pt-4 pb-24 p-4 select-none relative overflow-x-hidden transition-all duration-700 ${getBackgroundClass()} ${getFontFamilyClass()}`}>
       
-      {/* 🔮 背景レイヤー（スキン＆アニメーション対応） */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        {activeSkin === 'skin_default' && (
-          <div className="absolute inset-0 bg-radial-[at_center_center] from-stone-900 via-stone-950 to-black opacity-90" />
-        )}
+      <style>{`
+        @keyframes burnUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-200px) scale(0.3); opacity: 0; } }
+        .particle { position: absolute; background: radial-gradient(#f97316, #ef4444); border-radius: 50%; pointer-events: none; }
+        .dark-theme .sticky-bar { background-color: rgba(30, 41, 59, 0.95) !important; border-color: #334155 !important; }
+      `}</style>
 
-        {/* ⛩️ 電脳ネオン鳥居スキン（脈動アニメーション） */}
-        {activeSkin === 'skin_neon' && (
-          <div className="absolute inset-0 bg-stone-950">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f1224_1px,transparent_1px),linear-gradient(to_bottom,#1f1224_1px,transparent_1px)] bg-[size:30px_30px] opacity-40" />
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-72 h-64 border-t-8 border-x-4 border-pink-500 rounded-t-sm shadow-[0_0_30px_#ff007f] opacity-80 animate-pulse" style={{ animationDuration: '3s' }}>
-              <div className="w-full h-8 border-b-4 border-pink-500 mt-8 shadow-[0_0_15px_#ff007f]" />
-              <div className="w-12 h-24 bg-pink-500/20 border border-pink-500 mx-auto mt-2 flex items-center justify-center text-pink-400 font-sans font-bold text-xs shadow-[0_0_10px_#ff007f]">⛩️</div>
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-purple-950/20 via-transparent to-transparent" />
-          </div>
-        )}
-
-        {/* 🟢 電子コードの雨スキン */}
-        {activeSkin === 'skin_matrix' && (
-          <div className="absolute inset-0 bg-stone-950 opacity-90 overflow-hidden">
-            <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,30,0,0.1)_50%,rgba(0,0,0,0)_50%)] bg-[size:100%_4px]" />
-            <div className="text-emerald-500/15 font-sans text-[10px] whitespace-pre-wrap leading-none p-4 break-all animate-pulse">
-              {Array.from({ length: 25 }).map(() => Math.random().toString(16).toUpperCase() + " ").join(new Date().toISOString())}
-              {Array.from({ length: 40 }).map(() => " 01 4F DE 20 FF BC 8A 90 23 CC CC ").join("\n")}
-            </div>
-          </div>
-        )}
-
-        {/* 🌸 桜満開・電脳春嵐（パーティクル流下アニメーション） */}
-        {activeSkin === 'skin_sakura' && (
-          <div className="absolute inset-0 bg-gradient-to-b from-stone-900 via-rose-950/10 to-stone-950">
-            <div className="absolute inset-0 overflow-hidden">
-              {/* 桜のプチパーティクル群をCSSアニメーションでシミュレート */}
-              <div className="absolute top-[-10%] left-[15%] w-3 h-3 bg-rose-300 rounded-full blur-xs opacity-60 animate-bounce" style={{ animationDuration: '6s', transform: 'scale(0.8)' }} />
-              <div className="absolute top-[-5%] left-[45%] w-2 h-4 bg-rose-400 rounded-lg opacity-40 animate-pulse" style={{ animationDuration: '8s' }} />
-              <div className="absolute top-[-12%] left-[75%] w-4 h-3 bg-pink-300 rounded-full opacity-50 animate-bounce" style={{ animationDuration: '5s' }} />
-              <div className="absolute top-[30%] left-[25%] w-3 h-3 bg-rose-300 rounded-full opacity-40 animate-pulse" style={{ animationDuration: '7s' }} />
-              <div className="absolute top-[60%] left-[80%] w-2 h-3 bg-pink-200 rounded-sm opacity-50 animate-bounce" style={{ animationDuration: '4s' }} />
-            </div>
-            <div className="absolute bottom-4 left-4 text-xs text-rose-300/20 font-sans">🌸 SAKURA_BURST_ACTIVE</div>
-          </div>
-        )}
-
-        {/* 🪙 黄金郷スキン */}
-        {activeSkin === 'skin_gold' && (
-          <div className="absolute inset-0 bg-stone-950">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#3a3012_1px,transparent_1px),linear-gradient(to_bottom,#3a3012_1px,transparent_1px)] bg-[size:40px_40px] opacity-60" />
-            <div className="absolute inset-0 bg-radial-[at_top_right] from-amber-500/10 via-transparent to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-amber-900/10" />
-          </div>
-        )}
-      </div>
-
-      {/* ⛩️ 全体コンテナ */}
-      <div className="w-full max-w-xl bg-stone-900/90 border-2 border-stone-800 rounded shadow-2xl p-4 sm:p-5 z-10 backdrop-blur-md relative">
-        
-        {/* 🏮 ヘッダー構造 */}
-        <div className="border-b border-stone-800 pb-3 mb-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-widest text-red-700 flex items-center gap-2">
-              <span>⛩️</span> 電脳授与御神籤 <span className="text-[10px] font-mono border border-red-900 px-1 text-red-500 rounded bg-red-950/40">v3.0-Core</span>
-            </h1>
-            <p className="text-[10px] font-sans text-stone-500 tracking-wider mt-0.5">
-              {isNight ? '🌙 結界深度：夜間巡回モード起動中' : '☀️ 結界深度：常時安全稼働中'}
-            </p>
-          </div>
-
-          {/* 🌐 言語セレクター */}
-          <div className="flex gap-1 bg-stone-950 p-1 rounded border border-stone-800 text-[11px] font-sans">
-            {(['ja', 'en', 'zh_tw', 'zh_cn'] as LangMode[]).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                className={`px-2 py-0.5 rounded transition-all uppercase ${lang === l ? 'bg-red-800 text-stone-100 font-bold shadow' : 'text-stone-500 hover:text-stone-300'}`}
-              >
-                {l === 'zh_tw' ? '繁' : l === 'zh_cn' ? '简' : l}
+      {/* 🌐 トップヘッダー領域 */}
+      <div className="max-w-md w-full flex flex-col gap-2 z-20 mb-3 px-1 font-sans">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-1">
+            {(['ja', 'en', 'zh_tw', 'zh_cn'] as LangMode[]).map(m => (
+              <button key={m} onClick={() => setLang(m)} className={`text-[10px] sm:text-[11px] px-2 py-0.5 rounded border shadow-sm transition-all ${lang === m ? 'bg-red-800 text-stone-100 border-red-900 font-bold' : 'bg-stone-200 border-stone-400 text-stone-700 hover:bg-stone-300'}`}>
+                {m === 'ja' ? '日本語' : m === 'en' ? 'English' : m === 'zh_tw' ? '繁體' : '简体'}
               </button>
             ))}
           </div>
-        </div>
-
-        {/* 💴 霊的ウォレット残高 ＆ アクティブ装備スロット */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-          <div className="bg-stone-950 p-2.5 rounded border border-stone-800 flex items-center justify-between">
-            <span className="text-xs text-stone-400 font-sans">🪙 {lang === 'ja' ? '霊的残高（ウォレット）' : 'Spiritual Wallet'}</span>
-            <span className="text-xl font-mono font-bold text-amber-500 tracking-tight">
-              {wallet} <span className="text-xs font-serif text-stone-400">両</span>
-            </span>
-          </div>
-
-          {/* 🎒 アクティブスロット表示 */}
-          <div className="bg-stone-950 p-2.5 rounded border border-stone-800 flex items-center justify-between">
-            <span className="text-xs text-stone-400 font-sans">🎒 {lang === 'ja' ? 'アクティブ御守（バフ発動）' : 'Active Slots'}</span>
-            <div className="flex gap-1">
-              {[0, 1, 2].map((idx) => {
-                const eqId = equippedIds[idx];
-                const item = SHOP_ITEMS.find(i => i.id === eqId);
-                return (
-                  <div
-                    key={idx}
-                    title={item ? (lang === 'ja' ? item.nameJa : item.nameEn) : (lang === 'ja' ? '空きスロット' : 'Empty')}
-                    className={`w-7 h-7 rounded border flex items-center justify-center text-xs transition-all ${item ? 'border-red-700 bg-red-950/40 text-red-400 font-bold animate-pulse' : 'border-stone-800 bg-stone-900 text-stone-600'}`}
-                  >
-                    {item ? '🏮' : '•'}
-                  </div>
-                );
-              })}
-            </div>
+          {/* 🕒 神社標準時刻 */}
+          <div className={`text-[10px] tracking-widest font-mono font-bold px-2 py-0.5 rounded ${isDarkSkin ? 'bg-slate-800 text-cyan-400' : 'bg-stone-200 text-stone-600'}`}>
+            ⏰ {currentTime.toLocaleTimeString()}
           </div>
         </div>
 
-        {/* 📑 タブ切り替え構造 */}
-        <div className="flex bg-stone-950 rounded p-1 border border-stone-800 mb-4 text-xs font-sans">
-          {(['omikuji', 'shop', 'inventory', 'goshuin'] as TabMode[]).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`flex-1 py-1.5 rounded transition-all text-center font-bold ${tab === t ? 'bg-stone-800 text-red-500 border border-stone-700' : 'text-stone-400 hover:text-stone-200'}`}
-            >
-              {t === 'omikuji' && (lang === 'ja' ? '🔮 抽籤箱' : '🔮 Fortune')}
-              {t === 'shop' && (lang === 'ja' ? '⛩️ 授与所' : '⛩️ Shrine Shop')}
-              {t === 'inventory' && (lang === 'ja' ? '🎒 懐中袋' : '🎒 Bag')}
-              {t === 'goshuin' && (lang === 'ja' ? '📜 参拝歴' : '📜 History')}
-            </button>
-          ))}
+        <div className="flex justify-between items-center mt-1">
+          <div className="text-[10px] text-stone-400 font-medium">
+            {isNightTime() ? '🌙 夜間参拝受付中' : '🔆 昼間参拝受付中'}
+          </div>
+          {/* 🪙 両ウォレット */}
+          <div className="bg-amber-500 text-stone-950 px-2.5 py-1 rounded text-xs font-bold border border-amber-600 shadow-sm flex items-center gap-1 transition-transform active:scale-105">
+            🪙 <span className="font-mono text-sm">{displayWallet}</span> <span className="text-[10px] font-serif">{getCurrencyUnit()}</span>
+          </div>
         </div>
+      </div>
 
-        {/* 🔮 1. おみくじタブ */}
-        {tab === 'omikuji' && (
-          <div className="text-center py-2 relative">
-            
-            {/* サプライズイベント通知 */}
-            {jackpotMessage && (
-              <div className="mb-4 p-3 bg-amber-950/60 border border-amber-600/50 rounded text-left text-xs leading-relaxed text-amber-300 font-sans shadow-lg animate-fade-in">
-                {jackpotMessage}
-              </div>
-            )}
+      {/* 🎛️ メイン画面表示エリア */}
+      <div className="max-w-md w-full flex-1 flex flex-col justify-center">
+        
+        {/* TAB 1: おみくじ */}
+        {activeTab === 'omikuji' && (
+          <div className={`w-full rounded-lg shadow-2xl p-6 sm:p-8 border-4 border-red-700 text-center relative transition-all animate-fade-in ${isDarkSkin ? 'bg-slate-800/90 border-cyan-500' : 'bg-stone-50'}`}>
+            <div className={`absolute top-0 left-0 w-full h-3 ${isDarkSkin ? 'bg-cyan-500' : 'bg-red-700'}`}></div>
+            {visitDate && <div className="text-[10px] text-stone-500 font-sans tracking-widest absolute top-5 right-6">{visitDate}</div>}
 
-            <div className="bg-stone-950 border border-stone-800 rounded p-6 mb-4 flex flex-col items-center justify-center min-h-[160px] relative">
+            {/* 🐣 イースターエッグのタップ対象タイトル */}
+            <h1 onClick={handleTitleTap} className={`text-4xl font-bold my-4 tracking-widest cursor-pointer select-none active:scale-95 transition-transform ${isDarkSkin ? 'text-cyan-400' : 'text-red-800'}`}>
+              {lang === 'ja' ? '御神籤' : lang === 'en' ? 'OMIKUJI' : '電子靈籤'}
+            </h1>
+
+            <div className={`min-h-[230px] flex flex-col items-center justify-center rounded border p-5 mb-5 shadow-inner ${isDarkSkin ? 'bg-slate-950 border-slate-700' : 'bg-stone-100 border-stone-300'}`}>
               {isRolling ? (
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 border-4 border-red-800 border-t-transparent rounded-full animate-spin" />
-                  <p className="text-xs text-stone-400 font-sans tracking-widest animate-pulse">
-                    {lang === 'ja' ? '神速乱数演算中・パケット精製...' : 'Computing divine cryptos...'}
-                  </p>
+                <div className={`text-sm font-bold animate-pulse tracking-widest ${isDarkSkin ? 'text-cyan-400' : 'text-red-700'}`}>
+                  {lang === 'ja' ? '御神意を伺っております...' : lang === 'en' ? 'Consulting the digital horizon...' : '正在祈求神明降旨...'}
                 </div>
               ) : result ? (
-                <div className="w-full animate-fade-in">
-                  <div className="text-xs text-stone-500 font-mono tracking-wider mb-1">
-                    [HASH: {Math.random().toString(16).substring(2, 10).toUpperCase()}]
+                <div className="w-full text-sm animate-fade-in">
+                  <div className={`text-2xl sm:text-3xl font-black mb-4 tracking-widest border-b-2 pb-2 inline-block ${isDarkSkin ? 'text-cyan-400 border-cyan-500/20' : 'text-red-700 border-red-700/10'}`}>
+                    {result.fortune}
                   </div>
-                  <div className={`text-2xl font-bold tracking-widest mb-3 ${result.type === 'plus' || result.type === 'jackpot' ? 'text-red-500 scale-105' : result.type === 'hacker_curse' ? 'text-purple-400 font-mono' : 'text-stone-400'}`}>
-                    ✨ 【{result.fortune}】 ✨
-                  </div>
-                  <p className="text-xs sm:text-sm text-stone-300 px-2 leading-relaxed mb-4 border-t border-b border-stone-800/60 py-3 font-sans">
-                    {result.detail}
+                  <p className={`leading-relaxed text-left px-2 mb-4 text-xs sm:text-sm ${isDarkSkin ? 'text-slate-300' : 'text-stone-700'}`}>
+                    {result.comment}
                   </p>
-
-                  <div className="grid grid-cols-2 gap-2 text-left text-[11px] font-sans bg-stone-900/70 p-2.5 rounded border border-stone-800/50">
-                    <div>
-                      <span className="text-stone-500 block">{lang === 'ja' ? '💻 有縁の電脳物品' : 'Lucky Tech Item'}</span>
-                      <span className="text-stone-300 font-medium">{result.luckyItem}</span>
-                    </div>
-                    <div>
-                      <span className="text-stone-500 block">{lang === 'ja' ? '🔣 相性の良い言語' : 'Lucky Language'}</span>
-                      <span className="text-red-400 font-mono font-bold">{result.luckyLang}</span>
-                    </div>
+                  <div className={`border-t border-dashed pt-3 text-[11px] sm:text-xs py-2.5 rounded flex flex-col gap-1 px-4 text-left ${isDarkSkin ? 'border-slate-700 bg-slate-900/50 text-slate-400' : 'border-stone-300 bg-stone-50/70 text-stone-600'}`}>
+                    <div><span className={`font-bold ${isDarkSkin ? 'text-cyan-400' : 'text-red-700'}`}>{lang === 'ja' ? '吉兆の色：' : lang === 'en' ? 'Lucky Color: ' : '幸運色：'}</span>{result.color}</div>
+                    <div><span className={`font-bold ${isDarkSkin ? 'text-cyan-400' : 'text-red-700'}`}>{lang === 'ja' ? '吉兆の物：' : lang === 'en' ? 'Lucky Item: ' : '幸運物：'}</span>{result.item}</div>
                   </div>
-
-                  {/* 📊 運気バイオリズムのミニバーチャート視覚化 */}
-                  <div className="mt-4 pt-3 border-t border-stone-800/40 text-left">
-                    <span className="text-[10px] text-stone-500 font-sans block mb-1.5">📈 {lang === 'ja' ? '近五日電脳運気バイオリズム' : '5-Day Cyber Biorhythm Chart'}</span>
-                    <div className="flex items-end justify-between px-4 h-12 bg-stone-900/80 p-1.5 rounded border border-stone-800">
-                      {randomBiorhythm.map((val, idx) => (
-                        <div key={idx} className="flex flex-col items-center gap-0.5 flex-1">
-                          <div 
-                            className={`w-3.5 rounded-t-xs transition-all duration-700 ${val > 70 ? 'bg-emerald-600 shadow-[0_0_6px_#059669]' : val < 45 ? 'bg-red-700 shadow-[0_0_6px_#b91c1c]' : 'bg-amber-500'}`}
-                            style={{ height: `${val}%`, minHeight: '4px' }}
-                          />
-                          <span className="text-[8px] font-mono text-stone-600">D{idx + 1}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
                 </div>
               ) : (
-                <div className="text-center text-stone-500 py-4">
-                  <div className="text-3xl mb-2">🔮</div>
-                  <p className="text-xs font-sans">
-                    {lang === 'ja' ? 'おみくじ箱を振って、今日の運勢（パケット）を受信してください。' : 'Shake the box to receive your digital fortune packet.'}
-                  </p>
-                  {equippedIds.length > 0 && (
-                    <p className="text-[10px] text-red-400/80 mt-2 font-sans">
-                      ※ {lang === 'ja' ? `現在 ${equippedIds.length}個 の御守がアクティブです（バフ適用中）` : `${equippedIds.length} amulets active`}
-                    </p>
-                  )}
+                <div className="text-stone-400 text-xs tracking-wider">
+                  {lang === 'ja' ? '心静かに下の釦をお押しください' : lang === 'en' ? 'Quiet your mind and tap below' : '請淨化心思，點擊下方按鈕'}
                 </div>
               )}
             </div>
 
-            <button
-              onClick={handleOmikuji}
-              disabled={isRolling}
-              className="w-full bg-red-800 hover:bg-red-900 active:bg-red-950 text-stone-100 font-bold py-3 px-4 rounded transition-all text-xs tracking-widest shadow-lg border border-red-700 disabled:opacity-50"
-            >
-              {isRolling ? (lang === 'ja' ? '神託受信中...' : 'Receiving...') : (lang === 'ja' ? '御神籤を引く（一回参拝）' : 'Draw Digital Fortune')}
+            <button onClick={drawOmikuji} disabled={isRolling} className={`w-full py-3.5 px-6 text-sm sm:text-base font-bold text-stone-100 rounded shadow-md transition-all active:scale-95 tracking-widest focus:outline-none ${isRolling ? 'bg-stone-400' : isDarkSkin ? 'bg-cyan-600 hover:bg-cyan-700' : 'bg-red-800 hover:bg-red-900'}`}>
+              {result ? result.currentBtn : (lang === 'ja' ? 'おみくじを引く' : lang === 'en' ? 'Draw Fortune' : '求取靈籤')}
             </button>
           </div>
         )}
 
-        {/* ⛩️ 2. 授与所（ショップ）タブ */}
-        {tab === 'shop' && (
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xs font-bold text-red-500 uppercase tracking-wider">
-                {lang === 'ja' ? `⛩️ 電脳護符授与一覧（今月：${currentMonth}月ラインナップ）` : `⛩️ Sacred Lineup (Month ${currentMonth})`}
-              </h3>
-              {isNight && <span className="text-[9px] text-purple-400 bg-purple-950 border border-purple-800 px-1 rounded font-sans animate-pulse">🌙 夜間限定品 開放中</span>}
-            </div>
-            
-            <div className="max-h-[300px] overflow-y-auto border border-stone-800 rounded bg-stone-950 p-1.5 space-y-1.5 custom-scrollbar">
-              {filteredShopItems.map((item) => {
-                const isOwned = inventory.some(i => i.id === item.id);
-                const name = lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : lang === 'zh_tw' ? item.nameTw : item.nameCn;
-                
-                return (
-                  <div key={item.id} className={`p-2 rounded border text-xs flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 transition-all bg-stone-900/80 ${isOwned ? 'border-stone-800 opacity-60' : 'border-stone-800 hover:border-stone-700'}`}>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className={`font-bold truncate ${item.type === 'skin' ? 'text-amber-400' : 'text-stone-200'}`}>
-                          {name}
-                        </span>
-                        {item.availableMonths && (
-                          <span className="text-[8px] bg-red-950 text-red-400 border border-red-800 px-1 rounded font-sans">季節限定</span>
-                        )}
-                        {item.isNightOnly && (
-                          <span className="text-[8px] bg-purple-950 text-purple-400 border border-purple-800 px-1 rounded font-sans">夜間</span>
-                        )}
-                      </div>
-                      <p className="text-[10px] text-stone-500 font-sans mt-0.5 truncate sm:whitespace-normal sm:line-clamp-2">
-                        {lang === 'ja' ? item.descJa : lang === 'en' ? item.descEn : lang === 'zh_tw' ? item.descTw : item.descCn}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 border-stone-800 pt-1.5 sm:pt-0">
-                      <span className="font-mono font-bold text-amber-500 text-xs">{item.price} 両</span>
-                      <button
-                        onClick={() => handleBuy(item)}
-                        disabled={isOwned}
-                        className={`px-3 py-1 rounded text-[10px] font-sans font-bold transition-all ${isOwned ? 'bg-stone-800 text-stone-600 cursor-not-allowed' : 'bg-red-900 text-stone-100 hover:bg-red-800'}`}
-                      >
-                        {isOwned ? (lang === 'ja' ? '拝受済' : 'Owned') : (lang === 'ja' ? '拝受する' : 'Buy')}
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* 🎒 3. 懐中袋（インベントリ）タブ */}
-        {tab === 'inventory' && (
-          <div>
-            {/* 🔍 検索 ＆ 📊 ソートツールバー */}
-            <div className="mb-3 flex flex-col sm:flex-row gap-2 font-sans text-xs">
-              <input
-                type="text"
-                placeholder={lang === 'ja' ? '御守を名称検索...' : 'Search items...'}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-stone-950 border border-stone-800 rounded px-2 py-1 text-stone-300 focus:outline-none focus:border-red-700 text-[11px]"
-              />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-stone-950 border border-stone-800 rounded px-2 py-1 text-stone-400 text-[11px]"
-              >
-                <option value="date">{lang === 'ja' ? '拝受順' : 'Acquired Date'}</option>
-                <option value="name">{lang === 'ja' ? '名称順' : 'Alphabetical'}</option>
-                <option value="price">{lang === 'ja' ? '高額順' : 'Highest Price'}</option>
-              </select>
-            </div>
-
-            <div className="max-h-[280px] overflow-y-auto border border-stone-800 rounded bg-stone-950 p-1.5 space-y-1.5 custom-scrollbar">
-              {processedInventory.length === 0 ? (
-                <div className="text-center text-stone-600 py-8 text-xs font-sans">
-                  {searchQuery ? (lang === 'ja' ? '条件に合致する所有品がありません。' : 'No items match your search.') : (lang === 'ja' ? '懐中袋は空です。授与所で御守を拝受してください。' : 'Your bag is empty.')}
-                </div>
+        {/* TAB 2: 電脳授与所 */}
+        {activeTab === 'shop' && (
+          <div className={`w-full rounded-lg shadow-xl p-5 border-2 border-amber-500 animate-fade-in ${isDarkSkin ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
+            <div className="flex justify-between items-center border-b pb-2 mb-3">
+              <h2 className="text-lg font-bold text-amber-600 tracking-widest">
+                {lang === 'ja' ? '電脳授与所' : lang === 'en' ? 'Cyber Shop' : '電腦授與所'}
+              </h2>
+              {/* 🔄 陳列更新ボタン (御守の時のみ有効、背景仕様時は隠す) */}
+              {shopCategory === 'talisman' ? (
+                <button onClick={refreshShopItemsManual} disabled={wallet < 10} className={`text-[10px] sm:text-[11px] px-2 py-1 rounded font-sans font-bold flex items-center border ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-amber-400 hover:bg-slate-950' : 'bg-amber-100 border-amber-300 text-amber-900 hover:bg-amber-200'} transition-all disabled:opacity-40`}>
+                  {lang === 'ja' ? '陳列更新' : 'Refresh'} (10{getCurrencyUnit()})
+                </button>
               ) : (
-                processedInventory.map((item) => {
-                  const name = lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : lang === 'zh_tw' ? item.nameTw : item.nameCn;
-                  const isEquipped = equippedIds.includes(item.id);
-
-                  return (
-                    <div key={item.id} className="p-2 bg-stone-900 border border-stone-800 rounded text-xs flex justify-between items-center transition-all hover:border-stone-700">
-                      <div className="min-w-0 flex-1 pr-2">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-stone-200 truncate">{name}</span>
-                          {isEquipped && (
-                            <span className="text-[8px] font-sans font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 px-1 rounded animate-pulse">ACTIVE</span>
-                          )}
-                          {item.type === 'skin' && (
-                            <span className="text-[8px] font-sans bg-amber-950 text-amber-500 border border-amber-800 px-1 rounded">SKIN</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 font-sans text-[10px]">
-                        <button
-                          onClick={() => setActiveInfoItem(item)}
-                          className="px-2 py-1 bg-stone-800 text-stone-400 rounded hover:text-stone-200 border border-stone-700"
-                        >
-                          {lang === 'ja' ? '霊視' : 'Inspect'}
-                        </button>
-
-                        {item.type === 'talisman' && (
-                          <button
-                            onClick={() => toggleEquip(item.id)}
-                            className={`px-2.5 py-1 rounded font-bold border transition-all ${isEquipped ? 'bg-emerald-900 border-emerald-700 text-stone-100' : 'bg-stone-950 border-stone-800 text-stone-500 hover:text-stone-300'}`}
-                          >
-                            {isEquipped ? (lang === 'ja' ? '解除' : 'Unequip') : (lang === 'ja' ? '装備' : 'Equip')}
-                          </button>
-                        )}
-
-                        {item.type === 'skin' && (
-                          <button
-                            onClick={() => {
-                              setActiveSkin(item.id);
-                              saveToStorage(wallet, inventory, logs, item.id, equippedIds);
-                            }}
-                            disabled={activeSkin === item.id}
-                            className={`px-2 py-1 rounded font-bold border ${activeSkin === item.id ? 'bg-amber-950 border-amber-800 text-amber-400 cursor-not-allowed' : 'bg-stone-950 border-stone-800 text-stone-500'}`}
-                          >
-                            {activeSkin === item.id ? (lang === 'ja' ? '適用中' : 'Active') : (lang === 'ja' ? '適用' : 'Apply')}
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
+                <div className="text-[10px] text-stone-400 italic px-2 py-1">全品常時陳列</div>
               )}
             </div>
-          </div>
-        )}
 
-        {/* 📜 4. 参拝履歴タブ */}
-        {tab === 'goshuin' && (
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-xs font-bold text-red-500 uppercase tracking-wider">
-                {lang === 'ja' ? '📜 直近の電子参拝記録（ログ）' : '📜 Recent Divine Logs'}
-              </h3>
-              <button
-                onClick={() => setShowModal(true)}
-                className="text-[10px] bg-red-950/40 text-red-500 border border-red-900/60 hover:bg-red-950 px-2 py-0.5 rounded font-sans"
-              >
-                {lang === 'ja' ? '🏮 神社お焚き上げ' : 'Disposal'}
+            {/* 📌 Sticky カテゴリボタン */}
+            <div className={`sticky top-0 z-10 flex gap-2 py-2 mb-3 border-b border-dashed font-sans text-[11px] sm:text-xs sticky-bar ${isDarkSkin ? 'bg-slate-800/95 border-slate-700' : 'bg-stone-50/95 border-stone-200'}`}>
+              <button onClick={() => setShopCategory('talisman')} className={`flex-1 py-2 rounded border font-bold transition-all ${shopCategory === 'talisman' ? (isDarkSkin ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md scale-102' : 'bg-amber-500 text-stone-950 border-amber-600 shadow-sm') : (isDarkSkin ? 'bg-slate-900 text-slate-400 border-slate-700' : 'bg-stone-200/60 border-stone-300 text-stone-600')}`}>
+                {lang === 'ja' ? '御守・護符' : 'Sacred Amulets'}
+              </button>
+              <button onClick={() => setShopCategory('skin')} className={`flex-1 py-2 rounded border font-bold transition-all ${shopCategory === 'skin' ? (isDarkSkin ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md scale-102' : 'bg-amber-500 text-stone-950 border-amber-600 shadow-sm') : (isDarkSkin ? 'bg-slate-900 text-slate-400 border-slate-700' : 'bg-stone-200/60 border-stone-300 text-stone-600')}`}>
+                {lang === 'ja' ? '背景仕様' : 'Backgrounds'}
               </button>
             </div>
 
-            <div className="max-h-[260px] overflow-y-auto border border-stone-800 rounded bg-stone-950 p-2 font-mono text-[11px] space-y-1 custom-scrollbar">
-              {logs.length === 0 ? (
-                <div className="text-center text-stone-700 py-8 font-serif text-xs">
-                  {lang === 'ja' ? '参拝データが存在しません。' : 'No records found.'}
-                </div>
-              ) : (
-                logs.map((log) => (
-                  <div key={log.id} className="border-b border-stone-900 pb-1 flex justify-between text-stone-400">
-                    <span>[{log.date}] fortune_packet_recv:</span>
-                    <span className="text-red-700 font-bold font-serif">{log.fortune}</span>
-                  </div>
-                ))
+            {/* アイテム陳列グリッド */}
+            <div className="grid grid-cols-1 gap-2 min-h-[240px] content-start">
+              {currentShopItems.map(item => {
+                const isOwned = ownedItems.includes(item.id);
+                const canBuy = wallet >= item.price;
+                return (
+                  <button key={item.id} onClick={() => buyItem(item)} disabled={isOwned || !canBuy} className={`p-2.5 sm:p-3 rounded border text-left flex justify-between items-center transition-all ${isOwned ? 'bg-stone-200/50 text-stone-400 border-stone-300 line-through' : canBuy ? (isDarkSkin ? 'bg-slate-900/80 border-slate-700 hover:border-cyan-500 hover:bg-slate-900' : 'bg-amber-50/50 border-amber-200 hover:bg-amber-100/50') : 'bg-stone-100 text-stone-400 border-stone-200 opacity-60'}`}>
+                    <div className="font-sans text-[11px] sm:text-xs font-medium pr-2">
+                      {lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}
+                      {item.isNightOnly && <span className="ml-1 text-[9px] bg-indigo-900 text-indigo-200 px-1 rounded">🌙 Night</span>}
+                    </div>
+                    <span className="font-sans text-[11px] sm:text-xs font-bold text-amber-600 shrink-0">
+                      {isOwned ? (lang === 'ja' ? '拝受済' : 'Owned') : `🪙 ${item.price}`}
+                    </span>
+                  </button>
+                );
+              })}
+              {currentShopItems.length === 0 && (
+                <p className="text-xs text-stone-400 italic py-6 text-center">
+                  {lang === 'ja' ? '陳列アイテムがありません。' : 'No items displayed.'}
+                </p>
               )}
             </div>
+          </div>
+        )}
+
+        {/* TAB 3: 所持 */}
+        {activeTab === 'inventory' && (
+          <div className={`w-full rounded-lg shadow-xl p-5 border-2 border-emerald-600 animate-fade-in ${isDarkSkin ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
+            <h2 className="text-xl font-bold text-emerald-700 border-b pb-2 mb-3 tracking-widest">
+              {lang === 'ja' ? '神物所持一覧' : lang === 'en' ? 'Inventory' : '所持神物'}
+            </h2>
+
+            {/* Sticky カテゴリボタン */}
+            <div className={`sticky top-0 z-10 flex gap-2 py-2 mb-3 border-b border-dashed font-sans text-[11px] sm:text-xs sticky-bar ${isDarkSkin ? 'bg-slate-800/95 border-slate-700' : 'bg-stone-50/95 border-stone-200'}`}>
+              <button onClick={() => setInventoryCategory('talisman')} className={`flex-1 py-2 rounded border font-bold transition-all ${inventoryCategory === 'talisman' ? (isDarkSkin ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md scale-102' : 'bg-emerald-600 text-stone-100 border-emerald-700 shadow-sm') : (isDarkSkin ? 'bg-slate-900 text-slate-400 border-slate-700' : 'bg-stone-200/60 border-stone-300 text-stone-600')}`}>
+                {lang === 'ja' ? '御守・護符' : 'Sacred Amulets'}
+              </button>
+              <button onClick={() => setInventoryCategory('skin')} className={`flex-1 py-2 rounded border font-bold transition-all ${inventoryCategory === 'skin' ? (isDarkSkin ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-md scale-102' : 'bg-emerald-600 text-stone-100 border-emerald-700 shadow-sm') : (isDarkSkin ? 'bg-slate-900 text-slate-400 border-slate-700' : 'bg-stone-200/60 border-stone-300 text-stone-600')}`}>
+                {lang === 'ja' ? '背景仕様' : 'Backgrounds'}
+              </button>
+            </div>
+
+            <div className="min-h-[240px] flex flex-col justify-between">
+              <div className="grid grid-cols-1 gap-1.5">
+                {inventoryCategory === 'talisman' ? (
+                  <>
+                    {currentPagedOwnedItems.map(item => (
+                      <button key={item.id} onClick={() => setSelectedInventoryItem(item)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans font-medium transition-transform active:scale-98 flex justify-between items-center ${isDarkSkin ? 'bg-slate-900 border-slate-700 text-slate-2200 hover:border-emerald-500' : 'bg-white border-stone-200 hover:bg-emerald-50/30'}`}>
+                        <span>{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</span>
+                        <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0 font-bold">霊視</span>
+                      </button>
+                    ))}
+                    {currentFilteredOwnedItems.length === 0 && (
+                      <p className="text-xs text-stone-400 italic py-8 text-center">{lang === 'ja' ? '所持している御守はありません' : 'No sacred amulets held'}</p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {inventoryPage === 1 && (
+                      <button onClick={() => equipSkin('default')} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${activeSkin === 'default' ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200'}`}>
+                        <span>{lang === 'ja' ? '初期仕様（デフォルト）' : 'Default Skin'}</span>
+                        {activeSkin === 'default' && <span className="text-emerald-600 font-bold">✓</span>}
+                      </button>
+                    )}
+                    {currentPagedOwnedItems.map(item => {
+                      const isActive = activeSkin === item.id;
+                      return (
+                        <button key={item.id} onClick={() => equipSkin(item.id)} className={`p-2.5 rounded border text-left text-[11px] sm:text-xs font-sans flex justify-between items-center ${isActive ? 'border-emerald-600 bg-emerald-50/20 font-bold text-emerald-800' : 'bg-white border-stone-200 hover:bg-stone-50'}`}>
+                          <span>{lang === 'ja' ? item.nameJa : lang === 'en' ? item.nameEn : item.nameTw}</span>
+                          {isActive && <span className="text-emerald-600 font-bold">✓</span>}
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+
+              {/* 5個ずつのページ切り替えコントローラー */}
+              {currentFilteredOwnedItems.length > ITEMS_PER_PAGE && (
+                <div className="flex justify-between items-center pt-4 mt-2 border-t border-dashed border-stone-200 font-sans text-xs">
+                  <button onClick={() => setInventoryPage(prev => Math.max(1, prev - 1))} disabled={inventoryPage === 1} className="px-3 py-1 bg-stone-200 rounded text-stone-700 disabled:opacity-40 font-bold">
+                    {lang === 'ja' ? '前へ' : 'Prev'}
+                  </button>
+                  <span className="text-stone-500">
+                    {inventoryPage} / {totalInventoryPages}
+                  </span>
+                  <button onClick={() => setInventoryPage(prev => Math.min(totalInventoryPages, prev + 1))} disabled={inventoryPage === totalInventoryPages} className="px-3 py-1 bg-stone-200 rounded text-stone-700 disabled:opacity-40 font-bold">
+                    {lang === 'ja' ? '次へ' : 'Next'}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 4: 御朱印帳 */}
+        {activeTab === 'goshuin' && (
+          <div className={`w-full rounded-lg shadow-xl p-6 border-2 border-stone-300 animate-fade-in ${isDarkSkin ? 'bg-slate-800/90' : 'bg-stone-50'}`}>
+            <div className="mb-4 pb-2 border-b border-stone-200 flex justify-between items-end">
+              <h2 className="text-xl font-bold tracking-widest">{lang === 'ja' ? '仮想御朱印帳' : 'Goshuin Book'}</h2>
+              <span className="font-sans text-[11px] text-stone-400">
+                {lang === 'ja' ? `成就：${completionRate}% / 参拝：${visitDays}日` : `Progress: ${completionRate}% / ${visitDays} Days`}
+              </span>
+            </div>
+
+            <div className="mb-4 p-3 bg-stone-100/60 rounded border border-stone-200/50 text-left">
+              <div className="text-[10px] font-bold text-stone-400 tracking-wider mb-1">📈 {lang === 'ja' ? '最近の運気の流れ' : 'Fortune Wave'}</div>
+              <div className="text-sm font-sans tracking-widest text-center py-1">{getBiorhythm().graph}</div>
+            </div>
+
+            {Object.keys(history).length === 0 ? (
+              <p className="text-xs text-stone-400 italic text-center py-6">{lang === 'ja' ? '履歴なし' : 'No records found'}</p>
+            ) : (
+              <div className="relative">
+                {isBurning && Array.from({ length: 30 }).map((_, i) => (
+                  <div key={i} className="particle" style={{ width: '6px', height: '6px', left: `${Math.random() * 100}%`, top: `${Math.random() * 50 + 20}%`, animation: `burnUp 1s ease-in-out forwards`, animationDelay: `${Math.random() * 0.3}s` }} />
+                ))}
+
+                <div className={`flex flex-wrap justify-center gap-1.5 mb-6 transition-opacity duration-500 ${isBurning ? 'opacity-10' : ''}`}>
+                  {FORTUNE_ORDER.map(luckKey => {
+                    const count = history[luckKey];
+                    if (!count) return null;
+                    return (
+                      <span key={luckKey} className={`border rounded px-2.5 py-1 shadow-sm font-sans text-[11px] sm:text-xs ${isDarkSkin ? 'bg-slate-900 text-cyan-400 border-cyan-500/30' : 'bg-red-50/60 text-red-800 border-red-200/60'}`}>
+                        <span className="font-serif font-bold">{luckKey}</span> : {count}回
+                      </span>
+                    );
+                  })}
+                </div>
+
+                <button onClick={() => setShowModal(true)} disabled={isBurning} className="text-[10px] text-stone-400 hover:text-red-700 underline block mx-auto font-sans focus:outline-none">
+                  {lang === 'ja' ? '御神籤をお焚き上げ（データリセット）する' : 'Reset All Sacred Data'}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
       </div>
 
-      {/* 🔮 霊視（詳細ダイアログ）モーダル */}
-      {activeInfoItem && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-stone-900 border-2 border-stone-700 max-w-xs w-full rounded p-5 shadow-2xl text-stone-200">
-            <h4 className="text-sm font-bold text-red-500 border-b border-stone-800 pb-1.5 mb-2">
-              🔮 {lang === 'ja' ? activeInfoItem.nameJa : activeInfoItem.nameEn}
+      {/* 📱 底面マルチタブバー */}
+      <div className={`fixed bottom-0 left-0 right-0 border-t z-30 shadow-lg flex justify-around p-2 ${isDarkSkin ? 'bg-slate-950 border-slate-800' : 'bg-white border-stone-200'}`}>
+        <button onClick={() => setActiveTab('omikuji')} className={`flex flex-col items-center flex-1 py-1 font-sans text-[11px] transition-all ${activeTab === 'omikuji' ? 'text-red-700 font-bold scale-105' : 'text-stone-400'}`}>
+          <span className="text-lg">⛩️</span>
+          <span>{lang === 'ja' ? '御神籤' : 'Omikuji'}</span>
+        </button>
+        <button onClick={() => setActiveTab('shop')} className={`flex flex-col items-center flex-1 py-1 font-sans text-[11px] transition-all ${activeTab === 'shop' ? 'text-amber-600 font-bold scale-105' : 'text-stone-400'}`}>
+          <span className="text-lg">🪙</span>
+          <span>{lang === 'ja' ? '授与所' : 'Shop'}</span>
+        </button>
+        <button onClick={() => setActiveTab('inventory')} className={`flex flex-col items-center flex-1 py-1 font-sans text-[11px] transition-all ${activeTab === 'inventory' ? 'text-emerald-600 font-bold scale-105' : 'text-stone-400'}`}>
+          <span className="text-lg">🎒</span>
+          <span>{lang === 'ja' ? '所持' : 'Inventory'}</span>
+        </button>
+        <button onClick={() => setActiveTab('goshuin')} className={`flex flex-col items-center flex-1 py-1 font-sans text-[11px] transition-all ${activeTab === 'goshuin' ? 'text-stone-800 font-bold scale-105' : 'text-stone-400'}`}>
+          <span className="text-lg">📖</span>
+          <span>{lang === 'ja' ? '御朱印帳' : 'Log'}</span>
+        </button>
+      </div>
+
+      {/* 📖 所持アイテム詳細解説ポップアップ */}
+      {selectedInventoryItem && (
+        <div className="fixed inset-0 bg-stone-900/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-stone-50 border-4 border-emerald-700 max-w-sm w-full rounded-lg p-5 shadow-2xl text-stone-900">
+            <h4 className="text-sm font-bold text-emerald-800 border-b pb-1 mb-2">
+              {lang === 'ja' ? '【神物霊視】' : '【Sacred Vision】'}
             </h4>
-            <p className="text-xs text-stone-400 font-sans leading-relaxed mb-4">
-              {lang === 'ja' ? activeInfoItem.descJa : activeInfoItem.descEn}
+            <p className="text-base font-bold mb-3">
+              {lang === 'ja' ? selectedInventoryItem.nameJa : lang === 'en' ? selectedInventoryItem.nameEn : selectedInventoryItem.nameTw}
             </p>
-            <div className="text-[10px] text-stone-500 font-sans space-y-0.5 border-t border-stone-800/60 pt-2 mb-4">
-              <div>ID: <span className="font-mono text-stone-400">{activeInfoItem.id}</span></div>
-              <div>VAL: <span className="font-mono text-amber-500">{activeInfoItem.price} 両</span></div>
-              <div>TYPE: <span className="font-mono text-stone-400 uppercase">{activeInfoItem.type}</span></div>
+            <div className="bg-stone-100 p-3 rounded border border-stone-200 text-xs sm:text-sm leading-relaxed mb-4 text-stone-700 font-sans">
+              {lang === 'ja' ? selectedInventoryItem.descJa : lang === 'en' ? selectedInventoryItem.descEn : lang === 'zh_tw' ? selectedInventoryItem.descTw : selectedInventoryItem.descCn}
             </div>
-            <button
-              onClick={() => setActiveInfoItem(null)}
-              className="w-full bg-stone-800 hover:bg-stone-700 text-stone-200 font-sans text-xs py-1.5 rounded transition-colors"
-            >
+            <button onClick={() => setSelectedInventoryItem(null)} className="w-full bg-emerald-700 text-stone-100 text-xs font-sans font-bold py-2 rounded hover:bg-emerald-800 transition-colors">
               {lang === 'ja' ? '霊視を終了する' : 'Close Vision'}
             </button>
           </div>
@@ -813,16 +780,15 @@ export default function CyberShrine() {
             </p>
             <div className="flex gap-3 justify-center text-xs font-sans">
               <button onClick={handleClear} disabled={isBurning} className="bg-red-800 text-stone-100 font-bold px-4 py-2 rounded hover:bg-red-900 transition-colors">
-                {isBurning ? '昇華中...' : (lang === 'ja' ? 'お焚き上げする' : 'Purge All')}
+                {isBurning ? '昇華中...' : (lang === 'ja' ? 'お焚き上げする' : 'Disposal')}
               </button>
-              <button onClick={() => setShowModal(false)} disabled={isBurning} className="bg-stone-300 text-stone-700 font-bold px-4 py-2 rounded hover:bg-stone-400 transition-colors">
-                {lang === 'ja' ? '中止' : 'Cancel'}
+              <button onClick={() => setShowModal(false)} disabled={isBurning} className="bg-stone-200 text-stone-700 font-bold px-4 py-2 rounded hover:bg-stone-300">
+                {lang === 'ja' ? '取りやめる' : lang === 'en' ? 'Cancel' : '取消'}
               </button>
             </div>
           </div>
         </div>
       )}
-
     </div>
   );
 }
