@@ -1,172 +1,150 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-// 11の運勢と、それぞれに紐づくお告げ
+// 運勢データ（日本語版・英語版）
 const LUCK_DATA = [
   {
-    fortune: '大吉',
-    weight: 5,
-    comments: [
+    fortuneJa: '大吉', fortuneEn: 'Great Good Luck', weight: 5,
+    commentsJa: [
       '運気大いに盛んにして、何をなすにも好機なり。日々の感謝を忘れねば、さらに幸い至らん。',
-      '暗闇に一筋の光明が差す如く、すべての迷いが消え去る日。自信を持って前へ進むべし。',
-      '望みのもの向こうから歩み寄る運気なり。周囲の人に優しく接すれば、福が倍になりて返らん。',
-      '長年の努力が実を結び、大きな成果を得る兆しあり。お祝いには少し良いものを食すが吉。',
-      '天の加護ありて、災い自ずと遠ざかる。今日始める物事は、将来大きな財産とならん。'
+      '暗闇に一筋の光明が差す如く、すべての迷いが消え去る日。自信を持って前へ進むべし。'
+    ],
+    commentsEn: [
+      'Your luck is at its peak; it is the perfect time for anything. Gratitude brings more blessings.',
+      'Like a bright light piercing the darkness, all doubts vanish. Step forward with confidence.'
     ]
   },
   {
-    fortune: '吉',
-    weight: 15,
-    comments: [
+    fortuneJa: '吉', fortuneEn: 'Good Luck', weight: 15,
+    commentsJa: [
       '誠の心をもって事に当たれば、進む道は自ずと開かれん。焦らず時を待つべし。',
-      '地道なる歩みが実を結ぶ日なり。派手さはなくとも、確実な一歩が将来の吉を呼ぶ。',
-      '身近な人の助言に幸運のヒントあり。耳を傾け、素直な心で受け入れるべし。',
-      '急いては事を仕損じる。今日は一歩引いて全体を眺める心の余裕が、さらなる福を招く。',
-      '失せ物（なくしたもの）は近い将来に見つかる兆し。心静かに身の回りを整理せよ。'
+      '地道なる歩みが実を結ぶ日なり。派手さはなくとも、確実な一歩が将来の吉を呼ぶ。'
+    ],
+    commentsEn: [
+      'Act with a sincere heart, and your path will open naturally. Wait patiently without rushing.',
+      'Steady progress bears fruit today. A quiet but sure step will lead to future success.'
     ]
   },
   {
-    fortune: '中吉',
-    weight: 12,
-    comments: [
+    fortuneJa: '中吉', fortuneEn: 'Middle Luck', weight: 12,
+    commentsJa: [
       '平穏なる幸福を得る兆しあり。身の回りの調和を重んじ、周囲への気配りを大切にせよ。',
-      '日常の中に小さな奇跡が隠されている日。空の美しさや風の心地よさに目を向けるが吉。',
-      '金運は緩やかに上昇。無駄遣いを控え、本当に心が豊かになるものに投資すべし。',
-      '対人関係が円滑に進む。久しく連絡を取っていない友人に一筆送れば、新たな縁が生まれん。',
-      '健康運良好。少し遠回りをして歩くなど、身体を動かすことで運気がさらに巡る。'
+      '日常の中に小さな奇跡が隠されている日。空の美しさや風の心地よさに目を向けるが吉。'
+    ],
+    commentsEn: [
+      'Signs of peaceful happiness. Value harmony and show kindness to those around you.',
+      'A day filled with small everyday miracles. Look up at the sky and feel the gentle breeze.'
     ]
   },
   {
-    fortune: '小吉',
-    weight: 10,
-    comments: [
+    fortuneJa: '小吉', fortuneEn: 'Small Luck', weight: 10,
+    commentsJa: [
       '小さな喜び重なる日なり。油断は禁物なれば、足元をすくわれぬよう慎重に進むが吉。',
-      '物事、腹八分目で満足するのが良い日。欲を張りすぎねば、穏やかな幸福が持続せん。',
-      '忘れ物や落とし物に少し注意が必要。出かける前の指差し確認が、災いを未然に防ぐ。',
-      '派手な進展は期待できぬが、守りを固めるには最適な日。本を読み、知識を蓄えるべし。',
-      '夕方に小さなラッキーが訪れる予感。帰り道にふらりと寄り道してみるのも良し。'
+      '忘れ物や落とし物に少し注意が必要。出かける前の指差し確認が、災いを未然に防ぐ。'
+    ],
+    commentsEn: [
+      'Small joys accumulate today. Stay alert and tread carefully to avoid minor mistakes.',
+      'Be mindful of misplaced items. Checking your belongings before leaving prevents trouble.'
     ]
   },
   {
-    fortune: '末吉',
-    weight: 8,
-    comments: [
+    fortuneJa: '末吉', fortuneEn: 'Future Luck', weight: 8,
+    commentsJa: [
       '今は力を蓄えるべき時なり。心静かに過ごし、温かい茶を好みて休息を取るべし。',
-      '物事の始まりは遅けれど、後から徐々に良くなる運気。焦りは禁物、時をじっくり待て。',
-      '大きな決断は後日に回すが吉。今日は現状維持を心がけ、部屋の掃除に力を入れるべし。',
-      '他人の言葉に惑わされず、己の軸を保つべし。夜更かしを避け、早く眠るのが開運の鍵。',
-      '小さな障壁あれど、誠実に対応すれば霧が晴れる如く解決す。言葉遣いを丁寧にせよ。'
+      '物事の始まりは遅けれど、後から徐々に良くなる運気。焦りは禁物、時をじっくり待て。'
+    ],
+    commentsEn: [
+      'Now is the time to build your strength. Stay calm, drink warm tea, and rest well.',
+      'Things may start slowly, but luck improves over time. Do not rush; wait for the right moment.'
     ]
   },
   {
-    fortune: '接続大吉',
-    weight: 6,
-    comments: [
+    fortuneJa: '接続大吉', fortuneEn: 'Max Connection Luck', weight: 6,
+    commentsJa: [
       '通信速度大いに向上し、動画の読み込み一瞬なり。繋がる全ての縁が良好に進む一日。',
-      '遮るものなき高速回線の如く、滞っていた作業が一気に片付く。集中力みなぎる日なり。',
-      '画面の向こうにいる人々との絆が深まる。あなたの発信が多くの人の心に留まる兆し。',
-      '電波のノイズ一切なし。直感が冴え渡り、迷っていた選択に正しい答えが見つからん。',
-      '検索の運が極めて高い。求めていた情報や、人生を豊かにする新しい知識に出会える日。',
-      'すべてのクラウドと同期する如く、周囲との意思疎通が完璧に噛み合う奇跡の一日なり。'
+      '遮るものなき高速回線の如く、滞っていた作業が一気に片付く。集中力みなぎる日なり。'
+    ],
+    commentsEn: [
+      'Network speed is soaring; videos load instantly. All connections and relationships thrive.',
+      'Like an unhindered high-speed line, delayed tasks clear up instantly. Focus is unlocked.'
     ]
   },
   {
-    fortune: '通信吉',
-    weight: 15,
-    comments: [
+    fortuneJa: '通信吉', fortuneEn: 'Stable Connection Luck', weight: 15,
+    commentsJa: [
       '電波の巡りすこぶる良し。懐かしい知人より、不意に嬉しき連絡が画面に届く兆しあり。',
-      '通知音が心地よく響く日。有益な情報や、心が温まるメッセージが舞い込む予感。',
-      'オンラインでの対話にツキあり。画面越しの笑顔が、お互いの運気を大きく高めん。',
-      'SNSの海で、今のあなたに最も必要な「言葉」と巡り会う。その言葉を大切に記憶せよ。',
-      'ネットでの買い物品にアタリあり。長く愛用できる素晴らしい品に出会える兆し。',
       'Wi-Fiの繋がりが安定する如く、穏やかで途切れのない安心した時間を過ごせる一日。'
+    ],
+    commentsEn: [
+      'Excellent signal strength. An unexpected, heartwarming message may pop up on your screen.',
+      'Just like a stable Wi-Fi connection, enjoy a calm, uninterrupted, and peaceful day.'
     ]
   },
   {
-    fortune: '再起動',
-    weight: 7,
-    comments: [
+    fortuneJa: '再起動', fortuneEn: 'System Reboot', weight: 7,
+    commentsJa: [
       '頭が重く感じたら、無理をせず長めの睡眠を取るべし。心身を一度リフレッシュすれば、運気は劇的に好転せん。',
-      '不要な記憶（キャッシュ）を捨てる時。古いこだわりを一度手放せば、新しい福が入り込む。',
-      '予定が詰まりすぎて熱を帯びている。一度立ち止まり、深呼吸をしてスケジュールを整理せよ。',
-      '原因不明の不調は、ただのエネルギー切れ。温かい風呂に浸かり、身体を休めるのが最優先なり。',
-      '画面を閉じ、自然の光を浴びよ。五感を現実の世界に戻すことで、運気のバグが綺麗に直らん。',
-      '無理に稼働を続けることなかれ。今日は「何もしない贅沢」を己に許すことで、明日の大吉を生む。'
+      '不要な記憶を捨てる時。古いこだわりを一度手放せば、新しい福が入り込む。'
+    ],
+    commentsEn: [
+      'If your mind feels heavy, take a long sleep. Refresh your body and soul to reboot your luck.',
+      'Time to clear your cache. Let go of old obsessions to make room for new blessings.'
     ]
   },
   {
-    fortune: '大吉持',
-    weight: 5,
-    comments: [
+    fortune: '大吉持', fortuneEn: 'Loading Great Luck', weight: 5,
+    commentsJa: [
       '今は普通の運気なれど、これから先、驚くほど大きな吉へと向かっていく大器晩成の兆しなり。',
-      '種が地中でじっと芽吹くのを待つ如き時。焦らずに水をやり続ければ、やがて大輪の花が開かん。',
-      '朝のうちは冴えねど、日が昇るにつれて運気うなぎ登り。夕方以降の行動に大いなる吉あり。',
-      '隠れた才能が少しずつ表に現れる兆し。新しい趣味や勉強を始めるなら、今日が最高の転換点。',
-      '他人の成功を羨む必要なし。あなたの運のピークはこれから。じっくりと実力を磨くべし。',
-      '今受けている小さな苦労は、将来の大きな幸運の「前払い」なり。前を向いて歩むべし。'
+      '種が地中でじっと芽吹くのを待つ如き時。焦らずに水をやり続ければ、やがて大輪の花が開かん。'
+    ],
+    commentsEn: [
+      'Current luck is average, but it is loading a massive blessing. A late-bloomer sign.',
+      'Like a seed waiting underground. Keep watering it patiently, and a great flower will bloom.'
     ]
   },
   {
-    fortune: '平',
-    weight: 5,
-    comments: [
+    fortuneJa: '平', fortuneEn: 'Status Quo', weight: 5,
+    commentsJa: [
       '良くも悪くもなく、波風の立たない平穏な日。普通であることの有り難さを噛み締めるべし。',
-      '過度な期待はせず、淡々と日常をこなすのが吉。いつも通りのご飯が美味しく感じられる日。',
-      '運気のグラフは真横一直線。劇的な変化はないが、トラブルに巻き込まれる心配もなき安心の日。',
-      '今日という日は、次の大冒険のための「セーブポイント」なり。心穏やかに体力を温存せよ。',
-      '特別な出来事は起きねど、大過なく過ごせることこそ至上の幸福。家族や友人に感謝を。',
-      '派手な風は吹かねど、足元は極めて強固なり。身の回りの片付けや、基本の復習をするに最適な日。'
+      '今日という日は、次の大冒険のためのセーブポイントなり。心穏やかに体力を温存せよ。'
+    ],
+    commentsEn: [
+      'Neither good nor bad, just a peaceful day. Appreciate the comfort of an ordinary day.',
+      'Consider today a "save point" before your next big adventure. Relax and conserve energy.'
     ]
   },
   {
-    fortune: '恐',
-    weight: 2,
-    comments: [
+    fortuneJa: '恐', fortuneEn: 'System Error', weight: 2,
+    commentsJa: [
       '少し慎重になるべき日。新しいことには手を染めず、いつものルーティンを淡々とこなすのが賢明なり。',
-      '暗い夜道を歩む如く、一歩一歩を慎重に。言葉選び一つで、余計な摩擦を回避できる日なり。',
-      '注意力が散漫になりやすい兆し。大事な書類の確認や、パスワードの管理は念入りに行うべし。',
-      '他人の揉め事には首を突っ込まぬが吉。今日は静かに自分の作業に没頭し、早めに帰路につけ。',
-      '心がざわついたら、温かい飲み物を一杯飲むべし。焦りから生まれるミスを未然に防ぐ知恵なり。',
-      '運気は一時的に低迷するも、明けない夜はなし。嵐が過ぎ去るのを待つ如く、じっと耐えるが勝ち。'
+      '注意力が散漫になりやすい兆し。大事な書類の確認や、パスワードの管理は念入りに行うべし。'
+    ],
+    commentsEn: [
+      'A day to tread with caution. Avoid starting new things and stick to your usual routine.',
+      'Focus may drift today. Double-check important documents and manage passwords carefully.'
     ]
   }
 ];
 
-// 🎨 吉兆の色：計80種類（既存の30種 ＋ 普通の色50種を追加）
-const LUCKY_COLORS = [
-  '漆黒', '朱赤', '琥珀色', '常盤色', '白磁', '瑠璃色', '黄金色', '茜色', 
-  '浅葱色', '藤紫', '桜色', '萌黄', '山吹色', '空色', '胡桃色', '群青', 
-  '葡萄鼠', '藍生鼠', '銀鼠', '生成色', 'ダークモードの黒', 'サイバーネオンブルー', 
-  'バグのない緑', '警告のRGBレッド', 'ピクセルゴールド', '液晶のバックライト白', 
-  'ターミナルのフォント緑', '通知バッジの赤', 'ハイパーリンクの青', '初期設定のグレー',
-  /* --- ここから普通の日常カラー50種 --- */
-  '白', '黒', '赤', '青', '黄色', '緑', 'ピンク', 'オレンジ', '紫', '茶色',
-  '水色', '黄緑', '紺色', '灰色', 'ベージュ', 'クリーム色', 'えんじ色', '焦茶色', '深緑', '薄紫',
-  '透明', 'マットブラック', 'ネイビー', 'オリーブ', 'カーキ', 'チャコール', 'ボルドー', 'ワインレッド', 'キャメル', 'マスタード',
-  'パステルピンク', 'パステルブルー', 'パステルグリーン', 'パステルイエロー', 'ショッキングピンク', 'エメラルドグリーン', 'ミントグリーン', 'ターコイズブルー', 'ラベンダー', 'サーモンピンク',
-  'モノトーン', 'カラフル', 'ツートンカラー', 'グラデーション', 'メタリックシルバー', 'マットホワイト', 'クリアブルー', 'オフホワイト', 'ライトグレー', 'ダークグレー'
-];
-
-// 💻 吉兆の物：計80種類（既存の30種 ＋ 普通の持ち物・道具50種を追加）
-const LUCKY_ITEMS = [
-  'LANケーブル', 'ノイズキャンセリングヘッドホン', '温かい緑茶', '最新のガジェット', 
-  'バックアップデータ', 'キーボードクリーナー', 'お気に入りのブックマーク', '二段階認証コード', 
-  '余らせたポイント', 'ダークモードの設定', '整理されたデスクトップ', '新しいパスワード', 
-  '予備の充電器', 'ブルーライトカット眼鏡', 'クラウドストレージの空き', '静音マウス', 
-  '和紙のノート', 'お守り袋', '水引のストラップ', '木彫りの熊', 
-  '扇子', 'お気に入りの湯呑み', 'お香', '招き猫の置物', 
-  '風呂敷', 'だるまの絵画', '数珠', '絵馬', '神棚のお札', '打ち水',
-  /* --- ここから普通の日常の持ち物50種 --- */
-  'ハンカチ', 'ティッシュ', 'ボールペン', 'シャープペンシル', 'ノート', 'スマホケース', '財布', '鍵', '腕時計', 'リップクリーム',
-  '目薬', 'ハンドクリーム', '折りたたみ傘', 'エコバッグ', 'コインケース', 'キーホルダー', '水筒', 'ペットボトル', 'ガム', 'ミントタブレット',
-  'イヤホン', 'クリアファイル', 'クリップ', '付箋', 'ハサミ', '定規', '消しゴム', 'のり', '手帳', 'カレンダー',
-  'マグカップ', 'コースター', 'クッション', 'スリッパ', 'お気に入りの靴', '帽子', 'マスク', '身分証明書', '定期券', '名刺入れ',
-  'トートバッグ', 'リュックサック', 'めがね拭き', '鏡', 'ヘアゴム', '櫛', 'ハンカチーフ', '絆創膏', 'スナック菓子', 'おにぎり'
-];
+// 吉兆の色＆物
+const LUCKY_COLORS_JA = ['漆黒', '朱赤', '瑠璃色', '黄金色', '白', '黒', '赤', '青'];
+const LUCKY_COLORS_EN = ['Jet Black', 'Vermilion Red', 'Lapis Lazuli', 'Pure Gold', 'White', 'Black', 'Red', 'Blue'];
+const LUCKY_ITEMS_JA = ['LANケーブル', '温かい緑茶', 'ハンカチ', 'ティッシュ', 'ボールペン', 'イヤホン'];
+const LUCKY_ITEMS_EN = ['LAN Cable', 'Warm Green Tea', 'Handkerchief', 'Tissue', 'Ballpoint Pen', 'Earphones'];
 
 export default function App() {
+  const [lang, setLang] = useState<'ja' | 'en'>('ja');
   const [result, setResult] = useState<{ fortune: string; comment: string; color: string; item: string } | null>(null);
   const [isRolling, setIsRolling] = useState(false);
   const [visitDate, setVisitDate] = useState<string>('');
+  const [history, setHistory] = useState<{ [key: string]: number }>({});
+
+  // 📥 アプリ起動時にLocalStorageから過去の履歴を読み込む
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('omikuji_history');
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory));
+    }
+  }, []);
 
   const playSound = (type: 'roll' | 'success') => {
     try {
@@ -175,29 +153,16 @@ export default function App() {
       const ctx = new AudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
+      osc.connect(gain); gain.connect(ctx.destination);
       if (type === 'roll') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(150, ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.5);
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(150, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
       } else {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(1760, ctx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.6);
+        osc.type = 'sine'; osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
       }
-    } catch (e) {
-      console.log('Audio error:', e);
-    }
+      osc.start(); osc.stop(ctx.currentTime + 0.6);
+    } catch (e) { console.log(e); }
   };
 
   const drawOmikuji = () => {
@@ -205,37 +170,61 @@ export default function App() {
     playSound('roll');
     
     const today = new Date();
-    const jstYear = today.getFullYear();
-    const reiwaYear = jstYear - 2018;
-    const dateStr = `令和${reiwaYear}年${today.getMonth() + 1}月${today.getDate()}日`;
+    const hours = today.getHours();
+    const minutes = today.getMinutes();
+    
+    // 日付表記の作成
+    const dateStr = lang === 'ja' 
+      ? `令和${today.getFullYear() - 2018}年${today.getMonth() + 1}月${today.getDate()}日`
+      : today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     setVisitDate(dateStr);
 
     setTimeout(() => {
+      // 🎯 確率の重み計算
       const totalWeight = LUCK_DATA.reduce((sum, item) => sum + item.weight, 0);
       let randomNum = Math.floor(Math.random() * totalWeight);
       
       let selectedGroup = LUCK_DATA[0];
       for (const group of LUCK_DATA) {
-        if (randomNum < group.weight) {
-          selectedGroup = group;
-          break;
-        }
+        if (randomNum < group.weight) { selectedGroup = group; break; }
         randomNum -= group.weight;
       }
 
-      const randomComment = selectedGroup.comments[Math.floor(Math.random() * selectedGroup.comments.length)];
-      const randomColor = LUCKY_COLORS[Math.floor(Math.random() * LUCKY_COLORS.length)];
-      const randomItem = LUCKY_ITEMS[Math.floor(Math.random() * LUCKY_ITEMS.length)];
-      
-      setResult({
-        fortune: selectedGroup.fortune,
-        comment: randomComment,
-        color: randomColor,
-        item: randomItem
-      });
-      
+      // 1. 基本のお告げと運勢を取得
+      let fortune = lang === 'ja' ? selectedGroup.fortuneJa || (selectedGroup as any).fortune : selectedGroup.fortuneEn;
+      const idx = Math.floor(Math.random() * selectedGroup.commentsJa.length);
+      let comment = lang === 'ja' ? selectedGroup.commentsJa[idx] : selectedGroup.commentsEn[idx];
+
+      // 2. ⏰ 11:11 などのゾロ目特殊判定
+      if (hours === 11 && minutes === 11) {
+        fortune = lang === 'ja' ? '星連大吉' : 'Synchronicity Luck';
+        comment = lang === 'ja' 
+          ? '【11:11の奇跡】時計の数字が美しく一直線に並ぶ奇跡の瞬間なり。全てのノイズが消え去り、あなたの願いが最速で宇宙（サーバー）に届く大吉兆なり！'
+          : '【11:11 Miracle】The numbers line up perfectly. All noise vanishes, and your wishes are delivered to the universe at maximum speed!';
+      } else {
+        // 3. ☀️ 🌆 🌙 時間帯による拡張メッセージの自動ドッキング
+        if (hours >= 5 && hours < 10) {
+          comment += lang === 'ja' ? '（朝一番の澄んだ電波の如く、清々しい出発となるでしょう。）' : ' (Like a fresh morning signal, your day starts clear and bright.)';
+        } else if (hours >= 17 && hours < 24) {
+          comment += lang === 'ja' ? '（夜更かしはバグの元なり。早めの休止を心がけるが吉。）' : ' (Late nights cause system bugs. Resting early brings good fortune.)';
+        }
+      }
+
+      // 吉兆の色・物
+      const colorIdx = Math.floor(Math.random() * LUCKY_COLORS_JA.length);
+      const itemIdx = Math.floor(Math.random() * LUCKY_ITEMS_JA.length);
+      const color = lang === 'ja' ? LUCKY_COLORS_JA[colorIdx] : LUCKY_COLORS_EN[colorIdx];
+      const item = lang === 'ja' ? LUCKY_ITEMS_JA[itemIdx] : LUCKY_ITEMS_EN[itemIdx];
+
+      setResult({ fortune, comment, color, item });
       setIsRolling(false);
       playSound('success');
+
+      // 📊 履歴の保存処理（日本語の運勢名で統一してカウント保持）
+      const historyKey = selectedGroup.fortuneJa || (selectedGroup as any).fortune;
+      const newHistory = { ...history, [historyKey]: (history[historyKey] || 0) + 1 };
+      setHistory(newHistory);
+      localStorage.setItem('omikuji_history', JSON.stringify(newHistory));
     }, 600);
   };
 
@@ -247,25 +236,35 @@ export default function App() {
         backgroundSize: '20px 20px'
       }}
     >
-      <div className="max-w-md w-full bg-stone-50 rounded-lg shadow-2xl p-8 border-4 border-red-700 text-center relative overflow-hidden">
+      {/* 🌐 言語切り替えボタン */}
+      <button 
+        onClick={() => setLang(lang === 'ja' ? 'en' : 'ja')}
+        className="absolute top-4 left-4 bg-stone-200 border border-stone-400 text-xs px-3 py-1.5 rounded hover:bg-stone-300 font-serif shadow-sm transition-all"
+      >
+        {lang === 'ja' ? '🌐 English' : '🌐 日本語'}
+      </button>
+
+      <div className="max-w-md w-full bg-stone-50 rounded-lg shadow-2xl p-8 border-4 border-red-700 text-center relative overflow-hidden mt-8">
         <div className="absolute top-0 left-0 w-full h-3 bg-red-700"></div>
         
         {visitDate && (
-          <div className="text-[11px] text-stone-500 font-serif tracking-widest absolute top-5 right-6 animate-fade-in">
-            {visitDate} 参拝
+          <div className="text-[11px] text-stone-500 font-serif tracking-widest absolute top-5 right-6">
+            {visitDate} {lang === 'ja' ? '参拝' : 'Visited'}
           </div>
         )}
 
-        <h1 className="text-4xl font-bold text-red-800 my-6 font-serif tracking-widest">御神籤</h1>
+        <h1 className="text-4xl font-bold text-red-800 my-6 font-serif tracking-widest">
+          {lang === 'ja' ? '御神籤' : 'OMIKUJI'}
+        </h1>
 
         <div className="min-h-[220px] flex flex-col items-center justify-center bg-stone-100 rounded border border-stone-300 p-6 mb-8 shadow-inner">
           {isRolling ? (
             <div className="text-lg font-medium text-red-700 animate-pulse tracking-widest font-serif">
-              御神意を伺っております...
+              {lang === 'ja' ? '御神意を伺っております...' : 'Consulting the divine status...'}
             </div>
           ) : result ? (
             <div className="animate-fade-in font-serif w-full">
-              <div className="text-4xl sm:text-5xl font-black text-red-700 mb-4 tracking-widest border-b-2 border-red-700/20 pb-2 px-6 inline-block">
+              <div className="text-3xl sm:text-4xl font-black text-red-700 mb-4 tracking-widest border-b-2 border-red-700/20 pb-2 px-4 inline-block">
                 {result.fortune}
               </div>
               <p className="text-stone-700 text-sm leading-relaxed text-left px-2 font-sans tracking-wide mb-4">
@@ -273,13 +272,13 @@ export default function App() {
               </p>
               
               <div className="border-t border-dashed border-stone-300 pt-3 mt-2 text-xs font-serif text-stone-600 bg-stone-50/50 py-3 rounded flex flex-col gap-1 px-4 text-left">
-                <div><span className="text-red-700 font-bold">吉兆の色：</span>{result.color}</div>
-                <div><span className="text-red-700 font-bold">吉兆の物：</span>{result.item}</div>
+                <div><span className="text-red-700 font-bold">{lang === 'ja' ? '吉兆の色：' : 'Lucky Color: '}</span>{result.color}</div>
+                <div><span className="text-red-700 font-bold">{lang === 'ja' ? '吉兆の物：' : 'Lucky Item: '}</span>{result.item}</div>
               </div>
             </div>
           ) : (
             <div className="text-stone-400 text-sm tracking-wider font-serif">
-              心静かに下の釦をお押しください
+              {lang === 'ja' ? '心静かに下の釦をお押しください' : 'Quiet your mind and press the button below'}
             </div>
           )}
         </div>
@@ -288,17 +287,37 @@ export default function App() {
           onClick={drawOmikuji}
           disabled={isRolling}
           className={`w-full py-4 px-6 text-lg font-bold text-stone-100 rounded shadow-md transition-all duration-300 active:scale-98 tracking-widest font-serif ${
-            isRolling 
-              ? 'bg-stone-400 cursor-not-allowed' 
-              : 'bg-red-800 hover:bg-red-900 hover:shadow-lg'
+            isRolling ? 'bg-stone-400 cursor-not-allowed' : 'bg-red-800 hover:bg-red-900'
           }`}
         >
-          {result ? '再び紐解く' : 'おみくじを引く'}
+          {result 
+            ? (lang === 'ja' ? '再び紐解く' : 'Draw Again') 
+            : (lang === 'ja' ? 'おみくじを引く' : 'Draw Fortune')}
         </button>
       </div>
 
-      <footer className="mt-8 text-[10px] text-stone-400 tracking-widest font-serif">
-        謹製 仮想空間神社
+      {/* 📊 おみくじ帳（コレクション履歴機能） */}
+      <div className="max-w-md w-full mt-6 bg-stone-50 rounded border border-stone-300 p-4 shadow-md font-serif text-center">
+        <h3 className="text-xs font-bold text-stone-600 tracking-wider border-b border-stone-200 pb-1.5 mb-2.5">
+          {lang === 'ja' ? '📜 仮想御朱印（あなたのおみくじ帳）' : '📜 Your Fortune Log'}
+        </h3>
+        {Object.keys(history).length === 0 ? (
+          <p className="text-[11px] text-stone-400 italic">
+            {lang === 'ja' ? 'まだ参拝履歴がありません' : 'No history yet.'}
+          </p>
+        ) : (
+          <div className="flex flex-wrap justify-center gap-1.5 text-[10px]">
+            {Object.entries(history).map(([luck, count]) => (
+              <span key={luck} className="bg-red-50 text-red-800 border border-red-200/60 rounded px-2 py-0.5 shadow-sm">
+                {lang === 'ja' ? luck : luck} : <strong className="text-xs font-sans">{count}</strong>
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <footer className="mt-6 text-[10px] text-stone-400 tracking-widest font-serif">
+        謹製 仮想空間神社 / Virtual Shrine
       </footer>
     </div>
   );
