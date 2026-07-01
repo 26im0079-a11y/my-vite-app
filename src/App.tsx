@@ -4,27 +4,25 @@ import { useState, useEffect, useRef } from 'react';
 // 1. 定数データ定義（アイテム・ポーション・マップ）
 // ==========================================
 type Tab = 'shop' | 'atelier' | 'map';
+type GameState = 'title' | 'playing';
+type HoodedManState = 'pending' | 'active' | 'completed';
 
 interface Ingredient { id: string; name: string; weight: number; icon: string; desc: string; }
 interface Potion { id: string; name: string; recipe: Record<string, number>; basePrice: number; icon: string; desc: string; }
 interface MapLocation { id: string; name: string; ingredients: string[]; recipes: string[]; icon: string; x: number; y: number; cost: number; }
 
 const INGREDIENTS: Record<string, Ingredient> = {
-  // 妖精の森
   nightglow: { id: 'nightglow', name: '夜光草', weight: 2, icon: '🌿', desc: '暗闇で光る草' },
   fairy_dust: { id: 'fairy_dust', name: '妖精の粉', weight: 1, icon: '✨', desc: '神秘的な粉' },
-  // 死者の沼 (4種)
   mandragora: { id: 'mandragora', name: 'マンドラゴラ', weight: 25, icon: '🌱', desc: '叫ぶ重い植物' },
   bone_meal: { id: 'bone_meal', name: '骨粉', weight: 10, icon: '🦴', desc: '古い骨の粉' },
   swamp_water: { id: 'swamp_water', name: '濁った沼水', weight: 5, icon: '💧', desc: '毒素を含む水' },
   poison_toad: { id: 'poison_toad', name: '猛毒ガエル', weight: 15, icon: '🐸', desc: '強力な毒を持つ' },
-  // 古い鉱山 (5種)
   iron_ore: { id: 'iron_ore', name: '鉄鉱石', weight: 30, icon: '🪨', desc: 'ずっしり重い鉱石' },
   crystal: { id: 'crystal', name: '魔力結晶', weight: 15, icon: '💎', desc: '魔力を帯びた石' },
   gold_ore: { id: 'gold_ore', name: '金鉱石', weight: 20, icon: '🟡', desc: '価値の高い鉱石' },
   fire_stone: { id: 'fire_stone', name: '炎の石', weight: 10, icon: '🔥', desc: '熱を放つ石' },
   bat_wing: { id: 'bat_wing', name: 'コウモリの羽', weight: 5, icon: '🦇', desc: '反響する羽' },
-  // 竜の巣 (5種)
   dragon_scale: { id: 'dragon_scale', name: '竜の鱗', weight: 50, icon: '🐉', desc: '極めて重い秘宝' },
   dragon_tear: { id: 'dragon_tear', name: '竜の涙', weight: 5, icon: '💧', desc: '純粋な魔力の塊' },
   phoenix_feather: { id: 'phoenix_feather', name: '不死鳥の羽', weight: 2, icon: '🪶', desc: '生命力の象徴' },
@@ -44,6 +42,9 @@ const POTIONS: Record<string, Potion> = {
   golden_syrup: { id: 'golden_syrup', name: '黄金のシロップ', recipe: { gold_ore: 1, dragon_tear: 1, fairy_dust: 1 }, basePrice: 1000, icon: '🍯', desc: '至高の甘み' },
 };
 
+// フードの男専用ポーション
+const MYSTERY_RECIPE = { bone_meal: 1, poison_toad: 1, fairy_dust: 1 };
+
 const LOCATIONS: Record<string, MapLocation> = {
   forest: { id: 'forest', name: '妖精の森', ingredients: ['nightglow', 'fairy_dust'], recipes: [], icon: '🌲', x: 20, y: 70, cost: 0 },
   swamp: { id: 'swamp', name: '死者の沼', ingredients: ['mandragora', 'bone_meal', 'swamp_water', 'poison_toad'], recipes: ['strength', 'poison'], icon: '🌫️', x: 70, y: 30, cost: 30 },
@@ -55,7 +56,7 @@ const MAX_WEIGHT = 100;
 const RECIPE_WEIGHT = 10;
 
 // ==========================================
-// 2. セリフデータ（各20パターン）
+// 2. セリフデータ（各20パターン）※省略せず全て維持
 // ==========================================
 const DIALOGUES: Record<string, string[]> = {
   healing: [
@@ -87,20 +88,56 @@ const DIALOGUES: Record<string, string[]> = {
   ]
 };
 
+// ==========================================
+// 3. リアクション（大増量 100以上追加！）
+// ==========================================
 const SUCCESS_REACTIONS = {
   perfect: [
-    "「また来るわ！お得意様、ってやつかしらね。」", "「素晴らしい！これこそ私が求めていたものだ！」", "「完璧だ……。おまけに多めに払っておくよ。」"
+    "「また来るわ！お得意様、ってやつかしらね。」", "「素晴らしい！これこそ私が求めていたものだ！」", "「完璧だ……。おまけに多めに払っておくよ。」",
+    "「神業だな！あんたの腕は本物だ。」", "「信じられないほど澄んだ色だ。倍払わせてくれ！」", "「一生の恩人だ！ありがとう、魔女様！」",
+    "「ああ……力が湧いてくる！最高だ！」", "「王宮の錬金術師より上手いじゃないか！」", "「これだよこれ！この品質を待っていた！」",
+    "「これほど完璧な調合は見たことがない。」", "「感動した！チップを受け取ってくれ！」", "「天才的な腕前ね。友達にも宣伝しておくわ。」",
+    "「最高品質だ。いくらでも払う価値がある。」", "「伝説のレシピ通りじゃないか！見事だ！」", "「君の店を見つけて本当に良かったよ。」",
+    "「震えるほど素晴らしい出来だ……！」", "「私の期待を遥かに超えてきたな。」", "「これがあれば勝てる！ありがとう！」",
+    "「こんな名品、使うのがもったいないな。」", "「香りだけで一級品だと分かるぞ。」", "「すごい！本当にすごいよこれ！」",
+    "「あんた最高だ！明日も絶対来るからな！」", "「この値段でこの品質！？奇跡だ！」", "「私の目に狂いはなかった。素晴らしい。」",
+    "「おおっ！光り輝いている！大満足だ！」", "「文句のつけようがない。完璧な仕事だ。」", "「このポーションは私の宝物にするわ。」",
+    "「……言葉が出ない。最高の職人だ。」", "「君に頼んで正解だった。またよろしく頼む。」", "「大成功だ！これでお祝いができる！」",
+    "「ありがとう！君は命の恩人だ！」", "「素晴らしい才能だ。これからも応援するよ。」", "「完璧すぎて笑いが止まらないぜ！」",
+    "「歴史に残る名ポーションだね！」", "「このクオリティなら、世界一の店になれるよ！」"
   ],
   good: [
-    "「うん、悪くない。助かるよ。」", "「ちょうどいい感じだね。ありがとう。」", "「納得のいく品質だ。大事に使わせてもらうよ。」"
+    "「うん、悪くない。助かるよ。」", "「ちょうどいい感じだね。ありがとう。」", "「納得のいく品質だ。大事に使わせてもらうよ。」",
+    "「まあまあだな。値段相応だ。」", "「これで十分だ。助かったよ。」", "「標準的なポーションだね。ありがとう。」",
+    "「期待通りの効果だ。また来るよ。」", "「うん、これなら目的は果たせそうだ。」", "「手際がいいね。お代だよ。」",
+    "「とりあえずはこれで凌げそうだ。」", "「悪くないね。また必要な時に来るよ。」", "「及第点ってところかしら。ありがとう。」",
+    "「無難な仕上がりだ。文句はないよ。」", "「しっかりした作りだ。安心したよ。」", "「うん、これなら安心して飲めるな。」",
+    "「いい仕事だ。お疲れ様。」", "「急いでたから助かったよ。ありがとう。」", "「うんうん、ちゃんと効きそうだ。」",
+    "「これなら仲間も安心するだろう。」", "「とりあえず合格点だ。また頼む。」", "「普通に良い薬だ。感謝するよ。」",
+    "「問題なしだ。お代を置いていくね。」", "「手に入ってよかった。これで進めるよ。」", "「見た目は普通だけど、効果はありそうだ。」",
+    "「可もなく不可もなく。それが一番大事さ。」", "「よし、これで準備万端だ。」", "「ありがとう、魔女さん。助かったよ。」",
+    "「うん、レシピ通りだね。ご苦労様。」", "「助かるよ。これが欲しかったんだ。」", "「適正価格だね。また利用するよ。」",
+    "「うん、これがあれば一安心だ。」", "「とりあえずカバンに入れておくよ。」", "「良い買い物ができた。ありがとう。」",
+    "「うん、問題ない。また寄らせてもらうよ。」", "「標準的で使いやすそうだ。」", "「ごく普通のポーション。それでいいのさ。」"
   ],
   bad: [
-    "「...」「あんた、ちょっと失礼だぜ。もういいよ…」", "「なんだこれは……？ 濁っているじゃないか。」", "「……不味い。これだけしか払えないよ。」"
+    "「...」「あんた、ちょっと失礼だぜ。もういいよ…」", "「なんだこれは……？ 濁っているじゃないか。」", "「……不味い。これだけしか払えないよ。」",
+    "「なんだこの泥水は！？金返せ！」", "「効果があるのか怪しいな……安くしとけよ。」", "「素人が作ったのか？がっかりだ。」",
+    "「ぼったくりか？こんなのに満額は払えん。」", "「……自分で作った方がマシだったな。」", "「色が変だぞ。本当に大丈夫かこれ？」",
+    "「あーあ、材料の無駄遣いだな。」", "「……最悪だ。二度と来るか。」", "「ふざけてるのか？ちゃんとしたのを出せ！」",
+    "「底に何か沈んでるんだけど……。」", "「においが酷い！これ本当にポーションか？」", "「あんた、本当に魔女なのか？疑うぜ。」",
+    "「……まぁ、一応買っていくが、期待はしてない。」", "「値段に見合ってないな。損した気分だ。」", "「ひどい出来だ。半分しか払わないぞ。」",
+    "「子供のイタズラかと思ったよ。」", "「失敗作を売りつけようってのか？」", "「……仕方ない、これしかないなら妥協するか。」",
+    "「金を取れるレベルじゃないぞ。」", "「これ飲んでお腹壊さないか心配だわ……。」", "「あんたの腕、落ちたんじゃないか？」",
+    "「……もう行くわ。最悪の気分。」", "「こんなものを客に出すなんて信じられない。」", "「ドブの味がしそうだ。勘弁してくれ。」",
+    "「これは薬じゃなくて毒じゃないのか？」", "「時間と金の無駄だったな。」", "「……はぁ。もっとマシな店を探そう。」",
+    "「こんな酷いものを買う奴の気が知れない。」", "「詐欺師め！通報してやる！」", "「なんだこのガラクタは……話にならん。」",
+    "「適当に混ぜただけだろ？バレてるぞ。」", "「もう君の店には期待しないよ。」", "「……金は置いていくが、二度と来ないからな。」"
   ]
 };
 
 // ==========================================
-// 3. ミニゲームコンポーネント
+// 4. ミニゲームコンポーネント
 // ==========================================
 const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) => void }) => {
   const [pos, setPos] = useState(50);
@@ -159,15 +196,22 @@ const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) =
 };
 
 // ==========================================
-// 4. メインアプリケーション
+// 5. メインアプリケーション
 // ==========================================
 export default function App() {
+  const [gameState, setGameState] = useState<GameState>('title');
+  const [hasSave, setHasSave] = useState(false);
+
   const [activeTab, setActiveTab] = useState<Tab>('shop');
   const [gold, setGold] = useState(100);
   const [inventory, setInventory] = useState<Record<string, number>>({});
   const [potions, setPotions] = useState<Record<string, number>>({});
   const [unlockedRecipes, setUnlockedRecipes] = useState<string[]>(['healing']);
   const [unlockedLocations, setUnlockedLocations] = useState<string[]>(['forest', 'swamp', 'mine']);
+  
+  // 新規イベント用State
+  const [salesCount, setSalesCount] = useState(0);
+  const [hoodedManState, setHoodedManState] = useState<HoodedManState>('pending');
   const [mysteriousPowder, setMysteriousPowder] = useState(0);
 
   // UI・モーダル状態
@@ -176,24 +220,43 @@ export default function App() {
   const [mapDetail, setMapDetail] = useState<MapLocation | null>(null);
   const [gatheringLocation, setGatheringLocation] = useState<string | null>(null);
   const [gatheringCart, setGatheringCart] = useState<Record<string, number>>({});
-  const [customer, setCustomer] = useState<{dialogue: string, potionWanted: string, state: 'waiting'|'negotiating'|'done'} | null>(null);
+  const [gatheringSpawnedRecipe, setGatheringSpawnedRecipe] = useState<string | null>(null);
+  
+  const [customer, setCustomer] = useState<{isHoodedMan?: boolean, dialogue: string, potionWanted: string, state: 'waiting'|'negotiating'|'done'} | null>(null);
   const [negotiationResult, setNegotiationResult] = useState<string | null>(null);
   const [cauldron, setCauldron] = useState<Record<string, number>>({});
   const [msg, setMsg] = useState<{text: string, type: 'success'|'error'|'info'} | null>(null);
 
+  // ------------------------------------------
+  // セーブ・ロード・タイトル
+  // ------------------------------------------
   useEffect(() => {
-    const saved = localStorage.getItem('witch_potion_save_v3');
-    if (saved) {
-      const d = JSON.parse(saved);
-      setGold(d.gold); setInventory(d.inventory); setPotions(d.potions);
-      setUnlockedRecipes(d.unlockedRecipes); setUnlockedLocations(d.unlockedLocations);
-      setMysteriousPowder(d.mysteriousPowder);
-    }
+    const saved = localStorage.getItem('witch_potion_save_v4');
+    if (saved) setHasSave(true);
   }, []);
 
+  const saveGame = () => {
+    localStorage.setItem('witch_potion_save_v4', JSON.stringify({ gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState }));
+  };
+
   useEffect(() => {
-    localStorage.setItem('witch_potion_save_v3', JSON.stringify({ gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder }));
-  }, [gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder]);
+    if (gameState === 'playing') saveGame();
+  }, [gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState, gameState]);
+
+  const startGame = (isContinue: boolean) => {
+    if (isContinue) {
+      const d = JSON.parse(localStorage.getItem('witch_potion_save_v4')!);
+      setGold(d.gold); setInventory(d.inventory); setPotions(d.potions);
+      setUnlockedRecipes(d.unlockedRecipes); setUnlockedLocations(d.unlockedLocations);
+      setMysteriousPowder(d.mysteriousPowder || 0); setSalesCount(d.salesCount || 0);
+      setHoodedManState(d.hoodedManState || 'pending');
+    } else {
+      localStorage.removeItem('witch_potion_save_v4');
+      setGold(100); setInventory({}); setPotions({}); setUnlockedRecipes(['healing']); setUnlockedLocations(['forest', 'swamp', 'mine']);
+      setMysteriousPowder(0); setSalesCount(0); setHoodedManState('pending');
+    }
+    setGameState('playing');
+  };
 
   const showMsg = (text: string, type: 'success'|'error'|'info' = 'info') => {
     setMsg({ text, type });
@@ -204,18 +267,31 @@ export default function App() {
   // お客さんロジック
   // ------------------------------------------
   useEffect(() => {
+    if (gameState !== 'playing') return;
     if (activeTab === 'shop' && !customer) {
       const timer = setTimeout(() => {
-        const available = unlockedRecipes;
-        const wanted = available[Math.floor(Math.random() * available.length)];
-        const dials = DIALOGUES[wanted] || DIALOGUES['healing'];
-        const dial = dials[Math.floor(Math.random() * dials.length)];
-        setCustomer({ dialogue: dial, potionWanted: wanted, state: 'waiting' });
+        // 特別イベント：売上30回到達 ＆ イベント未完了
+        if (salesCount >= 30 && hoodedManState !== 'completed') {
+          setCustomer({
+            isHoodedMan: true,
+            dialogue: "……『骨粉』と『猛毒ガエル』、そして『妖精の粉』を混ぜたものをくれ。",
+            potionWanted: 'mystery',
+            state: 'waiting'
+          });
+          if (hoodedManState === 'pending') setHoodedManState('active');
+        } else {
+          // 通常の客
+          const available = unlockedRecipes;
+          const wanted = available[Math.floor(Math.random() * available.length)];
+          const dials = DIALOGUES[wanted] || DIALOGUES['healing'];
+          const dial = dials[Math.floor(Math.random() * dials.length)];
+          setCustomer({ dialogue: dial, potionWanted: wanted, state: 'waiting' });
+        }
         setNegotiationResult(null);
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [activeTab, customer, unlockedRecipes]);
+  }, [activeTab, customer, unlockedRecipes, salesCount, hoodedManState, gameState]);
 
   const handleNegotiation = (results: string[]) => {
     if (!customer) return;
@@ -232,13 +308,19 @@ export default function App() {
     
     setGold(prev => prev + earns);
     setPotions(prev => ({ ...prev, [customer.potionWanted]: prev[customer.potionWanted] - 1 }));
+    setSalesCount(prev => prev + 1); // 販売回数カウントアップ
     setNegotiationResult(`${reaction}\n（評価: ${rank === 'perfect' ? '大成功！1.5倍' : rank === 'good' ? '成功' : '失敗…0.5倍'} / 獲得: ${earns}G）`);
     setCustomer({ ...customer, state: 'done' });
+    setTimeout(() => setCustomer(null), 5000);
+  };
 
-    if (rank === 'perfect' && Math.random() < 0.2) {
-      setMysteriousPowder(prev => prev + 1);
-      showMsg("特別なお礼に「不思議な粉」をもらった！", "success");
-    }
+  const handleHoodedManGive = () => {
+    if (!customer || !customer.isHoodedMan) return;
+    setPotions(prev => ({ ...prev, mystery: prev.mystery - 1 }));
+    setMysteriousPowder(prev => prev + 1);
+    setHoodedManState('completed');
+    setNegotiationResult("「……これは礼だ。」\n(不思議な粉を手に入れた！)");
+    setCustomer({ ...customer, state: 'done' });
     setTimeout(() => setCustomer(null), 5000);
   };
 
@@ -246,14 +328,28 @@ export default function App() {
   // 調合ロジック
   // ------------------------------------------
   const craft = () => {
-    let targetId: string | null = null;
-    for (const [id, p] of Object.entries(POTIONS)) {
-      if (JSON.stringify(p.recipe) === JSON.stringify(cauldron)) { targetId = id; break; }
-    }
+    const isMystery = JSON.stringify(cauldron) === JSON.stringify(MYSTERY_RECIPE);
+    
+    // 材料消費
     const newInv = { ...inventory };
     Object.keys(cauldron).forEach(k => newInv[k] -= cauldron[k]);
     setInventory(newInv);
     setCauldron({});
+
+    if (isMystery) {
+      if (hoodedManState === 'completed') {
+        showMsg("何故か上手くいかない。", "error");
+      } else {
+        setPotions(prev => ({ ...prev, mystery: (prev.mystery || 0) + 1 }));
+        showMsg("「？？？のポーション」が完成した！", "success");
+      }
+      return;
+    }
+
+    let targetId: string | null = null;
+    for (const [id, p] of Object.entries(POTIONS)) {
+      if (JSON.stringify(p.recipe) === JSON.stringify(cauldron)) { targetId = id; break; }
+    }
     
     if (targetId) {
       setPotions(prev => ({ ...prev, [targetId!]: (prev[targetId!] || 0) + 1 }));
@@ -278,6 +374,15 @@ export default function App() {
   const startGathering = (loc: MapLocation) => {
     if (gold < loc.cost) { showMsg("お金が足りないよ。", "error"); return; }
     setGold(prev => prev - loc.cost);
+    
+    // レシピランダム出現処理（10%の確率で、未取得レシピから最大1つ選ばれる）
+    let spawned = null;
+    const availableLocked = loc.recipes.filter(r => !unlockedRecipes.includes(r));
+    if (availableLocked.length > 0 && Math.random() < 0.10) {
+      spawned = availableLocked[Math.floor(Math.random() * availableLocked.length)];
+    }
+    
+    setGatheringSpawnedRecipe(spawned);
     setGatheringLocation(loc.id);
     setMapDetail(null);
     setGatheringCart({});
@@ -306,16 +411,42 @@ export default function App() {
     setGatheringLocation(null);
   };
 
-  // ------------------------------------------
-  // レンダリング
-  // ------------------------------------------
+  // ==========================================
+  // タイトル画面
+  // ==========================================
+  if (gameState === 'title') {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-200 font-serif flex flex-col items-center justify-center select-none">
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle,_#8b5e3c_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
+        <div className="z-10 flex flex-col items-center">
+          <div className="text-8xl mb-6 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]">🧪</div>
+          <h1 className="text-4xl font-bold text-amber-400 mb-12 tracking-widest text-center border-y border-amber-900/50 py-4">魔女のポーション屋</h1>
+          
+          <div className="flex flex-col gap-4 w-64">
+            <button onClick={() => startGame(false)} className="py-4 bg-amber-700/80 hover:bg-amber-600 rounded-xl font-bold text-lg border border-amber-500 shadow-[0_0_10px_rgba(251,191,36,0.3)] transition-all">
+              はじめから
+            </button>
+            {hasSave && (
+              <button onClick={() => startGame(true)} className="py-4 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold text-lg border border-slate-600 transition-all text-amber-200">
+                つづきから
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // ゲーム画面
+  // ==========================================
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 font-serif flex flex-col items-center select-none overflow-hidden">
       {msg && <div className={`fixed top-4 px-6 py-2 rounded-full shadow-lg z-[100] text-sm font-bold animate-bounce ${msg.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>{msg.text}</div>}
 
       <header className="w-full max-w-md bg-slate-900/80 p-4 border-b border-amber-900/40 flex justify-between items-center z-50">
         <div className="text-amber-500 font-bold">💰 {gold} G</div>
-        <div className="text-xs text-slate-500">魔女のポーション屋 v3.0</div>
+        <div className="text-xs text-slate-500">販売数: {salesCount}</div>
       </header>
 
       <main className="flex-1 w-full max-w-md relative overflow-y-auto pb-24">
@@ -331,21 +462,28 @@ export default function App() {
             <div className="bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 shadow-2xl relative min-h-[300px] flex flex-col items-center">
               {customer ? (
                 <>
-                  <div className="text-6xl mb-4">🧙‍♂️</div>
-                  <div className="bg-slate-950/80 p-4 rounded-xl border-l-4 border-amber-600 text-sm mb-4 w-full italic">
+                  <div className="text-6xl mb-4">{customer.isHoodedMan ? '🧥' : '🧙‍♂️'}</div>
+                  <div className="bg-slate-950/80 p-4 rounded-xl border-l-4 border-amber-600 text-sm mb-4 w-full italic whitespace-pre-wrap">
                     「{customer.dialogue}」
                   </div>
                   {customer.state === 'waiting' && (
                     <div className="w-full text-center">
-                      <p className="text-xs text-amber-400 mb-2">求: {POTIONS[customer.potionWanted].icon} {POTIONS[customer.potionWanted].name}</p>
-                      {potions[customer.potionWanted] > 0 ? (
+                      <p className="text-xs text-amber-400 mb-2">求: {customer.isHoodedMan ? '？？？のポーション' : `${POTIONS[customer.potionWanted].icon} ${POTIONS[customer.potionWanted].name}`}</p>
+                      
+                      {/* 通常の客 */}
+                      {!customer.isHoodedMan && (potions[customer.potionWanted] > 0 ? (
                         <button onClick={() => setCustomer({...customer, state: 'negotiating'})} className="w-full py-3 bg-amber-600 rounded-xl font-bold active:scale-95">交渉して売る</button>
-                      ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>}
+                      ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>)}
+
+                      {/* フードの男 */}
+                      {customer.isHoodedMan && (potions.mystery > 0 ? (
+                        <button onClick={handleHoodedManGive} className="w-full py-3 bg-fuchsia-900 rounded-xl font-bold text-fuchsia-200 active:scale-95 border border-fuchsia-500">渡す</button>
+                      ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>)}
                     </div>
                   )}
-                  {customer.state === 'negotiating' && <NegotiationMiniGame onComplete={handleNegotiation} />}
+                  {customer.state === 'negotiating' && !customer.isHoodedMan && <NegotiationMiniGame onComplete={handleNegotiation} />}
                   {negotiationResult && (
-                    <div className="mt-4 p-3 bg-emerald-900/30 border border-emerald-500/30 rounded-lg text-xs text-center text-emerald-200 whitespace-pre-wrap animate-pulse">
+                    <div className={`mt-4 p-3 border rounded-lg text-xs text-center whitespace-pre-wrap animate-pulse ${customer.isHoodedMan ? 'bg-fuchsia-900/30 border-fuchsia-500/30 text-fuchsia-200' : 'bg-emerald-900/30 border-emerald-500/30 text-emerald-200'}`}>
                       {negotiationResult}
                     </div>
                   )}
@@ -406,7 +544,7 @@ export default function App() {
                   {LOCATIONS[gatheringLocation].ingredients.map(id => (
                     <div key={id} className="flex items-center justify-between border-b border-slate-800 pb-2">
                       <div className="text-sm">
-                        {INGREDIENTS[id].icon} {INGREDIENTS[id].name} <span className="text-[10px] text-slate-500">(重さ: {INGREDIENTS[id].weight}kg)</span>
+                        {INGREDIENTS[id].icon} {INGREDIENTS[id].name} <span className="text-[10px] text-slate-500">({INGREDIENTS[id].weight}kg)</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <input 
@@ -423,28 +561,28 @@ export default function App() {
                     </div>
                   ))}
                   
-                  {/* レシピリスト（未取得のみ） */}
-                  {LOCATIONS[gatheringLocation].recipes.filter(r => !unlockedRecipes.includes(r)).map(rId => (
-                    <div key={`recipe_${rId}`} className="flex items-center justify-between border border-amber-900/50 bg-amber-900/20 p-2 rounded-lg">
+                  {/* ランダム出現したレシピ */}
+                  {gatheringSpawnedRecipe && (
+                    <div className="flex items-center justify-between border border-amber-900/50 bg-amber-900/20 p-2 rounded-lg">
                       <div className="text-sm text-amber-200">
-                        📜 {POTIONS[rId].name}のレシピ <span className="text-[10px] text-amber-500/70">(重さ: {RECIPE_WEIGHT}kg)</span>
+                        📜 {POTIONS[gatheringSpawnedRecipe].name}のレシピ <span className="text-[10px] text-amber-500/70">({RECIPE_WEIGHT}kg)</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <input 
-                          type="range" min="0" max="1" value={gatheringCart[`recipe_${rId}`]||0} 
+                          type="range" min="0" max="1" value={gatheringCart[`recipe_${gatheringSpawnedRecipe}`]||0} 
                           onChange={(e) => {
                             const newVal = parseInt(e.target.value);
-                            const testCart = {...gatheringCart, [`recipe_${rId}`]: newVal};
+                            const testCart = {...gatheringCart, [`recipe_${gatheringSpawnedRecipe}`]: newVal};
                             if (getWeight(testCart) <= MAX_WEIGHT) setGatheringCart(testCart);
                           }}
                           className="w-12 accent-amber-500"
                         />
-                        <span className="text-xs w-6 text-right text-amber-400 font-bold">{gatheringCart[`recipe_${rId}`]||0}</span>
+                        <span className="text-xs w-6 text-right text-amber-400 font-bold">{gatheringCart[`recipe_${gatheringSpawnedRecipe}`]||0}</span>
                       </div>
                     </div>
-                  ))}
+                  )}
                 </div>
-                <button onClick={finishGathering} className="w-full py-3 bg-blue-600 rounded-xl font-bold" disabled={getWeight(gatheringCart)>MAX_WEIGHT}>カバンを閉じて帰る</button>
+                <button onClick={finishGathering} className="w-full py-3 bg-blue-600 rounded-xl font-bold" disabled={getWeight(gatheringCart)>MAX_WEIGHT}>帰る</button>
               </div>
             ) : (
               <div className="relative w-full aspect-square bg-amber-900/10 rounded-xl border border-amber-900/30 overflow-hidden shadow-inner">
@@ -464,7 +602,7 @@ export default function App() {
             )}
 
             {mysteriousPowder > 0 && !unlockedLocations.includes('secret') && (
-              <button onClick={() => { setUnlockedLocations([...unlockedLocations, 'secret']); setMysteriousPowder(prev => prev - 1); showMsg("秘境の場所が浮かび上がった！", "success"); }} className="mt-4 w-full p-3 bg-fuchsia-900/30 border border-fuchsia-500/50 rounded-xl text-fuchsia-200 text-xs font-bold animate-pulse">不思議な粉を地図に撒く (残り{mysteriousPowder})</button>
+              <button onClick={() => { setUnlockedLocations([...unlockedLocations, 'secret']); setMysteriousPowder(prev => prev - 1); showMsg("秘境の場所が浮かび上がった！", "success"); }} className="mt-4 w-full p-3 bg-fuchsia-900/30 border border-fuchsia-500/50 rounded-xl text-fuchsia-200 text-xs font-bold animate-pulse">不思議な粉を撒く (残り{mysteriousPowder})</button>
             )}
           </div>
         )}
@@ -478,7 +616,7 @@ export default function App() {
             <h3 className="text-lg font-bold mb-4 border-b border-slate-700 pb-2">在庫・持ち物</h3>
             <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto">
               <div className="col-span-2 text-xs text-amber-500 font-bold mb-1">【ポーション】</div>
-              {Object.entries(potions).map(([id, qty]) => qty > 0 && <div key={id} className="bg-slate-900 p-2 rounded-xl flex items-center gap-2"><span>{POTIONS[id].icon}</span><span className="text-xs">{POTIONS[id].name}</span><span className="ml-auto font-bold">x{qty}</span></div>)}
+              {Object.entries(potions).map(([id, qty]) => qty > 0 && <div key={id} className="bg-slate-900 p-2 rounded-xl flex items-center gap-2"><span>{id==='mystery'?'🧪':POTIONS[id]?.icon}</span><span className="text-xs">{id==='mystery'?'？？？のポーション':POTIONS[id]?.name}</span><span className="ml-auto font-bold">x{qty}</span></div>)}
               <div className="col-span-2 text-xs text-blue-400 font-bold mt-4 mb-1">【材料】</div>
               {Object.entries(inventory).map(([id, qty]) => qty > 0 && <div key={id} className="bg-slate-900 p-2 rounded-xl flex items-center gap-2"><span>{INGREDIENTS[id]?.icon}</span><span className="text-xs">{INGREDIENTS[id]?.name}</span><span className="ml-auto font-bold">x{qty}</span></div>)}
             </div>
@@ -516,7 +654,9 @@ export default function App() {
               <p className="text-xs text-slate-500 mb-2">採取可能なアイテム:</p>
               <div className="flex flex-wrap gap-2">
                 {mapDetail.ingredients.map(i => <span key={i} className="bg-slate-900 px-2 py-1 rounded-lg text-[10px]">{INGREDIENTS[i].icon} {INGREDIENTS[i].name}</span>)}
-                {mapDetail.recipes.filter(r => !unlockedRecipes.includes(r)).map(r => <span key={r} className="bg-amber-900/40 text-amber-200 px-2 py-1 rounded-lg text-[10px] border border-amber-500/50">📜 未知のレシピ</span>)}
+                {mapDetail.recipes.filter(r => !unlockedRecipes.includes(r)).length > 0 && (
+                  <span className="bg-amber-900/40 text-amber-200 px-2 py-1 rounded-lg text-[10px] border border-amber-500/50">📜 未知のレシピ (低確率)</span>
+                )}
               </div>
             </div>
             <button onClick={() => startGathering(mapDetail)} className="w-full py-4 bg-blue-600 rounded-2xl font-bold shadow-xl">出発する</button>
