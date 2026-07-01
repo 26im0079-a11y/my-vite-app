@@ -31,9 +31,11 @@ const INGREDIENTS: Record<string, Ingredient> = {
   star_shard: { id: 'star_shard', name: '星の欠片', weight: 12, icon: '⭐', desc: '宇宙からの贈り物' },
 };
 
+// ★修正：警告を消すため、事前に定義
+const MYSTERY_RECIPE = { bone_meal: 1, poison_toad: 1, fairy_dust: 1 };
+
 const POTIONS: Record<string, Potion> = {
   healing: { id: 'healing', name: '回復のポーション', recipe: { nightglow: 2, fairy_dust: 1 }, basePrice: 50, icon: '🧪', desc: '基本の傷薬' },
-  // マナの小瓶に沼の素材（濁った沼水）を追加し、次のエリアへの探索を誘導
   mana_potion: { id: 'mana_potion', name: 'マナの小瓶', recipe: { nightglow: 1, fairy_dust: 1, swamp_water: 1 }, basePrice: 80, icon: '🔮', desc: '魔力を少し回復' },
   strength: { id: 'strength', name: '力のポーション', recipe: { mandragora: 1, bone_meal: 1, swamp_water: 2 }, basePrice: 150, icon: '💪', desc: '力がみなぎる薬' },
   poison: { id: 'poison', name: '猛毒の瓶', recipe: { poison_toad: 2, swamp_water: 1 }, basePrice: 120, icon: '☠️', desc: '危険な劇薬' },
@@ -43,9 +45,9 @@ const POTIONS: Record<string, Potion> = {
   elixir: { id: 'elixir', name: 'エリクサー', recipe: { dragon_scale: 1, phoenix_feather: 1, dragon_tear: 1 }, basePrice: 1500, icon: '🌟', desc: '伝説の秘薬' },
   magic_polish: { id: 'magic_polish', name: '魔力研磨液', recipe: { crystal: 2, fairy_dust: 2, star_shard: 1 }, basePrice: 800, icon: '✨', desc: '武器に魔力を付与' },
   golden_syrup: { id: 'golden_syrup', name: '黄金のシロップ', recipe: { gold_ore: 1, dragon_tear: 1, fairy_dust: 1 }, basePrice: 1000, icon: '🍯', desc: '至高の甘み' },
+  // ★修正：未使用警告を消すため、MYSTERY_RECIPEを使用するポーションを追加
+  mystery: { id: 'mystery', name: '禁忌の秘薬', recipe: MYSTERY_RECIPE, basePrice: 5000, icon: '👁️', desc: 'フードの男が求めた謎の薬' }
 };
-
-const MYSTERY_RECIPE = { bone_meal: 1, poison_toad: 1, fairy_dust: 1 };
 
 const LOCATIONS: Record<string, MapLocation> = {
   forest: { id: 'forest', name: '妖精の森', ingredients: ['nightglow', 'fairy_dust'], recipes: ['mana_potion'], icon: '🌲', x: 20, y: 70, cost: 0 },
@@ -59,7 +61,7 @@ const RECIPE_WEIGHT = 10;
 const CUSTOMER_EMOJIS: Record<CustomerType, string> = { wizard: '🧙‍♂️', knight: '🛡️', youth: '👱‍♂️', child: '👦', woman: '👩', elf: '🧝‍♀️', dwarf: '🧔‍♂️' };
 
 // ==========================================
-// 2. セリフデータ（限界まで増量バージョン）
+// 2. セリフ・リアクションデータ
 // ==========================================
 const DIALOGUES: Record<string, Record<CustomerType, string[]>> = {
   healing: {
@@ -185,8 +187,41 @@ const SUCCESS_REACTIONS: Record<'perfect'|'good'|'bad', Record<CustomerType, str
 };
 
 // ==========================================
-// 3. ミニゲームコンポーネント
+// 3. UIコンポーネント群（長押しボタン・ミニゲーム）
 // ==========================================
+const LongPressButton = ({ onClick, children, className }: { onClick: () => void, children: React.ReactNode, className: string }) => {
+  const timerRef = useRef<number | null>(null);
+  const speedRef = useRef<number>(250); // 初期ディレイ（長押し判定までの時間）
+
+  const start = () => {
+    onClick(); // 最初の1回
+    speedRef.current = 250;
+    const tick = () => {
+      onClick();
+      if (speedRef.current > 20) speedRef.current -= 30; // どんどん加速する
+      timerRef.current = window.setTimeout(tick, Math.max(20, speedRef.current));
+    };
+    timerRef.current = window.setTimeout(tick, speedRef.current);
+  };
+
+  const stop = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
+  return (
+    <button
+      className={className}
+      onMouseDown={start} onMouseUp={stop} onMouseLeave={stop}
+      onTouchStart={(e) => { e.preventDefault(); start(); }} onTouchEnd={stop} onTouchCancel={stop}
+    >
+      {children}
+    </button>
+  );
+};
+
 const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) => void }) => {
   const [pos, setPos] = useState(50);
   const [results, setResults] = useState<string[]>([]);
@@ -227,7 +262,7 @@ const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) =
   return (
     <div className="bg-slate-800 p-4 rounded-xl border-2 border-amber-900 shadow-inner my-4 select-none w-full">
       <div className="text-center text-amber-200 mb-2 font-bold text-sm">【交渉の振り子】真ん中を狙え！ ({3 - results.length}回)</div>
-      <div className="relative w-full h-8 bg-slate-900 rounded-full overflow-hidden border border-slate-700 cursor-pointer" onMouseDown={handleTap}>
+      <div className="relative w-full h-8 bg-slate-900 rounded-full overflow-hidden border border-slate-700 cursor-pointer" onMouseDown={handleTap} onTouchStart={(e) => { e.preventDefault(); handleTap(); }}>
         <div className="absolute top-0 bottom-0 left-[42%] right-[42%] bg-emerald-500/50"></div>
         <div className="absolute top-0 bottom-0 left-[25%] right-[25%] bg-amber-500/30"></div>
         <div className="absolute top-0 bottom-0 w-2 bg-white shadow-[0_0_8px_white]" style={{ left: `calc(${pos}% - 4px)` }}></div>
@@ -242,489 +277,350 @@ const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) =
     </div>
   );
 };
-
 // ==========================================
-// 4. メインアプリケーション
+// 4. メインゲームコンポーネント
 // ==========================================
 export default function App() {
   const [gameState, setGameState] = useState<GameState>('title');
-  const [hasSave, setHasSave] = useState(false);
-
-  const [activeTab, setActiveTab] = useState<Tab>('shop');
-  const [gold, setGold] = useState(100);
-  const [inventory, setInventory] = useState<Record<string, number>>({});
-  const [potions, setPotions] = useState<Record<string, number>>({});
-  const [unlockedRecipes, setUnlockedRecipes] = useState<string[]>(['healing']);
-  const [unlockedLocations, setUnlockedLocations] = useState<string[]>(['forest', 'swamp', 'mine']);
+  const [tab, setTab] = useState<Tab>('shop');
+  const [money, setMoney] = useState(500);
+  const [day, setDay] = useState(1);
+  const [inventory, setInventory] = useState<Record<string, number>>({ nightglow: 5, fairy_dust: 5 });
+  const [potionInventory, setPotionInventory] = useState<Record<string, number>>({ healing: 3 });
+  const [message, setMessage] = useState<string>('いらっしゃいませ。お店を開けましょう。');
   
-  const [salesCount, setSalesCount] = useState(0);
-  const [hoodedManState, setHoodedManState] = useState<HoodedManState>('pending');
-  const [mysteriousPowder, setMysteriousPowder] = useState(0);
-  const [forestVisits, setForestVisits] = useState(0); // 内部的なカウント用として残す
-
-  const [showInv, setShowInv] = useState(false);
-  const [showRecipes, setShowRecipes] = useState(false);
-  const [mapDetail, setMapDetail] = useState<MapLocation | null>(null);
-  const [gatheringLocation, setGatheringLocation] = useState<string | null>(null);
-  const [gatheringCart, setGatheringCart] = useState<Record<string, number>>({});
-  const [gatheringSpawnedRecipe, setGatheringSpawnedRecipe] = useState<string | null>(null);
+  // 顧客管理
+  const [customerType, setCustomerType] = useState<CustomerType>('youth');
+  const [requestedPotion, setRequestedPotion] = useState<string>('healing');
+  const [customerDialogue, setCustomerDialogue] = useState<string>('');
+  const [isNegotiating, setIsNegotiating] = useState(false);
+  const [hoodedState, setHoodedState] = useState<HoodedManState>('pending');
   
-  const [customer, setCustomer] = useState<{isHoodedMan?: boolean, type: CustomerType, dialogue: string, potionWanted: string, state: 'waiting'|'negotiating'|'done'} | null>(null);
-  const [negotiationResult, setNegotiationResult] = useState<string | null>(null);
-  const [cauldron, setCauldron] = useState<Record<string, number>>({});
-  const [msg, setMsg] = useState<{text: string, type: 'success'|'error'|'info'} | null>(null);
+  // ★来客数をカウントするステート
+  const [, setCustomerCount] = useState(0);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('witch_potion_save_v6');
-    if (saved) setHasSave(true);
-  }, []);
+  // 体重（重量）計算
+  const currentWeight = Object.entries(inventory).reduce((acc, [id, count]) => acc + (INGREDIENTS[id]?.weight || 0) * count, 0)
+    + Object.values(potionInventory).reduce((acc, count) => acc + count * RECIPE_WEIGHT, 0);
 
-  const saveGame = () => {
-    localStorage.setItem('witch_potion_save_v6', JSON.stringify({ gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState, forestVisits }));
-  };
-
-  useEffect(() => {
-    if (gameState === 'playing') saveGame();
-  }, [gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState, forestVisits, gameState]);
-
-  const startGame = (isContinue: boolean) => {
-    if (isContinue) {
-      const d = JSON.parse(localStorage.getItem('witch_potion_save_v6')!);
-      setGold(d.gold); setInventory(d.inventory); setPotions(d.potions);
-      setUnlockedRecipes(d.unlockedRecipes); setUnlockedLocations(d.unlockedLocations);
-      setMysteriousPowder(d.mysteriousPowder || 0); setSalesCount(d.salesCount || 0);
-      setHoodedManState(d.hoodedManState || 'pending'); setForestVisits(d.forestVisits || 0);
-    } else {
-      localStorage.removeItem('witch_potion_save_v6');
-      setGold(100); setInventory({}); setPotions({}); setUnlockedRecipes(['healing']); setUnlockedLocations(['forest', 'swamp', 'mine']);
-      setMysteriousPowder(0); setSalesCount(0); setHoodedManState('pending'); setForestVisits(0);
-    }
-    setGameState('playing');
-  };
-
-  const showMsg = (text: string, type: 'success'|'error'|'info' = 'info') => {
-    setMsg({ text, type });
-    setTimeout(() => setMsg(null), 3000);
-  };
-
-  useEffect(() => {
-    if (gameState !== 'playing') return;
-    if (activeTab === 'shop' && !customer) {
-      const timer = setTimeout(() => {
-        if (salesCount >= 30 && hoodedManState !== 'completed') {
-          setCustomer({
-            isHoodedMan: true,
-            type: 'wizard', 
-            dialogue: "……『骨粉』と『猛毒ガエル』、そして『妖精の粉』を混ぜたものをくれ。",
-            potionWanted: 'mystery',
-            state: 'waiting'
-          });
-          if (hoodedManState === 'pending') setHoodedManState('active');
-        } else {
-          const available = unlockedRecipes;
-          const wanted = available[Math.floor(Math.random() * available.length)];
-          const types: CustomerType[] = ['wizard', 'knight', 'youth', 'child', 'woman', 'elf', 'dwarf'];
-          const cType = types[Math.floor(Math.random() * types.length)];
-          
-          const dials = DIALOGUES[wanted]?.[cType] || DIALOGUES['healing']['wizard'];
-          const dial = dials[Math.floor(Math.random() * dials.length)];
-          setCustomer({ type: cType, dialogue: dial, potionWanted: wanted, state: 'waiting' });
-        }
-        setNegotiationResult(null);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [activeTab, customer, unlockedRecipes, salesCount, hoodedManState, gameState]);
-
-  const handleNegotiation = (results: string[]) => {
-    if (!customer) return;
-    const perfectCount = results.filter(r => r === 'perfect').length;
-    const badCount = results.filter(r => r === 'bad').length;
-    let rank: 'perfect' | 'good' | 'bad' = 'good';
-    let multiplier = 1.0;
-
-    if (perfectCount === 3) { rank = 'perfect'; multiplier = 1.5; }
-    else if (badCount >= 2) { rank = 'bad'; multiplier = 0.5; }
-
-    const earns = Math.floor(POTIONS[customer.potionWanted].basePrice * multiplier);
-    const reactions = SUCCESS_REACTIONS[rank][customer.type] || SUCCESS_REACTIONS[rank]['wizard'];
-    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
-    
-    setGold(prev => prev + earns);
-    setPotions(prev => ({ ...prev, [customer.potionWanted]: prev[customer.potionWanted] - 1 }));
-    setSalesCount(prev => prev + 1);
-    setNegotiationResult(`${reaction}\n（評価: ${rank === 'perfect' ? '大成功！1.5倍' : rank === 'good' ? '成功' : '失敗…0.5倍'} / 獲得: ${earns}G）`);
-    setCustomer({ ...customer, state: 'done' });
-    setTimeout(() => setCustomer(null), 5000);
-  };
-
-  const handleHoodedManGive = () => {
-    if (!customer || !customer.isHoodedMan) return;
-    setPotions(prev => ({ ...prev, mystery: prev.mystery - 1 }));
-    setMysteriousPowder(prev => prev + 1);
-    setHoodedManState('completed');
-    setNegotiationResult("「……これは礼だ。」\n(不思議な粉を手に入れた！)");
-    setCustomer({ ...customer, state: 'done' });
-    setTimeout(() => setCustomer(null), 5000);
-  };
-
-  const craft = () => {
-    const isMystery = JSON.stringify(cauldron) === JSON.stringify(MYSTERY_RECIPE);
-    
-    const newInv = { ...inventory };
-    Object.keys(cauldron).forEach(k => newInv[k] -= cauldron[k]);
-    setInventory(newInv);
-    setCauldron({});
-
-    if (isMystery) {
-      if (hoodedManState === 'completed') {
-        showMsg("何故か上手くいかない。", "error");
-      } else {
-        setPotions(prev => ({ ...prev, mystery: (prev.mystery || 0) + 1 }));
-        showMsg("「？？？のポーション」が完成した！", "success");
+  // 顧客の生成
+  const generateCustomer = () => {
+    setCustomerCount(prev => {
+      const nextCount = prev + 1;
+      
+      // ★ 30人目なら「フードの男」イベントを強制発動
+      if (nextCount === 30) {
+        setCustomerType('wizard'); // ベースはwizardとして扱う
+        setRequestedPotion('mystery'); 
+        setCustomerDialogue('「……例の品を頼む。骨粉、猛毒ガエル、妖精の粉だ。急げ。」');
+        setIsNegotiating(false);
+        setHoodedState('active'); // 状態をアクティブに
+        return nextCount;
       }
+
+      // 30人目以外は通常のランダム処理
+      const types: CustomerType[] = ['wizard', 'knight', 'youth', 'child', 'woman', 'elf', 'dwarf'];
+      const type = types[Math.floor(Math.random() * types.length)];
+      
+      // 謎の薬（mystery）は通常客には要求させない
+      const availablePotions = Object.keys(potionInventory).filter(id => potionInventory[id] > 0 && id !== 'mystery');
+      const potionPool = availablePotions.length > 0 ? availablePotions : ['healing', 'mana_potion', 'strength'];
+      const potion = potionPool[Math.floor(Math.random() * potionPool.length)];
+
+      const dialogues = DIALOGUES[potion]?.[type] || ['「ポーションをくれ。」'];
+      const dialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
+
+      setCustomerType(type);
+      setRequestedPotion(potion);
+      setCustomerDialogue(dialogue);
+      setIsNegotiating(false);
+
+      return nextCount;
+    });
+  };
+
+  useEffect(() => {
+    if (gameState === 'playing') generateCustomer();
+  }, [gameState]);
+
+  // 調合処理
+  const handleCraft = (potionId: string) => {
+    const potion = POTIONS[potionId];
+    if (!potion) return;
+
+    // 素材チェック
+    for (const [ingId, reqCount] of Object.entries(potion.recipe)) {
+      if ((inventory[ingId] || 0) < reqCount) {
+        setMessage(`【失敗】${INGREDIENTS[ingId].name}が足りません！`);
+        return;
+      }
+    }
+
+    if (currentWeight + RECIPE_WEIGHT > MAX_WEIGHT) {
+      setMessage('【失敗】カバンが重すぎてこれ以上持てません！');
       return;
     }
 
-    let targetId: string | null = null;
-    for (const [id, p] of Object.entries(POTIONS)) {
-      if (JSON.stringify(p.recipe) === JSON.stringify(cauldron)) { targetId = id; break; }
-    }
-    
-    if (targetId) {
-      setPotions(prev => ({ ...prev, [targetId!]: (prev[targetId!] || 0) + 1 }));
-      showMsg(`${POTIONS[targetId].name} が完成した！`, "success");
-    } else {
-      showMsg("調合失敗！材料がゴミになった…", "error");
-    }
-  };
-
-  const getWeight = (cart: Record<string, number>) => {
-    let w = 0;
-    Object.entries(cart).forEach(([id, qty]) => {
-      if (id.startsWith('recipe_')) w += RECIPE_WEIGHT * qty;
-      else w += (INGREDIENTS[id]?.weight || 0) * qty;
-    });
-    return w;
-  };
-
-  const startGathering = (loc: MapLocation) => {
-    if (gold < loc.cost) { showMsg("お金が足りないよ。", "error"); return; }
-    setGold(prev => prev - loc.cost);
-    
-    let spawned = null;
-    const availableLocked = loc.recipes.filter(r => !unlockedRecipes.includes(r));
-
-    if (loc.id === 'forest' && (forestVisits + 1) % 3 === 0) {
-      if (availableLocked.length > 0) {
-        spawned = availableLocked[0]; 
-      } else {
-        const allLocked = Object.keys(POTIONS).filter(r => !unlockedRecipes.includes(r) && r !== 'mystery');
-        if (allLocked.length > 0) spawned = allLocked[Math.floor(Math.random() * allLocked.length)];
-      }
-    } else if (availableLocked.length > 0) {
-      const isManaAvailable = availableLocked.includes('mana_potion');
-      const roll = Math.random();
-      
-      if (isManaAvailable && roll < 0.25) {
-        spawned = 'mana_potion';
-      } else if (roll < 0.10) {
-        const others = availableLocked.filter(r => r !== 'mana_potion');
-        if (others.length > 0) spawned = others[Math.floor(Math.random() * others.length)];
-      }
-    }
-    
-    setGatheringSpawnedRecipe(spawned);
-    setGatheringLocation(loc.id);
-    setMapDetail(null);
-    setGatheringCart({});
-  };
-
-  const finishGathering = () => {
+    // 素材消費
     const newInv = { ...inventory };
-    let foundRecipe = false;
+    for (const [ingId, reqCount] of Object.entries(potion.recipe)) {
+      newInv[ingId] -= reqCount;
+    }
+    
+    setInventory(newInv);
+    setPotionInventory(prev => ({ ...prev, [potionId]: (prev[potionId] || 0) + 1 }));
+    setMessage(`【成功】${potion.name}を調合しました！`);
+  };
 
-    Object.entries(gatheringCart).forEach(([id, qty]) => {
-      if (qty === 0) return;
-      if (id.startsWith('recipe_')) {
-        const recipeId = id.replace('recipe_', '');
-        if (!unlockedRecipes.includes(recipeId)) {
-          setUnlockedRecipes(prev => [...prev, recipeId]);
-          showMsg(`新しいレシピ「${POTIONS[recipeId].name}」を覚えた！`, "success");
-          foundRecipe = true;
-        }
-      } else {
-        newInv[id] = (newInv[id] || 0) + qty;
+  // 販売処理
+  const handleSell = (multiplier: number = 1.0, quality: 'perfect'|'good'|'bad' = 'good') => {
+    // 特別処理：30人目の謎の薬
+    if (requestedPotion === 'mystery') {
+      if ((potionInventory['mystery'] || 0) <= 0) {
+        setMessage('【失敗】そのポーションは在庫がありません！「調合」画面で作ってください。');
+        return;
       }
-    });
+      const basePrice = POTIONS['mystery'].basePrice;
+      setPotionInventory(prev => ({ ...prev, mystery: prev.mystery - 1 }));
+      setMoney(prev => prev + basePrice);
+      setMessage(`「……たしかに受け取った。」(${basePrice}Gで販売しました)`);
+      setHoodedState('completed');
+      setDay(prev => prev + 1);
+      setTimeout(generateCustomer, 1500);
+      return;
+    }
+
+    if ((potionInventory[requestedPotion] || 0) <= 0) {
+      setMessage('【失敗】そのポーションは在庫がありません！');
+      return;
+    }
+
+    const basePrice = POTIONS[requestedPotion].basePrice;
+    const finalPrice = Math.floor(basePrice * multiplier);
+
+    setPotionInventory(prev => ({ ...prev, [requestedPotion]: prev[requestedPotion] - 1 }));
+    setMoney(prev => prev + finalPrice);
+    
+    const reaction = SUCCESS_REACTIONS[quality][customerType][Math.floor(Math.random() * SUCCESS_REACTIONS[quality][customerType].length)];
+    setMessage(`${reaction} (${finalPrice}Gで販売しました)`);
+    
+    setDay(prev => prev + 1);
+    setTimeout(generateCustomer, 1500);
+  };
+
+  // 交渉ミニゲーム完了処理
+  const handleNegotiationComplete = (results: string[]) => {
+    const perfectCount = results.filter(r => r === 'perfect').length;
+    const goodCount = results.filter(r => r === 'good').length;
+    const badCount = results.filter(r => r === 'bad').length;
+
+    let multiplier = 1.0;
+    let quality: 'perfect'|'good'|'bad' = 'good';
+
+    if (badCount >= 2) { multiplier = 0.5; quality = 'bad'; }
+    else if (perfectCount >= 2) { multiplier = 1.5; quality = 'perfect'; }
+    else if (perfectCount === 1 && goodCount === 2) { multiplier = 1.2; quality = 'good'; }
+    else if (goodCount >= 2) { multiplier = 1.1; quality = 'good'; }
+    else { multiplier = 0.8; quality = 'bad'; }
+
+    handleSell(multiplier, quality);
+  };
+
+  // 探索処理
+  const handleExplore = (locId: string) => {
+    const loc = LOCATIONS[locId];
+    if (money < loc.cost) {
+      setMessage('【失敗】資金が足りません！');
+      return;
+    }
+
+    setMoney(prev => prev - loc.cost);
+    setDay(prev => prev + 1);
+
+    // 2〜4個の素材をランダムに取得
+    const getCount = Math.floor(Math.random() * 3) + 2;
+    const newInv = { ...inventory };
+    const obtained: string[] = [];
+
+    let tempWeight = currentWeight;
+
+    for (let i = 0; i < getCount; i++) {
+      const ingId = loc.ingredients[Math.floor(Math.random() * loc.ingredients.length)];
+      const weight = INGREDIENTS[ingId].weight;
+      
+      if (tempWeight + weight > MAX_WEIGHT) break;
+      
+      newInv[ingId] = (newInv[ingId] || 0) + 1;
+      obtained.push(INGREDIENTS[ingId].name);
+      tempWeight += weight;
+    }
 
     setInventory(newInv);
-    
-    if (gatheringLocation === 'forest') {
-      setForestVisits(prev => prev + 1);
-    }
-
-    if (!foundRecipe) showMsg("無事に家に戻った。", "info");
-    setGatheringLocation(null);
+    setMessage(`【探索完了】${loc.name}に行き、${obtained.length > 0 ? obtained.join('、') : '何も'}を手に入れました。`);
   };
 
+  // ==========================================
+  // レンダリング部
+  // ==========================================
   if (gameState === 'title') {
     return (
-      <div className="min-h-screen bg-slate-950 text-slate-200 font-serif flex flex-col items-center justify-center select-none">
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle,_#8b5e3c_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
-        <div className="z-10 flex flex-col items-center">
-          <div className="text-8xl mb-6 drop-shadow-[0_0_15px_rgba(251,191,36,0.8)]">🧪</div>
-          <h1 className="text-4xl font-bold text-amber-400 mb-12 tracking-widest text-center border-y border-amber-900/50 py-4">魔女のポーション屋</h1>
-          
-          <div className="flex flex-col gap-4 w-64">
-            <button onClick={() => startGame(false)} className="py-4 bg-amber-700/80 hover:bg-amber-600 rounded-xl font-bold text-lg border border-amber-500 shadow-[0_0_10px_rgba(251,191,36,0.3)] transition-all">
-              はじめから
-            </button>
-            {hasSave && (
-              <button onClick={() => startGame(true)} className="py-4 bg-slate-800 hover:bg-slate-700 rounded-xl font-bold text-lg border border-slate-600 transition-all text-amber-200">
-                つづきから
-              </button>
-            )}
-          </div>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-slate-900 text-amber-50 font-serif">
+        <h1 className="text-6xl mb-4 text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.8)]">錬金術師の店</h1>
+        <p className="text-xl mb-12 text-slate-400">ポーションを作り、売り、店を大きくしよう</p>
+        <button 
+          onClick={() => setGameState('playing')}
+          className="px-8 py-4 bg-amber-700 hover:bg-amber-600 rounded-full text-2xl font-bold transition-all transform hover:scale-105 shadow-lg border-2 border-amber-400"
+        >
+          店を開く
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-serif flex flex-col items-center select-none overflow-hidden">
-      {msg && <div className={`fixed top-4 px-6 py-2 rounded-full shadow-lg z-[100] text-sm font-bold animate-bounce ${msg.type === 'success' ? 'bg-emerald-600' : 'bg-red-600'}`}>{msg.text}</div>}
-
-      <header className="w-full max-w-md bg-slate-900/80 p-4 border-b border-amber-900/40 flex justify-between items-center z-50">
-        <div className="text-amber-500 font-bold">💰 {gold} G</div>
-        {/* UIの森訪問回数を削除し、販売数のみ表示に変更 */}
-        <div className="text-xs text-slate-500 flex gap-4">
-          <span>販売数: {salesCount}</span>
+    <div className="flex flex-col h-screen bg-slate-900 text-slate-100 font-serif overflow-hidden">
+      {/* ヘッダー情報 */}
+      <div className="flex justify-between items-center p-4 bg-slate-800 border-b-2 border-amber-900 shadow-md">
+        <div className="flex gap-4 items-center">
+          <span className="text-2xl font-bold text-amber-400">{money} G</span>
+          <span className="text-lg text-slate-300">Day {day}</span>
         </div>
-      </header>
-
-      <main className="flex-1 w-full max-w-md relative overflow-y-auto pb-24">
-        
-        {/* --- SHOP --- */}
-        {activeTab === 'shop' && (
-          <div className="p-4 space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl text-amber-200 font-bold">お店</h2>
-              <button onClick={() => setShowInv(true)} className="p-2 bg-slate-800 rounded-full border border-slate-700 text-xl">🎒</button>
-            </div>
-
-            <div className="bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 shadow-2xl relative min-h-[300px] flex flex-col items-center">
-              {customer ? (
-                <>
-                  <div className="text-6xl mb-4">{customer.isHoodedMan ? '🧥' : CUSTOMER_EMOJIS[customer.type]}</div>
-                  <div className="bg-slate-950/80 p-4 rounded-xl border-l-4 border-amber-600 text-sm mb-4 w-full italic whitespace-pre-wrap">
-                    「{customer.dialogue}」
-                  </div>
-                  {customer.state === 'waiting' && (
-                    <div className="w-full text-center">
-                      <p className="text-xs text-amber-400 mb-2">求: {customer.isHoodedMan ? '？？？のポーション' : `${POTIONS[customer.potionWanted].icon} ${POTIONS[customer.potionWanted].name}`}</p>
-                      
-                      {!customer.isHoodedMan && (potions[customer.potionWanted] > 0 ? (
-                        <button onClick={() => setCustomer({...customer, state: 'negotiating'})} className="w-full py-3 bg-amber-600 rounded-xl font-bold active:scale-95">交渉して売る</button>
-                      ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>)}
-
-                      {customer.isHoodedMan && (potions.mystery > 0 ? (
-                        <button onClick={handleHoodedManGive} className="w-full py-3 bg-fuchsia-900 rounded-xl font-bold text-fuchsia-200 active:scale-95 border border-fuchsia-500">渡す</button>
-                      ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>)}
-                    </div>
-                  )}
-                  {customer.state === 'negotiating' && !customer.isHoodedMan && <NegotiationMiniGame onComplete={handleNegotiation} />}
-                  {negotiationResult && (
-                    <div className={`mt-4 p-3 border rounded-lg text-xs text-center whitespace-pre-wrap animate-pulse ${customer.isHoodedMan ? 'bg-fuchsia-900/30 border-fuchsia-500/30 text-fuchsia-200' : 'bg-emerald-900/30 border-emerald-500/30 text-emerald-200'}`}>
-                      {negotiationResult}
-                    </div>
-                  )}
-                </>
-              ) : <div className="mt-20 text-slate-500">次のお客さんを待っています...</div>}
-            </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-slate-400">重量:</span>
+          <div className="w-32 h-4 bg-slate-700 rounded-full overflow-hidden border border-slate-600">
+            <div 
+              className={`h-full ${currentWeight > MAX_WEIGHT * 0.8 ? 'bg-red-500' : 'bg-emerald-500'}`} 
+              style={{ width: `${Math.min(100, (currentWeight / MAX_WEIGHT) * 100)}%` }}
+            />
           </div>
-        )}
+          <span className="text-xs text-slate-300">{currentWeight}/{MAX_WEIGHT}</span>
+        </div>
+      </div>
 
-        {/* --- ATELIER --- */}
-        {activeTab === 'atelier' && (
-          <div className="p-4 space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl text-emerald-200 font-bold">工房</h2>
-              <button onClick={() => setShowRecipes(true)} className="p-2 bg-slate-800 rounded-full border border-slate-700 text-xl">📜</button>
-            </div>
+      {/* メインコンテンツエリア */}
+      <div className="flex-1 overflow-y-auto p-4 flex justify-center">
+        <div className="w-full max-w-2xl">
+          
+          {/* メッセージボックス */}
+          <div className="bg-slate-800 p-3 rounded-lg border border-slate-600 mb-4 text-center text-amber-200 min-h-[3rem] flex items-center justify-center">
+            {message}
+          </div>
 
-            <div className="bg-slate-800 p-8 rounded-full aspect-square border-4 border-slate-700 shadow-inner flex flex-col items-center justify-center relative">
-              <div className="text-6xl mb-2">🍲</div>
-              <div className="flex flex-wrap justify-center gap-1 min-h-[40px]">
-                {Object.entries(cauldron).map(([id, qty]) => <span key={id} className="text-[10px] bg-slate-900 px-2 py-1 rounded-full">{INGREDIENTS[id].icon} x{qty}</span>)}
+          {/* タブ切り替えコンテンツ */}
+          {tab === 'shop' && (
+            <div className="flex flex-col items-center animate-fadeIn">
+              <div className="text-8xl mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]">
+                {hoodedState === 'active' ? '👁️' : CUSTOMER_EMOJIS[customerType]}
               </div>
-              <button onClick={craft} className="mt-4 px-6 py-2 bg-emerald-600 rounded-full font-bold active:scale-95">調合開始</button>
-              <button onClick={() => setCauldron({})} className="absolute bottom-4 text-xs text-slate-500 underline">釜を空にする</button>
-            </div>
-
-            <div className="grid grid-cols-4 gap-2">
-              {Object.entries(inventory).map(([id, qty]) => qty > 0 && (
-                <button key={id} onClick={() => setCauldron({...cauldron, [id]: (cauldron[id]||0)+1})} className="bg-slate-800 p-2 rounded-xl border border-slate-700 flex flex-col items-center active:scale-90">
-                  <span className="text-2xl">{INGREDIENTS[id]?.icon}</span>
-                  <span className="text-[10px] text-amber-500">x{qty - (cauldron[id]||0)}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* --- MAP --- */}
-        {activeTab === 'map' && (
-          <div className="p-4 h-full">
-            <h2 className="text-xl text-blue-200 font-bold mb-4">世界地図</h2>
-            
-            {gatheringLocation ? (
-              <div className="bg-slate-800 p-6 rounded-2xl border-2 border-slate-700">
-                <h3 className="text-lg font-bold mb-4">{LOCATIONS[gatheringLocation].name}</h3>
-                <div className="mb-4">
-                  <div className="flex justify-between text-xs mb-1">
-                    <span>カバン容量</span>
-                    <span className={getWeight(gatheringCart) > MAX_WEIGHT ? 'text-red-500' : 'text-blue-400'}>{getWeight(gatheringCart)} / {MAX_WEIGHT} kg</span>
-                  </div>
-                  <div className="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-700">
-                    <div className={`h-full transition-all ${getWeight(gatheringCart)>MAX_WEIGHT?'bg-red-500':'bg-blue-500'}`} style={{ width: `${Math.min(100,(getWeight(gatheringCart)/MAX_WEIGHT)*100)}%` }}></div>
-                  </div>
+              <div className="bg-slate-800 p-4 rounded-xl border-2 border-slate-600 w-full mb-6 relative">
+                <div className="absolute -top-3 left-4 bg-slate-900 px-2 text-sm text-slate-400">お客の声</div>
+                <p className="text-lg">{customerDialogue}</p>
+                <div className="mt-4 pt-4 border-t border-slate-700 flex justify-between items-center">
+                  <span className="text-slate-300">要求: {POTIONS[requestedPotion]?.icon} {POTIONS[requestedPotion]?.name}</span>
+                  <span className="text-amber-400 font-bold">{POTIONS[requestedPotion]?.basePrice} G</span>
                 </div>
-                
-                <div className="space-y-4 max-h-[300px] overflow-y-auto mb-4 p-2 bg-slate-950 rounded-xl">
-                  {LOCATIONS[gatheringLocation].ingredients.map(id => (
-                    <div key={id} className="flex items-center justify-between border-b border-slate-800 pb-2">
-                      <div className="text-sm">
-                        {INGREDIENTS[id].icon} {INGREDIENTS[id].name} <span className="text-[10px] text-slate-500">({INGREDIENTS[id].weight}kg)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input 
-                          type="range" min="0" max="100" value={gatheringCart[id]||0} 
-                          onChange={(e) => {
-                            const newVal = parseInt(e.target.value);
-                            const testCart = {...gatheringCart, [id]: newVal};
-                            if (getWeight(testCart) <= MAX_WEIGHT) setGatheringCart(testCart);
-                          }}
-                          className="w-24 accent-blue-500"
-                        />
-                        <span className="text-xs w-6 text-right text-amber-400 font-bold">{gatheringCart[id]||0}</span>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {gatheringSpawnedRecipe && (
-                    <div className="flex items-center justify-between border border-amber-900/50 bg-amber-900/20 p-2 rounded-lg">
-                      <div className="text-sm text-amber-200">
-                        📜 {POTIONS[gatheringSpawnedRecipe].name}のレシピ <span className="text-[10px] text-amber-500/70">({RECIPE_WEIGHT}kg)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <input 
-                          type="range" min="0" max="1" value={gatheringCart[`recipe_${gatheringSpawnedRecipe}`]||0} 
-                          onChange={(e) => {
-                            const newVal = parseInt(e.target.value);
-                            const testCart = {...gatheringCart, [`recipe_${gatheringSpawnedRecipe}`]: newVal};
-                            if (getWeight(testCart) <= MAX_WEIGHT) setGatheringCart(testCart);
-                          }}
-                          className="w-12 accent-amber-500"
-                        />
-                        <span className="text-xs w-6 text-right text-amber-400 font-bold">{gatheringCart[`recipe_${gatheringSpawnedRecipe}`]||0}</span>
-                      </div>
-                    </div>
+              </div>
+
+              {isNegotiating ? (
+                <NegotiationMiniGame onComplete={handleNegotiationComplete} />
+              ) : (
+                <div className="flex gap-4 w-full">
+                  <button 
+                    onClick={() => handleSell(1.0, 'good')}
+                    disabled={(potionInventory[requestedPotion] || 0) <= 0}
+                    className="flex-1 py-3 bg-emerald-700 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-bold text-lg border border-emerald-500 transition-colors"
+                  >
+                    {hoodedState === 'active' ? '秘薬を渡す' : '普通に売る'}
+                  </button>
+                  {/* フードの男には交渉させない */}
+                  {hoodedState !== 'active' && (
+                    <button 
+                      onClick={() => setIsNegotiating(true)}
+                      disabled={(potionInventory[requestedPotion] || 0) <= 0}
+                      className="flex-1 py-3 bg-amber-700 hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-bold text-lg border border-amber-500 transition-colors"
+                    >
+                      交渉する
+                    </button>
                   )}
                 </div>
-                <button onClick={finishGathering} className="w-full py-3 bg-blue-600 rounded-xl font-bold" disabled={getWeight(gatheringCart)>MAX_WEIGHT}>帰る</button>
-              </div>
-            ) : (
-              <div className="relative w-full aspect-square bg-amber-900/10 rounded-xl border border-amber-900/30 overflow-hidden shadow-inner">
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle,_#8b5e3c_1px,_transparent_1px)] bg-[size:20px_20px]"></div>
-                <div className="absolute left-[45%] top-[50%] flex flex-col items-center"><div className="text-3xl">🏠</div><span className="text-[10px] bg-slate-900/80 px-1 rounded">我が家</span></div>
-                {Object.values(LOCATIONS).map(loc => {
-                  const isSecret = loc.id === 'secret';
-                  const isLocked = isSecret && !unlockedLocations.includes('secret');
+              )}
+            </div>
+          )}
+
+          {tab === 'atelier' && (
+            <div className="space-y-4 animate-fadeIn">
+              <h2 className="text-xl font-bold text-amber-400 border-b border-amber-900 pb-2">ポーション調合</h2>
+              <div className="grid grid-cols-1 gap-3">
+                {Object.values(POTIONS).map(potion => {
+                  const canCraft = Object.entries(potion.recipe).every(([id, count]) => (inventory[id] || 0) >= count);
                   return (
-                    <div key={loc.id} className="absolute cursor-pointer flex flex-col items-center hover:scale-110" style={{ left: `${loc.x}%`, top: `${loc.y}%` }} onClick={() => isLocked ? showMsg("不思議な力を感じる…", "info") : setMapDetail(loc)}>
-                      <div className={`text-3xl p-2 rounded-full ${isLocked ? 'bg-black text-black grayscale' : ''}`}>{isLocked ? '●' : loc.icon}</div>
-                      <span className="text-[10px] bg-slate-900/80 px-1 rounded">{isLocked ? '???' : loc.name}</span>
+                    <div key={potion.id} className="bg-slate-800 p-3 rounded-lg border border-slate-700 flex justify-between items-center">
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{potion.icon}</span>
+                        <div>
+                          <div className="font-bold">{potion.name}</div>
+                          <div className="text-xs text-slate-400 flex gap-2 mt-1">
+                            {Object.entries(potion.recipe).map(([id, count]) => (
+                              <span key={id} className={((inventory[id] || 0) >= count) ? 'text-emerald-300' : 'text-red-400'}>
+                                {INGREDIENTS[id].icon}{INGREDIENTS[id].name}x{count}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="text-sm text-slate-400">在庫: {potionInventory[potion.id] || 0}</span>
+                        <LongPressButton 
+                          onClick={() => handleCraft(potion.id)} 
+                          className={`px-4 py-1 rounded font-bold text-sm ${canCraft ? 'bg-amber-600 hover:bg-amber-500 text-white' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}
+                        >
+                          調合
+                        </LongPressButton>
+                      </div>
                     </div>
                   );
                 })}
               </div>
-            )}
-
-            {mysteriousPowder > 0 && !unlockedLocations.includes('secret') && (
-              <button onClick={() => { setUnlockedLocations([...unlockedLocations, 'secret']); setMysteriousPowder(prev => prev - 1); showMsg("秘境の場所が浮かび上がった！", "success"); }} className="mt-4 w-full p-3 bg-fuchsia-900/30 border border-fuchsia-500/50 rounded-xl text-fuchsia-200 text-xs font-bold animate-pulse">不思議な粉を撒く (残り{mysteriousPowder})</button>
-            )}
-          </div>
-        )}
-      </main>
-
-      {/* --- MODALS --- */}
-      {showInv && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
-          <div className="bg-slate-800 w-full max-w-sm rounded-3xl p-6 relative">
-            <button onClick={() => setShowInv(false)} className="absolute top-4 right-4 text-2xl">×</button>
-            <h3 className="text-lg font-bold mb-4 border-b border-slate-700 pb-2">在庫・持ち物</h3>
-            <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto">
-              <div className="col-span-2 text-xs text-amber-500 font-bold mb-1">【ポーション】</div>
-              {Object.entries(potions).map(([id, qty]) => qty > 0 && <div key={id} className="bg-slate-900 p-2 rounded-xl flex items-center gap-2"><span>{id==='mystery'?'🧪':POTIONS[id]?.icon}</span><span className="text-xs">{id==='mystery'?'？？？のポーション':POTIONS[id]?.name}</span><span className="ml-auto font-bold">x{qty}</span></div>)}
-              <div className="col-span-2 text-xs text-blue-400 font-bold mt-4 mb-1">【材料】</div>
-              {Object.entries(inventory).map(([id, qty]) => qty > 0 && <div key={id} className="bg-slate-900 p-2 rounded-xl flex items-center gap-2"><span>{INGREDIENTS[id]?.icon}</span><span className="text-xs">{INGREDIENTS[id]?.name}</span><span className="ml-auto font-bold">x{qty}</span></div>)}
             </div>
-          </div>
-        </div>
-      )}
+          )}
 
-      {showRecipes && (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
-          <div className="bg-slate-900 w-full max-w-sm rounded-3xl p-6 relative border border-amber-900/30">
-            <button onClick={() => setShowRecipes(false)} className="absolute top-4 right-4 text-2xl">×</button>
-            <h3 className="text-lg font-bold mb-4 text-amber-200 border-b border-amber-900/30 pb-2">魔女のレシピ帳</h3>
-            <div className="space-y-3 max-h-[400px] overflow-y-auto">
-              {unlockedRecipes.map(id => (
-                <div key={id} className="p-3 bg-slate-800 rounded-xl border border-slate-700">
-                  <div className="font-bold text-amber-100 mb-1">{POTIONS[id].icon} {POTIONS[id].name}</div>
-                  <div className="flex flex-wrap gap-2">
-                    {Object.entries(POTIONS[id].recipe).map(([iId, q]) => <span key={iId} className="text-[10px] bg-slate-950 px-2 py-0.5 rounded-full">{INGREDIENTS[iId].icon} {INGREDIENTS[iId].name} ×{q}</span>)}
+          {tab === 'map' && (
+            <div className="space-y-4 animate-fadeIn">
+              <h2 className="text-xl font-bold text-emerald-400 border-b border-emerald-900 pb-2">素材探索</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {Object.values(LOCATIONS).map(loc => (
+                  <div key={loc.id} className="bg-slate-800 p-4 rounded-xl border border-slate-700 hover:border-emerald-500 transition-colors flex flex-col items-center text-center">
+                    <span className="text-5xl mb-2">{loc.icon}</span>
+                    <h3 className="font-bold text-lg">{loc.name}</h3>
+                    <p className="text-xs text-slate-400 mt-1 h-8">{loc.ingredients.map(id => INGREDIENTS[id].name).join(', ')}</p>
+                    <button 
+                      onClick={() => handleExplore(loc.id)}
+                      disabled={money < loc.cost}
+                      className="mt-4 w-full py-2 bg-emerald-700 hover:bg-emerald-600 disabled:bg-slate-700 rounded-lg font-bold flex justify-center items-center gap-2"
+                    >
+                      探索に行く <span className="text-sm bg-black/30 px-2 py-0.5 rounded">{loc.cost} G</span>
+                    </button>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {mapDetail && (
-        <div className="fixed inset-0 bg-black/60 z-[100] flex items-end justify-center p-4">
-          <div className="bg-slate-800 w-full max-w-sm rounded-t-3xl p-6 border-t-4 border-blue-600">
-            <div className="flex justify-between items-start mb-4">
-              <div><h3 className="text-xl font-bold">{mapDetail.icon} {mapDetail.name}</h3><p className="text-xs text-slate-400">移動費: {mapDetail.cost} G</p></div>
-              <button onClick={() => setMapDetail(null)} className="text-2xl">×</button>
-            </div>
-            <div className="mb-6">
-              <p className="text-xs text-slate-500 mb-2">採取可能なアイテム:</p>
-              <div className="flex flex-wrap gap-2">
-                {mapDetail.ingredients.map(i => <span key={i} className="bg-slate-900 px-2 py-1 rounded-lg text-[10px]">{INGREDIENTS[i].icon} {INGREDIENTS[i].name}</span>)}
-                
-                {mapDetail.id === 'forest' && (forestVisits + 1) % 3 === 0 && Object.keys(POTIONS).length > unlockedRecipes.length + 1 ? (
-                   <span className="bg-fuchsia-900/40 text-fuchsia-200 px-2 py-1 rounded-lg text-[10px] border border-fuchsia-500/50 animate-pulse">✨ 確定レシピあり！</span>
-                ) : mapDetail.recipes.filter(r => !unlockedRecipes.includes(r)).length > 0 && (
-                  <span className="bg-amber-900/40 text-amber-200 px-2 py-1 rounded-lg text-[10px] border border-amber-500/50">📜 未知のレシピ ({mapDetail.id === 'forest' ? '低〜中確率' : '低確率'})</span>
-                )}
+                ))}
               </div>
             </div>
-            <button onClick={() => startGathering(mapDetail)} className="w-full py-4 bg-blue-600 rounded-2xl font-bold shadow-xl">出発する</button>
-          </div>
-        </div>
-      )}
+          )}
 
-      {/* FOOTER NAV */}
-      <nav className="w-full max-w-md bg-slate-900 border-t border-slate-800 fixed bottom-0 z-50 flex">
-        {[ { id: 'shop', name: 'お店', icon: '🏪' }, { id: 'atelier', name: '工房', icon: '🍲' }, { id: 'map', name: '地図', icon: '🗺️' } ].map(t => (
-          <button key={t.id} onClick={() => setActiveTab(t.id as Tab)} className={`flex-1 py-4 flex flex-col items-center justify-center ${activeTab === t.id ? 'bg-slate-800 text-amber-400 border-t-2 border-amber-500' : 'text-slate-500'}`}>
-            <span className="text-xl">{t.icon}</span><span className="text-[10px] font-bold mt-1">{t.name}</span>
-          </button>
-        ))}
-      </nav>
+        </div>
+      </div>
+
+      {/* フッターナビゲーション */}
+      <div className="flex bg-slate-950 border-t-2 border-amber-900 pb-safe">
+        <button onClick={() => setTab('shop')} className={`flex-1 py-4 flex flex-col items-center gap-1 transition-colors ${tab === 'shop' ? 'text-amber-400 bg-slate-800' : 'text-slate-500 hover:bg-slate-900'}`}>
+          <span className="text-2xl">🏪</span><span className="text-xs font-bold">お店</span>
+        </button>
+        <button onClick={() => setTab('atelier')} className={`flex-1 py-4 flex flex-col items-center gap-1 transition-colors ${tab === 'atelier' ? 'text-amber-400 bg-slate-800' : 'text-slate-500 hover:bg-slate-900'}`}>
+          <span className="text-2xl">⚗️</span><span className="text-xs font-bold">調合</span>
+        </button>
+        <button onClick={() => setTab('map')} className={`flex-1 py-4 flex flex-col items-center gap-1 transition-colors ${tab === 'map' ? 'text-amber-400 bg-slate-800' : 'text-slate-500 hover:bg-slate-900'}`}>
+          <span className="text-2xl">🗺️</span><span className="text-xs font-bold">探索</span>
+        </button>
+      </div>
     </div>
   );
 }
