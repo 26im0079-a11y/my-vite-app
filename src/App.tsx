@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from 'react';
 type Tab = 'shop' | 'atelier' | 'map';
 type GameState = 'title' | 'playing';
 type HoodedManState = 'pending' | 'active' | 'completed';
+type CustomerType = 'wizard' | 'knight' | 'youth' | 'child' | 'woman' | 'elf' | 'dwarf';
 
 interface Ingredient { id: string; name: string; weight: number; icon: string; desc: string; }
 interface Potion { id: string; name: string; recipe: Record<string, number>; basePrice: number; icon: string; desc: string; }
@@ -32,6 +33,7 @@ const INGREDIENTS: Record<string, Ingredient> = {
 
 const POTIONS: Record<string, Potion> = {
   healing: { id: 'healing', name: '回復のポーション', recipe: { nightglow: 2, fairy_dust: 1 }, basePrice: 50, icon: '🧪', desc: '基本の傷薬' },
+  mana_potion: { id: 'mana_potion', name: 'マナの小瓶', recipe: { nightglow: 1, fairy_dust: 2 }, basePrice: 80, icon: '🔮', desc: '魔力を少し回復' },
   strength: { id: 'strength', name: '力のポーション', recipe: { mandragora: 1, bone_meal: 1, swamp_water: 2 }, basePrice: 150, icon: '💪', desc: '力がみなぎる薬' },
   poison: { id: 'poison', name: '猛毒の瓶', recipe: { poison_toad: 2, swamp_water: 1 }, basePrice: 120, icon: '☠️', desc: '危険な劇薬' },
   iron_skin: { id: 'iron_skin', name: '鉄壁の薬', recipe: { iron_ore: 1, gold_ore: 1, fire_stone: 1 }, basePrice: 300, icon: '🛡️', desc: '体を鉄にする薬' },
@@ -42,11 +44,11 @@ const POTIONS: Record<string, Potion> = {
   golden_syrup: { id: 'golden_syrup', name: '黄金のシロップ', recipe: { gold_ore: 1, dragon_tear: 1, fairy_dust: 1 }, basePrice: 1000, icon: '🍯', desc: '至高の甘み' },
 };
 
-// フードの男専用ポーション
 const MYSTERY_RECIPE = { bone_meal: 1, poison_toad: 1, fairy_dust: 1 };
 
 const LOCATIONS: Record<string, MapLocation> = {
-  forest: { id: 'forest', name: '妖精の森', ingredients: ['nightglow', 'fairy_dust'], recipes: [], icon: '🌲', x: 20, y: 70, cost: 0 },
+  // 森にマナの小瓶のレシピを追加
+  forest: { id: 'forest', name: '妖精の森', ingredients: ['nightglow', 'fairy_dust'], recipes: ['mana_potion'], icon: '🌲', x: 20, y: 70, cost: 0 },
   swamp: { id: 'swamp', name: '死者の沼', ingredients: ['mandragora', 'bone_meal', 'swamp_water', 'poison_toad'], recipes: ['strength', 'poison'], icon: '🌫️', x: 70, y: 30, cost: 30 },
   mine: { id: 'mine', name: '古い鉱山', ingredients: ['iron_ore', 'crystal', 'gold_ore', 'fire_stone', 'bat_wing'], recipes: ['iron_skin', 'explosion', 'echo'], icon: '⛏️', x: 40, y: 20, cost: 50 },
   secret: { id: 'secret', name: '竜の巣', ingredients: ['dragon_scale', 'dragon_tear', 'phoenix_feather', 'ancient_ash', 'star_shard'], recipes: ['elixir', 'magic_polish', 'golden_syrup'], icon: '🌋', x: 80, y: 80, cost: 100 },
@@ -55,89 +57,138 @@ const LOCATIONS: Record<string, MapLocation> = {
 const MAX_WEIGHT = 100;
 const RECIPE_WEIGHT = 10;
 
-// ==========================================
-// 2. セリフデータ（各20パターン）※省略せず全て維持
-// ==========================================
-const DIALOGUES: Record<string, string[]> = {
-  healing: [
-    "スライムに噛まれちまってな。ちょっと回復を頼む。", "風邪を引いたみたいだ。普通のポーションでいい。", "庭仕事で擦り傷をね。一番安いやつでいいよ。", "ゴブリンの矢がかすって痛いんだ。", "子供が木から落ちてね、念のために持っておきたい。", "修行中に石につまづいてさ……恥ずかしいけど薬をくれ。", "なんだか今日は体がだるいんだ。", "少し胃の調子が悪くてね。", "最近、肩こりが酷くて。癒やしてくれないか？", "ペットの犬が怪我をしたんだ、使えるかな？", "ギルドの試験でボロボロにされたよ……。", "長旅で足がパンパンだ。回復薬を頼む。", "森で転んで膝をすりむいたの。", "料理中に火傷したんだ、すぐに効くやつを！", "ちょっと飲みすぎた……二日酔いに効くか？", "寝違えて首が痛い。治してくれ。", "蜂に刺された！早く腫れを引かせたい！", "冒険者の基本、回復ポーションを一つ補充だ。", "剣の稽古で打ち身だらけさ。", "ただのお守り代わりに一つ買っていくよ。"
-  ],
-  strength: [
-    "力が欲しい……すべてを捩じ伏せる力が！", "明日の腕相撲大会、絶対に負けられないんだ！", "あの重い岩をどかさなきゃいけない。力を貸してくれ。", "ドラゴンと戦うんだ。俺の腕力を限界突破させてくれ！", "最近、剣を振るのが重く感じてな……気付けの一杯を。", "荷車の車輪が沼にハマって動かないんだ。怪力が必要だ。", "力仕事が山積みでね。一気に片付けたいんだ。", "宿敵にリベンジする時が来た。最強の力をくれ！", "もっと筋肉を……筋肉をパンパンに膨らませたいんだ！", "扉が開かないんだよ。物理でぶち破るための薬を！", "オーガと殴り合う約束をした。負けたくねえ。", "うちの嫁が強すぎてな……今日こそ言い返したいんだ。", "村の綱引き大会で英雄になりたいんだよ。", "どうしても持ち上げたい宝箱があるんだ！", "魔王の城の門、俺の拳でこじ開けてやる！", "俺の力はこんなもんじゃない……引き出してくれ！", "大木を一人で切り倒さないといけないんだ。", "鍛冶のハンマーが最近重くてね。", "もっと強く……ただ純粋な暴力が欲しい。", "自分の限界を知りたいんだ。力のポーションをくれ。"
-  ],
-  poison: [
-    "地下室にネズミが湧いてね。一網打尽にしたいんだ。", "……誰にも言わないでくれ。強力な『毒』が欲しい。", "武器に塗るための劇薬を探している。", "沼の怪物を退治する。毒には毒で対抗するのさ。", "……少し、静かにさせたいヤツがいてね。", "害虫駆除に使いたいんだ。一番強いやつを頼む。", "暗殺ギルドの者だ。仕事で必要になった。", "……旦那のスープにちょっとしたスパイスをね。", "隣の畑の雑草を根こそぎ枯らしたいんだ。", "危険な毒の知識が必要なんだ、研究用に一つ。", "……どうしても勝てない相手がいる。手段は選ばん。", "魔物の巣穴に投げ込んで一掃してやるんだ。", "自分の毒耐性を試したい。俺は死なない……はずだ。", "……これはただの掃除用だ。変な勘違いをするなよ？", "拷問部屋の在庫が切れた。一つ譲ってくれ。", "罠に仕掛けるための強力な毒液を探してる。", "……裏切者には、苦痛を伴う罰が必要だ。", "闘技場の剣に、少し細工をしたくてな。", "どうしても腐らせたいものがあるんだ。", "……ふふふ。これで計画は完璧だ。"
-  ],
-  iron_skin: [
-    "重い鎧は肩が凝る。この肌を鉄に変えたいんだ。", "オークの棍棒を素肌で受け止めてみたい。", "トゲトゲの迷宮に挑む。肌を硬くしておきたい。", "落石地帯を通るんだ。体が鋼になれば安心だろ？", "刃物を持った強盗が出没してね。防刃の薬を。", "火の粉を浴びる仕事でね。肌を守りたいんだ。", "竜の爪も弾き返す、無敵の肉体が欲しい！", "……絶対に傷つきたくない。心も体もな。", "防具を買う金がない。薬で代用させてくれ。", "暗殺者に狙われている。寝込みを襲われても大丈夫なように。", "蜂の巣を素手で駆除したいんだ！", "針の山を歩く修行があるんだよ……。", "俺の腹筋を、本当の鉄の塊にしてくれ！", "盾が壊れちまってな。俺自身が盾になるしかない。", "乱戦に飛び込む。かすり傷ひとつ負いたくないぜ。", "熊と素手でレスリングをする約束があるんだ。", "皮膚を硬くして、寒さも痛みも忘れさせたい。", "鉄壁の防御……それこそが最強の鉾だと思わないか？", "俺の柔肌を、今日だけは鋼の要塞に変えてくれ！", "隕石が落ちてきても弾き返せる薬を頼む。"
-  ],
-  explosion: [
-    "邪魔な岩山を吹き飛ばしたいんだ。爆発薬をくれ！", "ド派手な花火を上げたい気分でね。爆発する薬はないか？", "魔物の群れを一瞬で消し去りたい。一番強力な爆弾を。", "……金庫の扉がどうしても開かなくてね。", "閉ざされた道をこじ開けるための爆発力が欲しい。", "坑道で新しいルートを掘削する。手っ取り早い薬を。", "……全てを破壊したい衝動に駆られているんだ。", "敵の陣地に放り込む、最高のプレゼントをくれ！", "バンッ！と爽快に何かが弾ける音を聞きたいんだ。", "古城の壁に大穴を開けたい。強力なやつを頼む。", "……証拠隠滅に、跡形もなく消し飛ぶ薬が必要だ。", "氷の山を溶かすんじゃない、粉々に砕きたいんだ。", "ゴブリンの巣に挨拶代わりの一発を放ちたい。", "祭りのクライマックスに、ドカンと一発お願いしたい。", "俺の怒りを、この爆発薬に乗せてぶつけてやる！", "……爆発の芸術。それを私に見せてくれないか？", "扉の鍵を失くした。もう丸ごと吹き飛ばすしかない。", "危険なのは承知の上だ。最高火力を頼む！", "敵の船の底に仕掛けたいんだ。水には強いか？", "……この街ごと、吹き飛ばしてしまいたい気分だ。"
-  ],
-  echo: [
-    "暗闇でも敵の位置を知りたい。感覚を鋭くする薬を。", "森の中で迷った仲間を探す。遠くの音を聞きたいんだ。", "隠し扉の反響音を聞き分けたい。耳を良くしてくれ。", "スパイの仕事だ。隣の部屋の密談を盗み聞きしたい。", "……誰かにつけられている気がする。気配を感じたい。", "洞窟の奥にいる魔物の息遣いを察知したい。", "音楽家の耳を取り戻したいんだ。音がぼやけてね。", "透明な敵と戦う。音だけが頼りなんだ。", "遠くで呼ぶ愛しい人の声を聞き逃したくない。", "感覚を研ぎ澄まし、世界と一体化したいんだ。", "……静寂の中で、自分の心音すら聞きたい気分だ。", "敵の弓矢が空を切る音を、0.1秒早く感知したい。", "夜の森の囁きをすべて理解できるようになりたい。", "……嘘をついているやつの心拍数を聞き分けたいんだ。", "暗殺者の足音を絶対に逃さないための薬を。", "遠くの街の鐘の音まで聞こえる薬はないか？", "五感を限界まで引き上げ、超越者になりたい。", "地下水脈の流れる音を探している。ダウジング用に。", "……俺の感覚は鈍りすぎた。昔の鋭さを取り戻したい。", "反響の薬……コウモリのように闇を生きるために。"
-  ],
-  elixir: [
-    "伝説のエリクサー……ついにここまで辿り着いたか。", "不治の病に伏せる姫を救うため、万能薬を譲ってくれ！", "俺の寿命を延ばしたい。いや、永遠の命が欲しい！", "死の淵にある友を救えるのは、この秘薬だけだ！", "どんな呪いも解き放つという奇跡の薬。言い値で買おう。", "……私のすべてを失ってもいい。エリクサーをくれ！", "世界を救う戦いに挑む。最後のお守りにしたい。", "神の領域に触れる薬……その輝きを拝ませてくれ。", "王の勅命だ。エリクサーを城へ持ち帰らねばならん。", "これがあれば、死者さえも蘇ると聞いたが……本当か？", "究極の錬金術の結晶。君の腕を信じて買いに来た。", "……過去の過ちを帳消しにする力、それが入っているのか？", "私の失われた右腕も、これなら元通りになるはずだ！", "魔王の瘴気に侵された。これで浄化するしかない！", "この秘薬を手に入れるためなら、国一つ売ってもいい。", "……命の源、純粋な奇跡。私に扱えるだろうか。", "一族に伝わる病を、私の代で終わらせたいんだ。", "神々に喧嘩を売る。このエリクサーが俺の保険だ。", "ただ飲んでみたいんだ。究極の味がどんなものか。", "君の最高傑作、伝説の万能薬……私に売ってくれ。"
-  ],
-  magic_polish: [
-    "この古びた名剣に、かつての魔力を取り戻させたい。", "武器が光り輝く研磨液があると聞いてね。", "私の杖の魔力伝導率を上げたいんだ。最高の研磨を。", "鈍ら刀だが、魔力をまとえば伝説の剣になるはずだ！", "……俺の暗器に、見えない魔力の刃を付与してくれ。", "魔法騎士団の試験だ。剣の輝きで試験官を圧倒したい。", "武具の手入れは一流の液で。君の店の品が最高だと聞いた。", "ただ光るだけじゃない、魔力を帯びる研磨液が欲しい。", "祖父の形見の盾をピカピカにして、魔力も宿らせたい。", "……これを塗れば、ただの木の棒も魔剣になるって本当か？", "竜の鱗を切り裂くため、剣の切れ味を魔法で極限まで高めたい。", "私の美しい槍を、さらに星のように輝かせたいの。", "……呪われた武具を浄化し、新たな力を与える液を。", "武闘大会に出る。武器の見た目から相手を威圧したいんだ。", "魔法陣を描くための特殊なインク代わりにならないか？", "俺の矢じりに塗る。一発必中の魔法の矢になるはずだ。", "……この鉄の爪に魔力を宿らせて、奴を引き裂く。", "武器屋を開くんだ。展示品の剣を魔力で輝かせたくてね。", "ただの飾り剣だが、夜光るようにしてくれないか？", "究極の魔力研磨液……私の武具がそれを求めている。"
-  ],
-  golden_syrup: [
-    "黄金のシロップ……それを一舐めすれば天国が見えるとか。", "王宮の晩餐会で出す極上のスイーツを作りたいんだ。", "……ただ、最高に甘くて幸せになれるものが欲しい。", "どんなに悲しいことも忘れられる、至高の甘みをくれ。", "神々の飲み物、ネクターに匹敵するシロップがあると聞いて。", "子供の誕生日に、世界で一番美味しいパンケーキを焼くんだ。", "……このシロップがあれば、あの人も振り向いてくれるかも。", "究極の甘党として、これを味わわずに死ねない！", "疲れ切った脳みそに、黄金の糖分を叩き込みたいんだ！", "魔女様が作る伝説のシロップ……味見させてくれないか？", "……苦い薬を飲むための、甘いおまけが欲しいだけさ。", "これを紅茶に一滴垂らすだけで、世界が変わるのだろう？", "私の料理の隠し味だ。これを使えば料理コンクールはもらった！", "……ただのシロップじゃない、黄金の輝きを飲むんだ。", "妖精たちがこぞって盗みに来るというシロップを一つ。", "人生が辛すぎる。せめて舌の上くらい甘くさせてくれ。", "これを食べれば、寿命が10年延びる気がするんだ。", "王様に献上する。最高の品でなければ私の首が飛ぶ！", "……金よりも価値のある甘み。いくらでも払おう。", "これを塗れば、古いブーツでも美味しく食えそうだな。"
-  ]
+const CUSTOMER_EMOJIS: Record<CustomerType, string> = {
+  wizard: '🧙‍♂️', knight: '🛡️', youth: '👱‍♂️', child: '👦', woman: '👩', elf: '🧝‍♀️', dwarf: '🧔‍♂️'
 };
 
 // ==========================================
-// 3. リアクション（大増量 100以上追加！）
+// 2. セリフデータ（客層ごとに大量追加）
 // ==========================================
-const SUCCESS_REACTIONS = {
-  perfect: [
-    "「また来るわ！お得意様、ってやつかしらね。」", "「素晴らしい！これこそ私が求めていたものだ！」", "「完璧だ……。おまけに多めに払っておくよ。」",
-    "「神業だな！あんたの腕は本物だ。」", "「信じられないほど澄んだ色だ。倍払わせてくれ！」", "「一生の恩人だ！ありがとう、魔女様！」",
-    "「ああ……力が湧いてくる！最高だ！」", "「王宮の錬金術師より上手いじゃないか！」", "「これだよこれ！この品質を待っていた！」",
-    "「これほど完璧な調合は見たことがない。」", "「感動した！チップを受け取ってくれ！」", "「天才的な腕前ね。友達にも宣伝しておくわ。」",
-    "「最高品質だ。いくらでも払う価値がある。」", "「伝説のレシピ通りじゃないか！見事だ！」", "「君の店を見つけて本当に良かったよ。」",
-    "「震えるほど素晴らしい出来だ……！」", "「私の期待を遥かに超えてきたな。」", "「これがあれば勝てる！ありがとう！」",
-    "「こんな名品、使うのがもったいないな。」", "「香りだけで一級品だと分かるぞ。」", "「すごい！本当にすごいよこれ！」",
-    "「あんた最高だ！明日も絶対来るからな！」", "「この値段でこの品質！？奇跡だ！」", "「私の目に狂いはなかった。素晴らしい。」",
-    "「おおっ！光り輝いている！大満足だ！」", "「文句のつけようがない。完璧な仕事だ。」", "「このポーションは私の宝物にするわ。」",
-    "「……言葉が出ない。最高の職人だ。」", "「君に頼んで正解だった。またよろしく頼む。」", "「大成功だ！これでお祝いができる！」",
-    "「ありがとう！君は命の恩人だ！」", "「素晴らしい才能だ。これからも応援するよ。」", "「完璧すぎて笑いが止まらないぜ！」",
-    "「歴史に残る名ポーションだね！」", "「このクオリティなら、世界一の店になれるよ！」"
-  ],
-  good: [
-    "「うん、悪くない。助かるよ。」", "「ちょうどいい感じだね。ありがとう。」", "「納得のいく品質だ。大事に使わせてもらうよ。」",
-    "「まあまあだな。値段相応だ。」", "「これで十分だ。助かったよ。」", "「標準的なポーションだね。ありがとう。」",
-    "「期待通りの効果だ。また来るよ。」", "「うん、これなら目的は果たせそうだ。」", "「手際がいいね。お代だよ。」",
-    "「とりあえずはこれで凌げそうだ。」", "「悪くないね。また必要な時に来るよ。」", "「及第点ってところかしら。ありがとう。」",
-    "「無難な仕上がりだ。文句はないよ。」", "「しっかりした作りだ。安心したよ。」", "「うん、これなら安心して飲めるな。」",
-    "「いい仕事だ。お疲れ様。」", "「急いでたから助かったよ。ありがとう。」", "「うんうん、ちゃんと効きそうだ。」",
-    "「これなら仲間も安心するだろう。」", "「とりあえず合格点だ。また頼む。」", "「普通に良い薬だ。感謝するよ。」",
-    "「問題なしだ。お代を置いていくね。」", "「手に入ってよかった。これで進めるよ。」", "「見た目は普通だけど、効果はありそうだ。」",
-    "「可もなく不可もなく。それが一番大事さ。」", "「よし、これで準備万端だ。」", "「ありがとう、魔女さん。助かったよ。」",
-    "「うん、レシピ通りだね。ご苦労様。」", "「助かるよ。これが欲しかったんだ。」", "「適正価格だね。また利用するよ。」",
-    "「うん、これがあれば一安心だ。」", "「とりあえずカバンに入れておくよ。」", "「良い買い物ができた。ありがとう。」",
-    "「うん、問題ない。また寄らせてもらうよ。」", "「標準的で使いやすそうだ。」", "「ごく普通のポーション。それでいいのさ。」"
-  ],
-  bad: [
-    "「...」「あんた、ちょっと失礼だぜ。もういいよ…」", "「なんだこれは……？ 濁っているじゃないか。」", "「……不味い。これだけしか払えないよ。」",
-    "「なんだこの泥水は！？金返せ！」", "「効果があるのか怪しいな……安くしとけよ。」", "「素人が作ったのか？がっかりだ。」",
-    "「ぼったくりか？こんなのに満額は払えん。」", "「……自分で作った方がマシだったな。」", "「色が変だぞ。本当に大丈夫かこれ？」",
-    "「あーあ、材料の無駄遣いだな。」", "「……最悪だ。二度と来るか。」", "「ふざけてるのか？ちゃんとしたのを出せ！」",
-    "「底に何か沈んでるんだけど……。」", "「においが酷い！これ本当にポーションか？」", "「あんた、本当に魔女なのか？疑うぜ。」",
-    "「……まぁ、一応買っていくが、期待はしてない。」", "「値段に見合ってないな。損した気分だ。」", "「ひどい出来だ。半分しか払わないぞ。」",
-    "「子供のイタズラかと思ったよ。」", "「失敗作を売りつけようってのか？」", "「……仕方ない、これしかないなら妥協するか。」",
-    "「金を取れるレベルじゃないぞ。」", "「これ飲んでお腹壊さないか心配だわ……。」", "「あんたの腕、落ちたんじゃないか？」",
-    "「……もう行くわ。最悪の気分。」", "「こんなものを客に出すなんて信じられない。」", "「ドブの味がしそうだ。勘弁してくれ。」",
-    "「これは薬じゃなくて毒じゃないのか？」", "「時間と金の無駄だったな。」", "「……はぁ。もっとマシな店を探そう。」",
-    "「こんな酷いものを買う奴の気が知れない。」", "「詐欺師め！通報してやる！」", "「なんだこのガラクタは……話にならん。」",
-    "「適当に混ぜただけだろ？バレてるぞ。」", "「もう君の店には期待しないよ。」", "「……金は置いていくが、二度と来ないからな。」"
-  ]
+const DIALOGUES: Record<string, Record<CustomerType, string[]>> = {
+  healing: {
+    wizard: ["スライムに噛まれちまってな。回復を頼む。", "風邪気味でな。普通のポーションでいい。", "薬草学の授業で手本として使いたいんじゃ。"],
+    knight: ["パトロール中にゴブリンの矢がかすってな。", "騎士団の備品として回復薬を補充したい。", "剣の稽古で生傷が絶えなくてな、頼む。"],
+    youth: ["冒険に行くんだ！一番安い回復薬をくれよ！", "転んで膝をすりむいちゃってさ。痛ぇ〜。", "とりあえず回復ポーション持ってれば安心っしょ！"],
+    child: ["お母さんのおつかいできたよ！赤いお薬ちょうだい！", "えへへ、木登りして落ちちゃったの。痛いの治して！", "魔女のお姉ちゃん、お薬ひとつくださーい！"],
+    woman: ["料理中に包丁で指を切ってしまって……。", "子供が怪我をした時のために、お守り代わりにね。", "なんだか今日は体がだるくて。癒やしてくれない？"],
+    elf: ["人間の薬がどれほどのものか、見せてもらうわ。", "森の獣に引っ掻かれてしまってね。少し分けてちょうだい。", "自然の治癒力が追いつかないの。力を貸して。"],
+    dwarf: ["ガハハ！鍛冶のハンマーを足に落としちまってな！", "炭鉱で岩に挟まれた！早く傷薬をくれ！", "エールより効く飲み物はこれくらいだぜ！"]
+  },
+  mana_potion: {
+    wizard: ["研究で魔力を使いすぎた。マナを補充したい。", "魔法陣の起動に少し魔力が足りなくてな。", "徹夜の魔術実験のお供にな、一つおくれ。"],
+    knight: ["魔法剣の練習で魔力切れだ。一つ頼む。", "部隊の魔術師が倒れた。至急マナの回復を！", "我々には魔力がないが、仲間のために必要なのだ。"],
+    youth: ["魔法使いデビューするぜ！まずはマナポーションからだ！", "すっげー魔法をぶっ放したいから、これ飲んで頑張る！", "魔力ってどんな味すんの？一回飲んでみたいぜ！"],
+    child: ["これ飲むと魔法が使えるようになるって本当？", "青くてキラキラしてて、ジュースみたい！", "お父さんが魔法の練習するから買ってこいって！"],
+    woman: ["生活魔法の使いすぎで少し頭痛がしてね……。", "暖炉の火を起こす魔法がうまくいかなくて。", "たまには魔力をチャージしないと肌荒れしちゃって。"],
+    elf: ["森のマナが乱れているの。私自身の魔力で補うわ。", "純粋なマナの結晶……あなたの腕前を見せて。", "精霊との対話には、多くの魔力が必要なの。"],
+    dwarf: ["ワシらには無縁だが、魔法具の燃料にいるんだとよ。", "魔法使いのヒョロガリどもがこぞって欲しがる水だ。", "光る水なんて気味が悪いが、仕事で必要なんだ。"]
+  },
+  strength: {
+    wizard: ["重い魔導書を運ばねばならん。力を貸してくれ。", "老体には杖を突くのもしんどくてな。腕力が欲しい。", "ゴーレムの物理法則を体感したくてな。"],
+    knight: ["明日はオーガ討伐だ。腕力を限界まで引き上げたい！", "重鎧を着たまま走り込みをする。筋力増強を頼む！", "力こそ正義だ！圧倒的なパワーをくれ！"],
+    youth: ["腕相撲大会で絶対に優勝してやるんだ！", "あの重い岩をどかして、宝箱を開けるぜ！", "モテるためには筋肉だろ？筋肉パンパンにしてくれ！"],
+    child: ["大きくなったら力持ちの勇者になるんだ！", "重い荷物、僕が持ってお母さんを助けるの！", "ワンちゃんが岩に挟まってるの！助ける力をちょうだい！"],
+    woman: ["タンスを動かして模様替えをしたいのよ。", "……たまには旦那を腕相撲で負かしてやりたくてね。", "力仕事が多くてね。一気に片付けたいの。"],
+    elf: ["エルフはか弱いと舐められているから、見返してやるの。", "あの巨木を移植するには、物理的な力が必要だわ。", "弓を引く力が衰えてきたの。少しズルをさせて。"],
+    dwarf: ["大岩を粉砕するぜ！俺の腕力を限界突破させろ！", "ドワーフの怪力をさらに倍にしてやる！ガハハ！", "重い鉄を打つには、最高の一撃が必要なんだ！"]
+  },
+  poison: {
+    wizard: ["地下室のネズミを駆除したいんじゃ。", "毒物学の講義に使うサンプルが必要でな。", "……決して悪用はせんよ。ただの『研究』じゃ。"],
+    knight: ["沼の怪物を退治する。毒には毒で対抗するのだ。", "武器の刃に塗るための劇薬を探している。", "……静かに始末せねばならん標的がいる。"],
+    youth: ["罠に仕掛けるための強力な毒液を探してるんだ！", "害虫駆除に使うんだ。一番ヤバいやつを頼むぜ！", "自分の毒耐性を試したいんだ。俺は死なねえ！"],
+    child: ["これでお庭の悪い虫さんをやっつけるの！", "ねぇねぇ、これ飲むとどうなっちゃうの？", "ドクロのマークがかっこいいから欲しい！"],
+    woman: ["……隣の畑の雑草を、根こそぎ枯らしたいの。", "……うちのスープに、ちょっとしたスパイスをね。", "倉庫に湧いた害虫を一網打尽にしたいのよ。"],
+    elf: ["魔物の巣穴に投げ込んで一掃するわ。", "美しい花には毒がある。私の矢にもね。", "……自然を汚す者には、相応の報いが必要よ。"],
+    dwarf: ["鉱山の奥に湧いたバケモノを毒殺してやる。", "拷問部屋の在庫が切れた。一つ譲ってくれ。", "ガハハ！こんなもん飲む奴の気が知れねえな！"]
+  },
+  iron_skin: {
+    wizard: ["落石地帯を通るんじゃ。体が鋼になれば安心じゃろ。", "物理攻撃への耐性を研究しておる。", "ローブだけでは防御力が皆無でな……。"],
+    knight: ["竜の爪も弾き返す、無敵の肉体が欲しい！", "乱戦に飛び込む。かすり傷ひとつ負いたくないのだ。", "鉄壁の防御……それこそが最強の鉾だ！"],
+    youth: ["オークの棍棒を素肌で受け止めてみたいぜ！", "トゲトゲの迷宮に挑むんだ。肌を硬くしておきたい！", "俺の腹筋を、本当の鉄の塊にしてくれ！"],
+    child: ["カチカチになれば、いじめっ子も怖くないぞ！", "これ飲んだらロボットになれるの！？", "お外でいっぱい転んでも痛くなくなるお薬ちょうだい！"],
+    woman: ["火の粉を浴びる仕事でね。肌を守りたいの。", "防具を買う金がないから、薬で代用させてちょうだい。", "蜂の巣を素手で駆除したいのよ！"],
+    elf: ["エルフの柔肌を傷つけるわけにはいかないわ。", "森のイバラ道を抜けるために必要なの。", "……絶対に傷つきたくないの。心も体もね。"],
+    dwarf: ["俺の皮膚を鋼の要塞に変えてくれ！", "熊と素手でレスリングをする約束があるんだ！", "溶岩の近くで仕事するんでな、これが必要なんだ。"]
+  },
+  explosion: {
+    wizard: ["邪魔な岩山を吹き飛ばしたいんじゃ。", "……芸術とは爆発じゃろ？", "古い実験室を丸ごと更地にしたいんじゃが。"],
+    knight: ["閉ざされた道をこじ開けるための爆発力が欲しい。", "敵の陣地に放り込む、最高のプレゼントだ！", "……証拠隠滅に、跡形もなく消し飛ぶ薬が必要だ。"],
+    youth: ["ド派手な花火を上げたい気分でね。ドカンと一発！", "バンッ！と爽快に何かが弾ける音を聞きたいんだぜ！", "魔物の群れを一瞬で消し去りたいんだ！"],
+    child: ["ドカーン！ってなるお薬ちょうだい！", "これで大きな穴を掘って秘密基地を作るんだ！", "おっきな音が出るの？面白そう！"],
+    woman: ["……金庫の扉がどうしても開かなくてね。", "扉の鍵を失くしたの。もう丸ごと吹き飛ばすしかないわ。", "……たまには、すべてを破壊したくなる時があるのよ。"],
+    elf: ["氷の山を溶かすんじゃない、粉々に砕きたいの。", "ゴブリンの巣に挨拶代わりの一発を放ちたいわ。", "この森を荒らす連中に、大爆発の怒りを。"],
+    dwarf: ["坑道で新しいルートを掘削する。手っ取り早い薬をくれ。", "ガハハ！ドワーフと言えば爆薬だろ！", "危険なのは承知の上だ。最高火力を頼むぜ！"]
+  },
+  echo: {
+    wizard: ["地下水脈の流れる音を探しておるんじゃ。", "遠くの街の鐘の音まで聞こえる魔法薬じゃな。", "……静寂の中で、自分の心音すら聞きたい気分じゃ。"],
+    knight: ["暗闇でも敵の位置を知りたい。感覚を鋭くする薬を。", "スパイの仕事だ。隣の部屋の密談を盗み聞きしたい。", "暗殺者の足音を絶対に逃さないための薬だ。"],
+    youth: ["森の中で迷った仲間を探すんだ。遠くの音を聞きたい！", "透明な敵と戦うんだ。音だけが頼りなんだぜ。", "嘘をついているやつの心拍数を聞き分けたいんだ！"],
+    child: ["遠くの小鳥さんの声が聞きたいな！", "これ飲んだらお化けの足音も聞こえるの？", "かくれんぼで絶対勝てるお薬だね！"],
+    woman: ["音楽家の耳を取り戻したいの。音がぼやけてね。", "……誰かにつけられている気がするの。気配を感じたいわ。", "遠くに住むあの人の声が、風に乗って聞こえないかしら。"],
+    elf: ["夜の森の囁きをすべて理解できるようになりたいわ。", "隠し扉の反響音を聞き分けたいの。耳を良くして。", "感覚を研ぎ澄まし、森の精霊と一体化したいの。"],
+    dwarf: ["洞窟の奥にいる魔物の息遣いを察知したいんだ。", "岩盤の脆い場所を、ハンマーの反響音で探るんだ。", "コウモリのように闇を生きるため、頼むぜ。"]
+  },
+  elixir: {
+    wizard: ["究極の錬金術の結晶……この目で拝みたいんじゃ。", "神の領域に触れる薬……私の寿命すら延ばせるか？", "これがあれば、死者さえも蘇ると聞いたが……本当か？"],
+    knight: ["不治の病に伏せる姫を救うため、万能薬を譲ってくれ！", "死の淵にある友を救えるのは、この秘薬だけなのだ！", "王の勅命だ。エリクサーを城へ持ち帰らねばならん！"],
+    youth: ["伝説のエリクサー！一生に一度は飲んでみたいぜ！", "世界を救う戦いに挑む。最後のお守りにさせてくれ！", "どんな呪いも解き放つという奇跡の薬……すげぇ！"],
+    child: ["これがあれば、病気のお母さんが元気になるって聞いたの！", "星のお空みたいな色！とっても綺麗！", "僕も勇者になれる魔法のお水ちょうだい！"],
+    woman: ["……私のすべてを失ってもいい。エリクサーをちょうだい。", "一族に伝わる病を、私の代で終わらせたいの。", "私の失われた右腕も、これなら元通りになるはずよ。"],
+    elf: ["魔王の瘴気に侵された森。これで浄化するしかないわ！", "……命の源、純粋な奇跡。私に扱えるかしら。", "神々に喧嘩を売るわ。このエリクサーが私の保険よ。"],
+    dwarf: ["この秘薬を手に入れるためなら、国一つ売ってもいいぜ！", "ただ飲んでみたいんだ。究極の味がどんなものか。", "ガハハ！これ一杯でドワーフの寿命が100年延びるぜ！"]
+  },
+  magic_polish: {
+    wizard: ["私の杖の魔力伝導率を上げたいんじゃ。最高の研磨を。", "魔法陣を描くための特殊なインク代わりにならないか？", "ただの木の棒も魔力を帯びるというあの研磨液じゃな。"],
+    knight: ["この古びた名剣に、かつての魔力を取り戻させたい。", "魔法騎士団の試験だ。剣の輝きで試験官を圧倒したい！", "竜の鱗を切り裂くため、剣の切れ味を極限まで高めたい。"],
+    youth: ["俺の剣に、見えない魔力の刃を付与してくれよ！", "武闘大会に出るんだ。武器の見た目から相手を威圧するぜ！", "ただ光るだけじゃない、魔力を帯びる研磨液が欲しい！"],
+    child: ["僕の木の剣も、これを塗ったら伝説の剣になる！？", "ピカピカ光るお水、かっこいい！", "お父さんの盾をこっそりピカピカにして驚かせるの！"],
+    woman: ["……呪われた武具を浄化し、新たな力を与える液を。", "私の美しい槍を、さらに星のように輝かせたいの。", "護身用の短剣を、いざという時のために強化しておきたくて。"],
+    elf: ["私の弓に塗るわ。一発必中の魔法の矢になるはずよ。", "武具の手入れは一流の液で。あなたの店の品が最高だと聞いたわ。", "自然の魔力を武器に宿らせる……美しい響きね。"],
+    dwarf: ["俺が打った最高の斧に、魔法の仕上げをしてやりたいんだ。", "鈍ら刀だが、魔力をまとえば伝説の剣になるはずだぜ！", "武器屋を開くんだ。展示品の剣を魔力で輝かせたくてな。"]
+  },
+  golden_syrup: {
+    wizard: ["神々の飲み物、ネクターに匹敵するシロップと聞いてな。", "これを紅茶に一滴垂らすだけで、世界が変わるんじゃろ？", "……苦い薬を飲むための、甘いおまけが欲しいだけじゃ。"],
+    knight: ["王様に献上する。最高の品でなければ私の首が飛ぶのだ！", "王宮の晩餐会で出す極上のスイーツを作りたいのだ。", "……ただ、最高に甘くて幸せになれるものが欲しくてな。"],
+    youth: ["黄金のシロップ……それを一舐めすれば天国が見えるとか！", "疲れ切った脳みそに、黄金の糖分を叩き込みたいんだ！", "これを食べれば、寿命が10年延びる気がするぜ！"],
+    child: ["世界で一番甘くて美味しいシロップちょうだい！", "パンケーキにたーーっぷりかけて食べるんだ！", "妖精さんたちがみんな大好きな甘いお水！"],
+    woman: ["どんなに悲しいことも忘れられる、至高の甘みをちょうだい。", "子供の誕生日に、世界で一番美味しいケーキを焼くの。", "私の料理の隠し味よ。これを使えばコンクールはもらったわ！"],
+    elf: ["……このシロップがあれば、あの人も振り向いてくれるかも。", "ただのシロップじゃない、黄金の輝きを飲むのよ。", "森の果実を、さらに甘く彩る魔法の蜜……。"],
+    dwarf: ["金よりも価値のある甘み。いくらでも払おうじゃないか。", "人生が辛すぎる。せめて舌の上くらい甘くさせてくれや。", "ガハハ！これを塗れば、古いブーツでも美味しく食えそうだな！"]
+  }
+};
+
+const SUCCESS_REACTIONS: Record<'perfect'|'good'|'bad', Record<CustomerType, string[]>> = {
+  perfect: {
+    wizard: ["「お見事じゃ！君の腕は本物じゃな！」", "「完璧な調合じゃ。特別にチップをはずもう。」", "「これほど澄んだ色、老いぼれの目にも焼き付いたわい。」"],
+    knight: ["「素晴らしい！これこそ私が求めていたものだ！」", "「騎士の誇りにかけて、この恩は忘れないぞ！」", "「君の店を見つけて本当に良かった。感謝する！」"],
+    youth: ["「すっげぇぇ！あんた天才じゃんか！」", "「マジで最高！友達にも絶対教えるぜ！」", "「テンションぶち上がるぜ！おまけに金置いとく！」"],
+    child: ["「わあーっ！キラキラしてる！ありがとう！」", "「魔女のお姉ちゃん、だーいすき！」", "「すっごい！宝物にするね！」"],
+    woman: ["「震えるほど素晴らしい出来ね。感動したわ。」", "「この品質……王宮の錬金術師より上手いじゃない。」", "「一生の恩人だわ！ありがとう、魔女さん！」"],
+    elf: ["「……人間の手でこれほど美しいものが作れるのね。」", "「素晴らしいわ。森の精霊たちも喜んでいる。」", "「完璧ね。いくらでも払う価値があるわ。」"],
+    dwarf: ["「ガハハ！最高品質だ！チップを受け取ってくれ！」", "「これだよこれ！このクオリティを待っていたんだ！」", "「あんたの腕、ドワーフの鍛冶屋も顔負けだぜ！」"]
+  },
+  good: {
+    wizard: ["「うん、悪くない。助かるよ。」", "「無難な仕上がりじゃな。文句はない。」", "「これで十分じゃ。ありがとう。」"],
+    knight: ["「ちょうどいい品質だ。感謝する。」", "「よし、これで準備万端だ。」", "「期待通りの効果だ。また来るぞ。」"],
+    youth: ["「サンキュー！助かったぜ！」", "「いい感じ！またよろしくな！」", "「まあまあだな。普通に使えるぜ。」"],
+    child: ["「ありがとう！大事に使うね！」", "「ちゃんと効きそう！えへへ。」", "「お薬買えた！やったー！」"],
+    woman: ["「ええ、これで目的は果たせそうだわ。」", "「標準的なポーションね。ありがとう。」", "「適正価格ね。また利用するわ。」"],
+    elf: ["「及第点ってところかしら。ありがとう。」", "「悪くないわ。自然の力も感じられる。」", "「ふふ、これなら安心して使えるわね。」"],
+    dwarf: ["「おお、問題なしだ。お代を置いていくぜ。」", "「ガハハ！とりあえずカバンに入れておくよ。」", "「しっかりした作りだ。安心したぜ。」"]
+  },
+  bad: {
+    wizard: ["「なんだこの泥水は！？金返せ！」", "「素人が作ったのか？がっかりじゃ。」", "「……最悪じゃ。二度と来るか。」"],
+    knight: ["「ぼったくりか？こんなのに満額は払えん！」", "「色が変だぞ。本当に大丈夫なのか？」", "「君の店には期待していたのだがな……。」"],
+    youth: ["「え、何これマズっ！半分しか払わねえぞ！」", "「あーあ、材料の無駄遣いだな。」", "「ふざけてるのか？ちゃんとしたのを出せよ！」"],
+    child: ["「……くさい。これお薬じゃないよぉ。」", "「なんか変なゴミが入ってる……。」", "「もう来ない！へたくそ！」"],
+    woman: ["「これ飲んでお腹壊さないか心配だわ……。」", "「……もう行くわ。最悪の気分。」", "「こんなものを客に出すなんて信じられない。」"],
+    elf: ["「ドブの味がしそう。勘弁してちょうだい。」", "「……はぁ。もっとマシな店を探すわ。」", "「自然への冒涜ね。話にならないわ。」"],
+    dwarf: ["「適当に混ぜただけだろ？バレてるぞ！」", "「なんだこのガラクタは……金を取れるレベルじゃねえ。」", "「……金は置いていくが、二度と来ないからな。」"]
+  }
 };
 
 // ==========================================
-// 4. ミニゲームコンポーネント
+// 3. ミニゲームコンポーネント
 // ==========================================
 const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) => void }) => {
   const [pos, setPos] = useState(50);
@@ -196,7 +247,7 @@ const NegotiationMiniGame = ({ onComplete }: { onComplete: (results: string[]) =
 };
 
 // ==========================================
-// 5. メインアプリケーション
+// 4. メインアプリケーション
 // ==========================================
 export default function App() {
   const [gameState, setGameState] = useState<GameState>('title');
@@ -209,10 +260,11 @@ export default function App() {
   const [unlockedRecipes, setUnlockedRecipes] = useState<string[]>(['healing']);
   const [unlockedLocations, setUnlockedLocations] = useState<string[]>(['forest', 'swamp', 'mine']);
   
-  // 新規イベント用State
+  // 新規イベント・記録State
   const [salesCount, setSalesCount] = useState(0);
   const [hoodedManState, setHoodedManState] = useState<HoodedManState>('pending');
   const [mysteriousPowder, setMysteriousPowder] = useState(0);
+  const [forestVisits, setForestVisits] = useState(0);
 
   // UI・モーダル状態
   const [showInv, setShowInv] = useState(false);
@@ -222,7 +274,7 @@ export default function App() {
   const [gatheringCart, setGatheringCart] = useState<Record<string, number>>({});
   const [gatheringSpawnedRecipe, setGatheringSpawnedRecipe] = useState<string | null>(null);
   
-  const [customer, setCustomer] = useState<{isHoodedMan?: boolean, dialogue: string, potionWanted: string, state: 'waiting'|'negotiating'|'done'} | null>(null);
+  const [customer, setCustomer] = useState<{isHoodedMan?: boolean, type: CustomerType, dialogue: string, potionWanted: string, state: 'waiting'|'negotiating'|'done'} | null>(null);
   const [negotiationResult, setNegotiationResult] = useState<string | null>(null);
   const [cauldron, setCauldron] = useState<Record<string, number>>({});
   const [msg, setMsg] = useState<{text: string, type: 'success'|'error'|'info'} | null>(null);
@@ -231,29 +283,29 @@ export default function App() {
   // セーブ・ロード・タイトル
   // ------------------------------------------
   useEffect(() => {
-    const saved = localStorage.getItem('witch_potion_save_v4');
+    const saved = localStorage.getItem('witch_potion_save_v5');
     if (saved) setHasSave(true);
   }, []);
 
   const saveGame = () => {
-    localStorage.setItem('witch_potion_save_v4', JSON.stringify({ gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState }));
+    localStorage.setItem('witch_potion_save_v5', JSON.stringify({ gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState, forestVisits }));
   };
 
   useEffect(() => {
     if (gameState === 'playing') saveGame();
-  }, [gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState, gameState]);
+  }, [gold, inventory, potions, unlockedRecipes, unlockedLocations, mysteriousPowder, salesCount, hoodedManState, forestVisits, gameState]);
 
   const startGame = (isContinue: boolean) => {
     if (isContinue) {
-      const d = JSON.parse(localStorage.getItem('witch_potion_save_v4')!);
+      const d = JSON.parse(localStorage.getItem('witch_potion_save_v5')!);
       setGold(d.gold); setInventory(d.inventory); setPotions(d.potions);
       setUnlockedRecipes(d.unlockedRecipes); setUnlockedLocations(d.unlockedLocations);
       setMysteriousPowder(d.mysteriousPowder || 0); setSalesCount(d.salesCount || 0);
-      setHoodedManState(d.hoodedManState || 'pending');
+      setHoodedManState(d.hoodedManState || 'pending'); setForestVisits(d.forestVisits || 0);
     } else {
-      localStorage.removeItem('witch_potion_save_v4');
+      localStorage.removeItem('witch_potion_save_v5');
       setGold(100); setInventory({}); setPotions({}); setUnlockedRecipes(['healing']); setUnlockedLocations(['forest', 'swamp', 'mine']);
-      setMysteriousPowder(0); setSalesCount(0); setHoodedManState('pending');
+      setMysteriousPowder(0); setSalesCount(0); setHoodedManState('pending'); setForestVisits(0);
     }
     setGameState('playing');
   };
@@ -274,18 +326,22 @@ export default function App() {
         if (salesCount >= 30 && hoodedManState !== 'completed') {
           setCustomer({
             isHoodedMan: true,
+            type: 'wizard', // フードの男はデフォルトアイコンを使用しない
             dialogue: "……『骨粉』と『猛毒ガエル』、そして『妖精の粉』を混ぜたものをくれ。",
             potionWanted: 'mystery',
             state: 'waiting'
           });
           if (hoodedManState === 'pending') setHoodedManState('active');
         } else {
-          // 通常の客
+          // 通常の客（バリエーション豊かに）
           const available = unlockedRecipes;
           const wanted = available[Math.floor(Math.random() * available.length)];
-          const dials = DIALOGUES[wanted] || DIALOGUES['healing'];
+          const types: CustomerType[] = ['wizard', 'knight', 'youth', 'child', 'woman', 'elf', 'dwarf'];
+          const cType = types[Math.floor(Math.random() * types.length)];
+          
+          const dials = DIALOGUES[wanted]?.[cType] || DIALOGUES['healing']['wizard'];
           const dial = dials[Math.floor(Math.random() * dials.length)];
-          setCustomer({ dialogue: dial, potionWanted: wanted, state: 'waiting' });
+          setCustomer({ type: cType, dialogue: dial, potionWanted: wanted, state: 'waiting' });
         }
         setNegotiationResult(null);
       }, 2000);
@@ -304,11 +360,12 @@ export default function App() {
     else if (badCount >= 2) { rank = 'bad'; multiplier = 0.5; }
 
     const earns = Math.floor(POTIONS[customer.potionWanted].basePrice * multiplier);
-    const reaction = SUCCESS_REACTIONS[rank][Math.floor(Math.random() * SUCCESS_REACTIONS[rank].length)];
+    const reactions = SUCCESS_REACTIONS[rank][customer.type] || SUCCESS_REACTIONS[rank]['wizard'];
+    const reaction = reactions[Math.floor(Math.random() * reactions.length)];
     
     setGold(prev => prev + earns);
     setPotions(prev => ({ ...prev, [customer.potionWanted]: prev[customer.potionWanted] - 1 }));
-    setSalesCount(prev => prev + 1); // 販売回数カウントアップ
+    setSalesCount(prev => prev + 1);
     setNegotiationResult(`${reaction}\n（評価: ${rank === 'perfect' ? '大成功！1.5倍' : rank === 'good' ? '成功' : '失敗…0.5倍'} / 獲得: ${earns}G）`);
     setCustomer({ ...customer, state: 'done' });
     setTimeout(() => setCustomer(null), 5000);
@@ -330,7 +387,6 @@ export default function App() {
   const craft = () => {
     const isMystery = JSON.stringify(cauldron) === JSON.stringify(MYSTERY_RECIPE);
     
-    // 材料消費
     const newInv = { ...inventory };
     Object.keys(cauldron).forEach(k => newInv[k] -= cauldron[k]);
     setInventory(newInv);
@@ -375,11 +431,30 @@ export default function App() {
     if (gold < loc.cost) { showMsg("お金が足りないよ。", "error"); return; }
     setGold(prev => prev - loc.cost);
     
-    // レシピランダム出現処理（10%の確率で、未取得レシピから最大1つ選ばれる）
     let spawned = null;
     const availableLocked = loc.recipes.filter(r => !unlockedRecipes.includes(r));
-    if (availableLocked.length > 0 && Math.random() < 0.10) {
-      spawned = availableLocked[Math.floor(Math.random() * availableLocked.length)];
+
+    // 妖精の森の3回ごとの確定ドロップ処理
+    if (loc.id === 'forest' && (forestVisits + 1) % 3 === 0) {
+      if (availableLocked.length > 0) {
+        spawned = availableLocked[0]; // 森に未取得レシピがあれば確定
+      } else {
+        // 森のレシピを取り尽くしている場合、他の場所の未取得レシピを確定で出す
+        const allLocked = Object.keys(POTIONS).filter(r => !unlockedRecipes.includes(r) && r !== 'mystery');
+        if (allLocked.length > 0) spawned = allLocked[Math.floor(Math.random() * allLocked.length)];
+      }
+    } else if (availableLocked.length > 0) {
+      // 通常のドロップ抽選 (マナの小瓶だけ確率25%、他は10%)
+      const isManaAvailable = availableLocked.includes('mana_potion');
+      const roll = Math.random();
+      
+      if (isManaAvailable && roll < 0.25) {
+        spawned = 'mana_potion';
+      } else if (roll < 0.10) {
+        // マナの小瓶以外からランダム
+        const others = availableLocked.filter(r => r !== 'mana_potion');
+        if (others.length > 0) spawned = others[Math.floor(Math.random() * others.length)];
+      }
     }
     
     setGatheringSpawnedRecipe(spawned);
@@ -407,6 +482,11 @@ export default function App() {
     });
 
     setInventory(newInv);
+    
+    if (gatheringLocation === 'forest') {
+      setForestVisits(prev => prev + 1);
+    }
+
     if (!foundRecipe) showMsg("無事に家に戻った。", "info");
     setGatheringLocation(null);
   };
@@ -446,7 +526,10 @@ export default function App() {
 
       <header className="w-full max-w-md bg-slate-900/80 p-4 border-b border-amber-900/40 flex justify-between items-center z-50">
         <div className="text-amber-500 font-bold">💰 {gold} G</div>
-        <div className="text-xs text-slate-500">販売数: {salesCount}</div>
+        <div className="text-xs text-slate-500 flex gap-4">
+          <span>森訪問: {forestVisits}回</span>
+          <span>販売数: {salesCount}</span>
+        </div>
       </header>
 
       <main className="flex-1 w-full max-w-md relative overflow-y-auto pb-24">
@@ -462,7 +545,7 @@ export default function App() {
             <div className="bg-slate-800 p-6 rounded-3xl border-2 border-slate-700 shadow-2xl relative min-h-[300px] flex flex-col items-center">
               {customer ? (
                 <>
-                  <div className="text-6xl mb-4">{customer.isHoodedMan ? '🧥' : '🧙‍♂️'}</div>
+                  <div className="text-6xl mb-4">{customer.isHoodedMan ? '🧥' : CUSTOMER_EMOJIS[customer.type]}</div>
                   <div className="bg-slate-950/80 p-4 rounded-xl border-l-4 border-amber-600 text-sm mb-4 w-full italic whitespace-pre-wrap">
                     「{customer.dialogue}」
                   </div>
@@ -470,12 +553,10 @@ export default function App() {
                     <div className="w-full text-center">
                       <p className="text-xs text-amber-400 mb-2">求: {customer.isHoodedMan ? '？？？のポーション' : `${POTIONS[customer.potionWanted].icon} ${POTIONS[customer.potionWanted].name}`}</p>
                       
-                      {/* 通常の客 */}
                       {!customer.isHoodedMan && (potions[customer.potionWanted] > 0 ? (
                         <button onClick={() => setCustomer({...customer, state: 'negotiating'})} className="w-full py-3 bg-amber-600 rounded-xl font-bold active:scale-95">交渉して売る</button>
                       ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>)}
 
-                      {/* フードの男 */}
                       {customer.isHoodedMan && (potions.mystery > 0 ? (
                         <button onClick={handleHoodedManGive} className="w-full py-3 bg-fuchsia-900 rounded-xl font-bold text-fuchsia-200 active:scale-95 border border-fuchsia-500">渡す</button>
                       ) : <p className="text-slate-500 text-sm">（在庫がありません）</p>)}
@@ -540,7 +621,6 @@ export default function App() {
                 </div>
                 
                 <div className="space-y-4 max-h-[300px] overflow-y-auto mb-4 p-2 bg-slate-950 rounded-xl">
-                  {/* 材料リスト */}
                   {LOCATIONS[gatheringLocation].ingredients.map(id => (
                     <div key={id} className="flex items-center justify-between border-b border-slate-800 pb-2">
                       <div className="text-sm">
@@ -561,7 +641,6 @@ export default function App() {
                     </div>
                   ))}
                   
-                  {/* ランダム出現したレシピ */}
                   {gatheringSpawnedRecipe && (
                     <div className="flex items-center justify-between border border-amber-900/50 bg-amber-900/20 p-2 rounded-lg">
                       <div className="text-sm text-amber-200">
@@ -654,8 +733,12 @@ export default function App() {
               <p className="text-xs text-slate-500 mb-2">採取可能なアイテム:</p>
               <div className="flex flex-wrap gap-2">
                 {mapDetail.ingredients.map(i => <span key={i} className="bg-slate-900 px-2 py-1 rounded-lg text-[10px]">{INGREDIENTS[i].icon} {INGREDIENTS[i].name}</span>)}
-                {mapDetail.recipes.filter(r => !unlockedRecipes.includes(r)).length > 0 && (
-                  <span className="bg-amber-900/40 text-amber-200 px-2 py-1 rounded-lg text-[10px] border border-amber-500/50">📜 未知のレシピ (低確率)</span>
+                
+                {/* 確定ドロップのヒント表示 */}
+                {mapDetail.id === 'forest' && (forestVisits + 1) % 3 === 0 && Object.keys(POTIONS).length > unlockedRecipes.length + 1 ? (
+                   <span className="bg-fuchsia-900/40 text-fuchsia-200 px-2 py-1 rounded-lg text-[10px] border border-fuchsia-500/50 animate-pulse">✨ 確定レシピあり！</span>
+                ) : mapDetail.recipes.filter(r => !unlockedRecipes.includes(r)).length > 0 && (
+                  <span className="bg-amber-900/40 text-amber-200 px-2 py-1 rounded-lg text-[10px] border border-amber-500/50">📜 未知のレシピ ({mapDetail.id === 'forest' ? '低〜中確率' : '低確率'})</span>
                 )}
               </div>
             </div>
